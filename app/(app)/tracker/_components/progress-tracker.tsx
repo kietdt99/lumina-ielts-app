@@ -6,31 +6,17 @@ import {
   clearWritingHistory,
   getWritingHistorySnapshot,
   subscribeToWritingHistory,
-  type WritingHistoryEntry,
 } from '@/lib/ielts/writing-history'
+import {
+  averageBand,
+  bestBand,
+} from '@/lib/ielts/writing-history-insights'
 
 function formatDate(value: string) {
   return new Date(value).toLocaleString([], {
     dateStyle: 'medium',
     timeStyle: 'short',
   })
-}
-
-function averageBand(entries: WritingHistoryEntry[]) {
-  if (!entries.length) {
-    return 0
-  }
-
-  const total = entries.reduce((sum, entry) => sum + entry.estimatedBand, 0)
-  return Math.round((total / entries.length) * 10) / 10
-}
-
-function bestBand(entries: WritingHistoryEntry[]) {
-  if (!entries.length) {
-    return 0
-  }
-
-  return Math.max(...entries.map((entry) => entry.estimatedBand))
 }
 
 export function ProgressTracker() {
@@ -45,6 +31,11 @@ export function ProgressTracker() {
     selectedTask === 'All'
       ? entries
       : entries.filter((entry) => entry.taskType === selectedTask)
+  const [selectedEntryId, setSelectedEntryId] = useState<string | null>(null)
+  const selectedEntry =
+    filteredEntries.find((entry) => entry.id === selectedEntryId) ??
+    filteredEntries[0] ??
+    null
 
   const timelineBars = useMemo(
     () =>
@@ -135,7 +126,14 @@ export function ProgressTracker() {
 
             <div className="history-list">
               {filteredEntries.map((entry) => (
-                <article key={entry.id} className="history-card">
+                <button
+                  key={entry.id}
+                  type="button"
+                  className={`history-card selectable-card${
+                    selectedEntry?.id === entry.id ? ' is-selected' : ''
+                  }`}
+                  onClick={() => setSelectedEntryId(entry.id)}
+                >
                   <div className="history-header">
                     <div>
                       <span className="prompt-type">{entry.taskType}</span>
@@ -180,10 +178,89 @@ export function ProgressTracker() {
                       </ul>
                     </div>
                   </div>
-                </article>
+                </button>
               ))}
             </div>
           </section>
+
+          <aside className="glass writing-panel tracker-detail">
+            <div className="panel-heading">
+              <h2>Session detail</h2>
+              <p>Inspect the selected submission more closely before your next revision pass.</p>
+            </div>
+
+            {selectedEntry ? (
+              <div className="feedback-stack">
+                <div className="score-card">
+                  <span className="metric-label">Selected session</span>
+                  <strong>{selectedEntry.estimatedBand.toFixed(1)}</strong>
+                  <p>
+                    {selectedEntry.promptTitle} · {selectedEntry.taskType} ·{' '}
+                    {formatDate(selectedEntry.createdAt)}
+                  </p>
+                </div>
+
+                <div className="summary-grid">
+                  <div className="summary-box">
+                    <span className="metric-label">Words</span>
+                    <strong>{selectedEntry.wordCount}</strong>
+                  </div>
+                  <div className="summary-box">
+                    <span className="metric-label">Rubric rows</span>
+                    <strong>{selectedEntry.rubric.length}</strong>
+                  </div>
+                  <div className="summary-box">
+                    <span className="metric-label">Focus count</span>
+                    <strong>{selectedEntry.priorities.length}</strong>
+                  </div>
+                </div>
+
+                <div className="rubric-list">
+                  {selectedEntry.rubric.map((row) => (
+                    <div key={row.label} className="rubric-card">
+                      <div className="rubric-score">
+                        <span>{row.label}</span>
+                        <strong>{row.score.toFixed(1)}</strong>
+                      </div>
+                      <p>{row.summary}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="feedback-section">
+                  <h3>Draft excerpt</h3>
+                  <p>{selectedEntry.draftExcerpt}...</p>
+                </div>
+
+                <div className="feedback-section">
+                  <h3>Strengths</h3>
+                  <ul className="bullet-list compact-list">
+                    {selectedEntry.strengths.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="feedback-section">
+                  <h3>Revision priorities</h3>
+                  <ul className="bullet-list compact-list">
+                    {selectedEntry.priorities.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ) : (
+              <div className="empty-feedback">
+                <p className="metric-label">No selection</p>
+                <h3>Choose a saved session to inspect</h3>
+                <p>
+                  Select a history card to review the full rubric snapshot and
+                  targeted revision advice.
+                </p>
+              </div>
+            )}
+          </aside>
         </div>
       ) : (
         <section className="glass writing-panel empty-state-panel">

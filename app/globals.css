@@ -159,12 +159,24 @@ button {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
+.dashboard-content {
+  align-items: start;
+}
+
 .dashboard-card {
   padding: 1.5rem;
 }
 
 .card-title {
   font-size: 1.25rem;
+  margin-bottom: 0.65rem;
+}
+
+.dashboard-stat {
+  color: var(--primary);
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1;
   margin-bottom: 0.65rem;
 }
 
@@ -235,6 +247,11 @@ button {
   background: rgba(15, 23, 42, 0.06);
   color: var(--foreground);
   padding: 0.75rem 1rem;
+}
+
+.inline-link {
+  color: var(--primary);
+  font-weight: 700;
 }
 
 .auth-shell {
@@ -377,6 +394,13 @@ button {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
+}
+
+.dashboard-section-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  justify-content: space-between;
 }
 
 .task-switcher {
@@ -565,6 +589,11 @@ button {
   padding-top: 1rem;
 }
 
+.no-divider {
+  border-top: none;
+  padding-top: 0;
+}
+
 .demo-badge {
   border-radius: 999px;
   background: rgba(37, 99, 235, 0.1);
@@ -572,6 +601,44 @@ button {
   font-size: 0.85rem;
   font-weight: 700;
   padding: 0.65rem 0.9rem;
+}
+
+.dashboard-activity-feed,
+.next-step-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.activity-card {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
+.activity-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.activity-card-header h3 {
+  font-size: 1rem;
+}
+
+.activity-score {
+  color: var(--primary);
+  font-size: 1.35rem;
+}
+
+.empty-dashboard-state {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .tracker-page {
@@ -643,6 +710,25 @@ button {
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
+}
+
+.selectable-card {
+  background: rgba(255, 255, 255, 0.66);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.selectable-card:hover {
+  transform: translateY(-2px);
+}
+
+.selectable-card.is-selected {
+  border-color: rgba(37, 99, 235, 0.28);
+  background: rgba(37, 99, 235, 0.06);
 }
 
 .history-header {
@@ -738,6 +824,11 @@ p {
 
   .tracker-toolbar {
     align-items: stretch;
+    flex-direction: column;
+  }
+
+  .dashboard-section-header,
+  .activity-card-header {
     flex-direction: column;
   }
 }
