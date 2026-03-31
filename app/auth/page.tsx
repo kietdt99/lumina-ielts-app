@@ -1,130 +1,113 @@
 'use client'
 
 import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { login, signup } from './actions'
+import { isSupabaseConfigured } from '@/lib/supabase/config'
 
 export default function AuthPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const authEnabled = isSupabaseConfigured()
   const [isLogin, setIsLogin] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  
-  const router = useRouter()
-  const supabase = createClient()
+  const [success, setSuccess] = useState<string | null>(null)
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+  async function handleSubmit(formData: FormData) {
     setLoading(true)
     setError(null)
+    setSuccess(null)
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password })
-        if (error) throw error
-        router.push('/')
-        router.refresh()
+        const result = await login(formData)
+        if (result?.error) {
+          setError(result.error)
+        }
       } else {
-        const { error } = await supabase.auth.signUp({ 
-          email, 
-          password,
-          options: {
-            // Note: In MVP, email confirmation can be disabled via Supabase Dashboard
-            // to allow immediate login. Check your Supabase Authentication settings.
-          }
-        })
-        if (error) throw error
-        setError('Check your email to confirm your account (or login directly if email confirmation is disabled).')
+        const result = await signup(formData)
+        if (result?.error) {
+          setError(result.error)
+        } else if (result?.success) {
+          setSuccess(result.success)
+        }
       }
-    } catch (err: any) {
-      setError(err.message)
+    } catch {
+      setError('An unexpected error occurred.')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
-      <div className="glass" style={{ padding: '2.5rem', width: '100%', maxWidth: '420px' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '2rem', color: 'var(--primary)' }}>
-          {isLogin ? 'Welcome Back' : 'Create Account'}
-        </h2>
-        
-        {error && (
-          <div style={{ padding: '1rem', marginBottom: '1.5rem', backgroundColor: 'var(--error)', color: 'white', borderRadius: 'var(--radius)', fontSize: '0.875rem' }}>
-            {error}
-          </div>
-        )}
+    <div className="auth-shell">
+      <div className="glass auth-card">
+        <div className="auth-copy">
+          <p className="section-label">Authentication</p>
+          <h1>{isLogin ? 'Welcome back' : 'Create your account'}</h1>
+          <p>
+            Sign in to continue your IELTS prep or create a new account to save
+            your progress.
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label htmlFor="email" style={{ fontSize: '0.875rem', fontWeight: 500 }}>Email Address</label>
+        {!authEnabled ? (
+          <div className="feedback-banner info-banner">
+            Supabase auth is not configured yet. You can still explore the app
+            in demo mode from the dashboard and writing workspace.
+          </div>
+        ) : null}
+
+        {error ? <div className="feedback-banner error-banner">{error}</div> : null}
+        {success ? (
+          <div className="feedback-banner success-banner">{success}</div>
+        ) : null}
+
+        <form action={handleSubmit} className="auth-form">
+          <div className="field-group">
+            <label htmlFor="email">Email address</label>
             <input
               id="email"
+              name="email"
               type="email"
               placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               required
-              style={{ 
-                padding: '0.75rem 1rem', 
-                borderRadius: 'var(--radius)', 
-                border: '1px solid var(--border)', 
-                background: 'var(--background)', 
-                color: 'var(--foreground)',
-                outline: 'none'
-              }}
+              disabled={!authEnabled}
+              className="text-input"
             />
           </div>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label htmlFor="password" style={{ fontSize: '0.875rem', fontWeight: 500 }}>Password</label>
+
+          <div className="field-group">
+            <label htmlFor="password">Password</label>
             <input
               id="password"
+              name="password"
               type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Minimum 6 characters"
               required
-              style={{ 
-                padding: '0.75rem 1rem', 
-                borderRadius: 'var(--radius)', 
-                border: '1px solid var(--border)', 
-                background: 'var(--background)', 
-                color: 'var(--foreground)',
-                outline: 'none'
-              }}
+              minLength={6}
+              disabled={!authEnabled}
+              className="text-input"
             />
           </div>
 
           <button
             type="submit"
-            disabled={loading}
-            style={{
-              marginTop: '1rem',
-              padding: '0.875rem',
-              backgroundColor: 'var(--primary)',
-              color: 'var(--primary-foreground)',
-              borderRadius: 'var(--radius)',
-              fontWeight: 600,
-              fontSize: '1rem',
-              textAlign: 'center',
-              opacity: loading ? 0.7 : 1,
-              cursor: loading ? 'not-allowed' : 'pointer',
-              transition: 'opacity 0.2s ease'
-            }}
+            disabled={loading || !authEnabled}
+            className="primary-button"
           >
-            {loading ? 'Processing...' : (isLogin ? 'Sign In' : 'Sign Up')}
+            {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Sign Up'}
           </button>
         </form>
 
-        <p style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', opacity: 0.8 }}>
-          {isLogin ? "Don't have an account? " : "Already have an account? "}
-          <button 
+        <p className="auth-switch">
+          {isLogin ? "Don't have an account? " : 'Already have an account? '}
+          <button
             type="button"
-            onClick={() => { setIsLogin(!isLogin); setError(null); }}
-            style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'underline' }}
+            onClick={() => {
+              setIsLogin(!isLogin)
+              setError(null)
+              setSuccess(null)
+            }}
+            className="inline-action"
           >
             {isLogin ? 'Sign Up' : 'Log In'}
           </button>

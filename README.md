@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lumina IELTS
 
-## Getting Started
+Lumina IELTS is an AI-supported IELTS practice app built with Next.js 16 and Supabase.
 
-First, run the development server:
+## Current focus
+
+The project is currently in the MVP foundation stage. The initial product direction is:
+
+- authenticated learner workspace
+- dashboard with progress context
+- writing practice as the first complete study loop
+- structured feedback and progress tracking
+
+## Current feature set
+
+- Email/password authentication with Supabase
+- Auth-protected learner dashboard
+- Writing practice workspace with:
+  - prompt selection for Task 1 and Task 2
+  - local draft autosave per prompt
+  - timer controls
+  - word, paragraph, and sentence tracking
+  - local practice feedback with rubric-style signals
+- Progress tracker with local history, band trend snapshots, and revision priorities
+
+## Tech stack
+
+- Next.js 16 App Router
+- React 19
+- Supabase SSR authentication
+- TypeScript
+
+## Local setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Add the required environment variables in `.env.local`:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+3. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev
+npm run lint
+npm run build
+npm run start
+```
 
-## Learn More
+## Release workflow
 
-To learn more about Next.js, take a look at the following resources:
+- Feature branches must be validated locally only.
+- Production deployments are allowed from `main` only.
+- When a feature branch is ready, merge it into `main`.
+- Run a local smoke test on `main` before creating a production deployment.
+- Deploy to production only after the `main` smoke test passes.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```text
+app/                  App Router entry points
+app/auth/             Authentication UI and callback flow
+lib/supabase/         Supabase server, client, and session helpers
+docs/                 Working implementation documents
+```
 
-## Deploy on Vercel
+## Working notes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- The active App Router lives in `app/`.
+- `proxy.ts` is used for auth-aware route protection.
+- The implementation roadmap is documented in `docs/implementation-plan.md`.
