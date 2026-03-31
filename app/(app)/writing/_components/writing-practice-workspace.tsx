@@ -1,15 +1,12 @@
 'use client'
 
-import { useDeferredValue, useEffect, useState, useTransition } from 'react'
+import { useDeferredValue, useEffect, useState } from 'react'
 import {
-  evaluateWriting,
   getDraftMetrics,
   type WritingEvaluation,
 } from '@/lib/ielts/writing-feedback'
-import {
-  createWritingHistoryEntry,
-  saveWritingHistoryEntry,
-} from '@/lib/ielts/writing-history'
+import { saveWritingHistoryEntry } from '@/lib/ielts/writing-history'
+import type { WritingSubmissionResponse } from '@/lib/ielts/writing-submissions'
 import type { WritingPrompt } from '@/lib/ielts/writing-prompts'
 
 type WritingPracticeWorkspaceProps = {
@@ -163,7 +160,8 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
   const [statusMessage, setStatusMessage] = useState(initialDraftState.statusMessage)
   const [isTimerRunning, setIsTimerRunning] = useState(false)
   const [feedback, setFeedback] = useState<WritingEvaluation | null>(null)
-  const [isPending, startTransition] = useTransition()
+  const [submissionError, setSubmissionError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const deferredDraft = useDeferredValue(draft)
   const draftMetrics = getDraftMetrics(deferredDraft)
 
@@ -217,24 +215,51 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
     }
   }
 
-  function handleSubmit() {
-    startTransition(() => {
-      const nextFeedback = evaluateWriting(prompt, draft)
-      setFeedback(nextFeedback)
-      saveWritingHistoryEntry(
-        createWritingHistoryEntry({
-          prompt,
+  async function handleSubmit() {
+    setIsSubmitting(true)
+    setSubmissionError(null)
+
+    try {
+      const response = await fetch('/api/writing/submissions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          promptId: prompt.id,
           draft,
-          feedback: nextFeedback,
-        })
-      )
+        }),
+      })
+
+      const payload = (await response.json()) as WritingSubmissionResponse
+
+      if (!response.ok || !payload.ok) {
+        throw new Error(
+          payload.ok
+            ? 'Unable to generate practice feedback right now.'
+            : payload.error
+        )
+      }
+
+      setFeedback(payload.feedback)
+      saveWritingHistoryEntry(payload.historyEntry)
       setStatusMessage(
         `Practice result saved at ${new Date().toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit',
         })}`
       )
-    })
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Unable to generate practice feedback right now.'
+
+      setSubmissionError(message)
+      setStatusMessage('Practice review failed')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   function handleResetTimer() {
@@ -248,6 +273,7 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
     setDraft(defaultState.draft)
     setRemainingSeconds(defaultState.remainingSeconds)
     setFeedback(null)
+    setSubmissionError(null)
     setIsTimerRunning(false)
     window.localStorage.removeItem(getStorageKey(prompt.id))
     setStatusMessage('Draft cleared for this prompt')
@@ -341,10 +367,10 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
           <button
             type="button"
             className="primary-button"
-            disabled={!draft.trim() || isPending}
+            disabled={!draft.trim() || isSubmitting}
             onClick={handleSubmit}
           >
-            {isPending ? 'Reviewing draft...' : 'Generate practice feedback'}
+            {isSubmitting ? 'Reviewing draft...' : 'Generate practice feedback'}
           </button>
         </div>
       </section>
@@ -357,6 +383,13 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
             next revision pass.
           </p>
         </div>
+
+        {submissionError ? (
+          <div className="feedback-error" role="alert">
+            <strong>Practice review failed</strong>
+            <p>{submissionError}</p>
+          </div>
+        ) : null}
 
         {feedback ? (
           <div className="feedback-stack">

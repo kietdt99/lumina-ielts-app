@@ -1,6 +1,7 @@
 import type { WritingEvaluation } from '@/lib/ielts/writing-feedback'
 import type { WritingHistoryEntry } from '@/lib/ielts/writing-history'
 import type { WritingPrompt } from '@/lib/ielts/writing-prompts'
+import type { WritingSubmissionSuccess } from '@/lib/ielts/writing-submissions'
 
 export function createPrompt(
   overrides: Partial<WritingPrompt> = {}
@@ -72,6 +73,17 @@ export function createHistoryEntry(
     rubric: createEvaluation().rubric,
     strengths: ['The draft has a clear structure.'],
     priorities: ['Develop the second body paragraph with more precise support.'],
+    ...overrides,
+  }
+}
+
+export function createSubmissionSuccess(
+  overrides: Partial<WritingSubmissionSuccess> = {}
+): WritingSubmissionSuccess {
+  return {
+    ok: true,
+    feedback: createEvaluation(),
+    historyEntry: createHistoryEntry(),
     ...overrides,
   }
 }
