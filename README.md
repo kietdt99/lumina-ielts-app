@@ -11,6 +11,17 @@ The project is currently in the MVP foundation stage. The initial product direct
 - writing practice as the first complete study loop
 - structured feedback and progress tracking
 
+## Current feature set
+
+- Email/password authentication with Supabase
+- Auth-protected learner dashboard
+- Writing practice workspace with:
+  - prompt selection for Task 1 and Task 2
+  - local draft autosave per prompt
+  - timer controls
+  - word, paragraph, and sentence tracking
+  - local practice feedback with rubric-style signals
+
 ## Tech stack
 
 - Next.js 16 App Router
