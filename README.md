@@ -65,11 +65,16 @@ npm run start
 
 ## Release workflow
 
+1. Implement new code in a new branch.
+2. Start the app locally and run tests after implementation is complete.
+3. Merge the branch into `master`.
+4. Start the app locally and run tests again on `master`.
+
+Additional guardrails:
+
 - Feature branches must be validated locally only.
-- Production deployments are allowed from `main` only.
-- When a feature branch is ready, merge it into `main`.
-- Run a local smoke test on `main` before creating a production deployment.
-- Deploy to production only after the `main` smoke test passes.
+- Production deployments are allowed from `master` only.
+- Deploy to production only after the `master` verification pass succeeds.
 
 ## Project structure
 

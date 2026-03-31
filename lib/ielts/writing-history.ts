@@ -17,6 +17,7 @@ export type WritingHistoryEntry = {
 
 const storageKey = 'lumina-writing-history'
 const changeEventName = 'lumina-writing-history-change'
+const emptyWritingHistory: WritingHistoryEntry[] = []
 
 function sortByNewest(entries: WritingHistoryEntry[]) {
   return [...entries].sort(
@@ -27,20 +28,20 @@ function sortByNewest(entries: WritingHistoryEntry[]) {
 
 export function getWritingHistorySnapshot() {
   if (typeof window === 'undefined') {
-    return [] as WritingHistoryEntry[]
+    return emptyWritingHistory
   }
 
   const rawValue = window.localStorage.getItem(storageKey)
 
   if (!rawValue) {
-    return [] as WritingHistoryEntry[]
+    return emptyWritingHistory
   }
 
   try {
     const parsedValue = JSON.parse(rawValue) as WritingHistoryEntry[]
     return sortByNewest(parsedValue)
   } catch {
-    return [] as WritingHistoryEntry[]
+    return emptyWritingHistory
   }
 }
 
