@@ -297,6 +297,10 @@ button {
   background: var(--error);
 }
 
+.info-banner {
+  background: #0f4aa8;
+}
+
 .success-banner {
   background: var(--success);
 }
@@ -555,6 +559,15 @@ button {
 .empty-feedback {
   border-top: 1px solid rgba(15, 23, 42, 0.08);
   padding-top: 1rem;
+}
+
+.demo-badge {
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--accent-foreground);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.65rem 0.9rem;
 }
 
 h1 {

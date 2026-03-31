@@ -1,6 +1,9 @@
 import { signout } from '@/app/auth/actions'
+import { isSupabaseConfigured } from '@/lib/supabase/config'
 
 export default function Dashboard() {
+  const authEnabled = isSupabaseConfigured()
+
   return (
     <div className="dashboard-stack">
       <div className="dashboard-header">
@@ -12,11 +15,15 @@ export default function Dashboard() {
             and reaching your target band.
           </p>
         </div>
-        <form action={signout}>
-          <button type="submit" className="secondary-button">
-            Sign Out
-          </button>
-        </form>
+        {authEnabled ? (
+          <form action={signout}>
+            <button type="submit" className="secondary-button">
+              Sign Out
+            </button>
+          </form>
+        ) : (
+          <div className="demo-badge">Demo mode</div>
+        )}
       </div>
 
       <div className="dashboard-grid">

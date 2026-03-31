@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import { login, signup } from './actions'
+import { isSupabaseConfigured } from '@/lib/supabase/config'
 
 export default function AuthPage() {
+  const authEnabled = isSupabaseConfigured()
   const [isLogin, setIsLogin] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -47,6 +49,13 @@ export default function AuthPage() {
           </p>
         </div>
 
+        {!authEnabled ? (
+          <div className="feedback-banner info-banner">
+            Supabase auth is not configured yet. You can still explore the app
+            in demo mode from the dashboard and writing workspace.
+          </div>
+        ) : null}
+
         {error ? <div className="feedback-banner error-banner">{error}</div> : null}
         {success ? (
           <div className="feedback-banner success-banner">{success}</div>
@@ -61,6 +70,7 @@ export default function AuthPage() {
               type="email"
               placeholder="you@example.com"
               required
+              disabled={!authEnabled}
               className="text-input"
             />
           </div>
@@ -74,11 +84,16 @@ export default function AuthPage() {
               placeholder="Minimum 6 characters"
               required
               minLength={6}
+              disabled={!authEnabled}
               className="text-input"
             />
           </div>
 
-          <button type="submit" disabled={loading} className="primary-button">
+          <button
+            type="submit"
+            disabled={loading || !authEnabled}
+            className="primary-button"
+          >
             {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Sign Up'}
           </button>
         </form>
