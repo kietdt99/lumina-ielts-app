@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { WritingHistoryEntry } from '@/lib/ielts/writing-history'
 import { DashboardOverview } from '@/app/(app)/_components/dashboard-overview'
-import { createHistoryEntry } from '../helpers/fixtures'
+import { createHistoryEntry, createLearnerGoals } from '../helpers/fixtures'
 
 const state = {
   authEnabled: false,
@@ -30,10 +30,12 @@ describe('DashboardOverview', () => {
   })
 
   it('renders a demo empty state when no writing history exists', () => {
-    render(<DashboardOverview />)
+    render(<DashboardOverview learnerGoals={createLearnerGoals()} />)
 
     expect(screen.getByText('Demo mode')).toBeInTheDocument()
     expect(screen.getByText('No activity saved yet.')).toBeInTheDocument()
+    expect(screen.getByText('Target Band')).toBeInTheDocument()
+    expect(screen.getByText('Update goals')).toHaveAttribute('href', '/settings')
     expect(
       screen.getByRole('link', { name: 'Start writing practice' })
     ).toHaveAttribute('href', '/writing')
@@ -68,11 +70,21 @@ describe('DashboardOverview', () => {
       }),
     ]
 
-    render(<DashboardOverview />)
+    render(
+      <DashboardOverview
+        learnerGoals={createLearnerGoals({
+          targetBand: 8,
+          focusSkill: 'Speaking',
+          studyFrequency: 'Daily',
+        })}
+      />
+    )
 
     expect(screen.getByRole('button', { name: 'Sign Out' })).toBeInTheDocument()
     expect(screen.getByText('Average Band')).toBeInTheDocument()
     expect(screen.getByText('Best Result')).toBeInTheDocument()
+    expect(screen.getByText('8.0')).toBeInTheDocument()
+    expect(screen.getByText(/Focus skill: Speaking/)).toBeInTheDocument()
     expect(screen.getAllByText('7.5')).not.toHaveLength(0)
     expect(screen.getAllByText('Entry Four')).not.toHaveLength(0)
     expect(screen.getByText('Entry Three')).toBeInTheDocument()

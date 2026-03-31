@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useSyncExternalStore } from 'react'
 import { signout } from '@/app/auth/actions'
+import type { LearnerGoals } from '@/lib/learner/learner-goals'
 import { isSupabaseConfigured } from '@/lib/supabase/config'
 import {
   getServerWritingHistorySnapshot,
@@ -24,7 +25,11 @@ function formatDate(value: string) {
   })
 }
 
-export function DashboardOverview() {
+type DashboardOverviewProps = {
+  learnerGoals: LearnerGoals
+}
+
+export function DashboardOverview({ learnerGoals }: DashboardOverviewProps) {
   const authEnabled = isSupabaseConfigured()
   const entries = useSyncExternalStore(
     subscribeToWritingHistory,
@@ -59,11 +64,18 @@ export function DashboardOverview() {
 
       <div className="dashboard-grid dashboard-metrics">
         <div className="glass dashboard-card">
-          <h2 className="card-title accent-text">Target Band: 7.5</h2>
+          <div className="dashboard-section-header">
+            <div>
+              <h2 className="card-title">Target Band</h2>
+              <p className="dashboard-stat">{learnerGoals.targetBand.toFixed(1)}</p>
+            </div>
+            <Link href="/settings" className="inline-link">
+              Update goals
+            </Link>
+          </div>
           <p>
-            {entries.length
-              ? `You have completed ${entries.length} tracked writing session${entries.length === 1 ? '' : 's'}.`
-              : 'Start a writing session to begin tracking your progress.'}
+            Current level: {learnerGoals.currentLevel}. Focus skill:{' '}
+            {learnerGoals.focusSkill}. Study rhythm: {learnerGoals.studyFrequency}.
           </p>
         </div>
         <div className="glass dashboard-card">
@@ -74,7 +86,11 @@ export function DashboardOverview() {
         <div className="glass dashboard-card">
           <h2 className="card-title">Best Result</h2>
           <p className="dashboard-stat">{bestBand(entries).toFixed(1)}</p>
-          <p>Use the tracker to compare your strongest submissions over time.</p>
+          <p>
+            {entries.length
+              ? `You have completed ${entries.length} tracked writing session${entries.length === 1 ? '' : 's'}.`
+              : 'Start a writing session to begin tracking your progress.'}
+          </p>
         </div>
       </div>
 
@@ -143,6 +159,10 @@ export function DashboardOverview() {
                   {countTaskType(entries, 'Task 2')}
                 </strong>
               </div>
+              <div className="metric-pill">
+                <span className="metric-label">Study rhythm</span>
+                <strong>{learnerGoals.studyFrequency}</strong>
+              </div>
               <div className="feedback-section no-divider">
                 <h3>Priority right now</h3>
                 <ul className="bullet-list compact-list">
@@ -155,9 +175,14 @@ export function DashboardOverview() {
           ) : (
             <div className="empty-dashboard-state">
               <p>
-                Complete one writing feedback cycle and Lumina will suggest your
-                next revision focus here.
+                Aim for Band {learnerGoals.targetBand.toFixed(1)} with a{' '}
+                {learnerGoals.studyFrequency.toLowerCase()} rhythm. Complete one
+                writing feedback cycle and Lumina will suggest your next revision
+                focus here.
               </p>
+              <Link href="/settings" className="inline-link">
+                Refine learner goals
+              </Link>
             </div>
           )}
         </section>

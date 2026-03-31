@@ -42,7 +42,9 @@ a {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -663,6 +665,35 @@ button {
   gap: 1.5rem;
 }
 
+.settings-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.settings-layout {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.95fr);
+}
+
+.settings-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.settings-summary {
+  display: grid;
+  gap: 0.9rem;
+}
+
 .tracker-toolbar {
   display: flex;
   align-items: center;
@@ -851,7 +882,8 @@ p {
 
 @media (max-width: 1200px) {
   .writing-layout,
-  .tracker-layout {
+  .tracker-layout,
+  .settings-layout {
     grid-template-columns: 1fr;
   }
 }
@@ -860,7 +892,8 @@ p {
   .writing-hero,
   .writing-guidance,
   .writing-meta-grid,
-  .summary-grid {
+  .summary-grid,
+  .settings-grid {
     grid-template-columns: 1fr;
   }
 

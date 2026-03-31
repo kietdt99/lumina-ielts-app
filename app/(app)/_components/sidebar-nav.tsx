@@ -7,6 +7,7 @@ const navigation = [
   { href: '/', label: 'Dashboard' },
   { href: '/writing', label: 'Writing Assistant' },
   { href: '/tracker', label: 'Score Tracker' },
+  { href: '/settings', label: 'Settings' },
 ]
 
 export function SidebarNav() {

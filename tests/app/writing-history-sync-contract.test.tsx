@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
+import { defaultLearnerGoals } from '@/lib/learner/learner-goals'
 
 const syncContract = vi.hoisted(() => {
   return {
@@ -40,7 +41,7 @@ describe('writing history sync contract', () => {
       '@/app/(app)/_components/dashboard-overview'
     )
 
-    render(<DashboardOverview />)
+    render(<DashboardOverview learnerGoals={defaultLearnerGoals} />)
 
     expect(syncContract.useSyncExternalStoreMock).toHaveBeenCalledWith(
       syncContract.subscribeToWritingHistory,
