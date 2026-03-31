@@ -250,6 +250,13 @@ export function ProgressTracker() {
                     ))}
                   </ul>
                 </div>
+
+                <Link
+                  href={`/tracker/${selectedEntry.id}`}
+                  className="primary-button"
+                >
+                  Open full detail page
+                </Link>
               </div>
             ) : (
               <div className="empty-feedback">

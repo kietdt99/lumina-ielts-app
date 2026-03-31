@@ -707,6 +707,10 @@ button {
   grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.4fr);
 }
 
+.tracker-detail-layout {
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.95fr);
+}
+
 .trend-chart {
   display: grid;
   align-items: end;

@@ -122,6 +122,9 @@ export function DashboardOverview({ learnerGoals }: DashboardOverviewProps) {
                     <span>{entry.wordCount} words</span>
                   </div>
                   <p>{entry.priorities[0] ?? 'Keep refining your structure and support.'}</p>
+                  <Link href={`/tracker/${entry.id}`} className="inline-link">
+                    Open detail
+                  </Link>
                 </article>
               ))}
             </div>

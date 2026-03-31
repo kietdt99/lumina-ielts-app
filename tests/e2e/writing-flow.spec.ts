@@ -114,4 +114,28 @@ test.describe('writing flow', () => {
       })
     ).toBeVisible()
   })
+
+  test('opens a dedicated submission detail page from the tracker', async ({
+    page,
+    gotoAndAssertOk,
+  }) => {
+    await seedWritingHistory(page, [
+      createStoredHistoryEntry({
+        id: 'entry-detail',
+        promptTitle: 'AI tools in school education',
+        estimatedBand: 7.5,
+        priorities: ['Clarify the thesis in the introduction.'],
+      }),
+    ])
+
+    await gotoAndAssertOk('/tracker')
+    await page.getByRole('link', { name: 'Open full detail page' }).click()
+
+    await expect(page).toHaveURL(/\/tracker\/entry-detail$/)
+    await expect(
+      page.getByRole('heading', { name: 'AI tools in school education' })
+    ).toBeVisible()
+    await expect(page.getByText('Rubric breakdown')).toBeVisible()
+    await expect(page.getByText('Clarify the thesis in the introduction.')).toBeVisible()
+  })
 })
