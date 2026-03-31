@@ -1,10 +1,12 @@
 import { expect, test as base, type Page } from '@playwright/test'
+import { defaultLearnerGoals, serializeLearnerGoals, type LearnerGoals } from '@/lib/learner/learner-goals'
 
 type E2EFixtures = {
   gotoAndAssertOk: (path: string) => Promise<void>
 }
 
 const writingHistoryStorageKey = 'lumina-writing-history'
+const learnerGoalsCookieName = 'lumina-learner-goals'
 
 function formatError(source: string, message: string) {
   return `${source}: ${message}`
@@ -119,4 +121,19 @@ export async function seedWritingHistory(page: Page, entries: unknown[]) {
       storedEntries: entries,
     }
   )
+}
+
+export async function seedLearnerGoals(
+  page: Page,
+  goals: LearnerGoals = defaultLearnerGoals
+) {
+  await page.context().addCookies([
+    {
+      name: learnerGoalsCookieName,
+      value: serializeLearnerGoals(goals),
+      url: 'http://127.0.0.1:3100',
+      httpOnly: true,
+      sameSite: 'Lax',
+    },
+  ])
 }
