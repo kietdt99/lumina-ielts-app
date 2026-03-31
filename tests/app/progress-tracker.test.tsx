@@ -76,6 +76,12 @@ describe('ProgressTracker', () => {
     expect(
       within(detailPanel as HTMLElement).getByText('Improve the overview sentence.')
     ).toBeInTheDocument()
+
+    expect(
+      within(detailPanel as HTMLElement).getByRole('link', {
+        name: 'Open full detail page',
+      })
+    ).toHaveAttribute('href', '/tracker/entry-1')
   })
 
   it('filters by task and clears local history from the toolbar', async () => {

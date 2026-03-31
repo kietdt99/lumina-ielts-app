@@ -89,6 +89,10 @@ describe('DashboardOverview', () => {
     expect(screen.getAllByText('Entry Four')).not.toHaveLength(0)
     expect(screen.getByText('Entry Three')).toBeInTheDocument()
     expect(screen.getByText('Entry Two')).toBeInTheDocument()
+    expect(screen.getAllByRole('link', { name: 'Open detail' })[0]).toHaveAttribute(
+      'href',
+      '/tracker/entry-4'
+    )
     expect(screen.queryByText('Entry One')).not.toBeInTheDocument()
   })
 })
