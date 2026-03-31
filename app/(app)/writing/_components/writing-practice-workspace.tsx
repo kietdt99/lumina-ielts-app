@@ -6,6 +6,10 @@ import {
   getDraftMetrics,
   type WritingEvaluation,
 } from '@/lib/ielts/writing-feedback'
+import {
+  createWritingHistoryEntry,
+  saveWritingHistoryEntry,
+} from '@/lib/ielts/writing-history'
 import type { WritingPrompt } from '@/lib/ielts/writing-prompts'
 
 type WritingPracticeWorkspaceProps = {
@@ -215,7 +219,21 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
 
   function handleSubmit() {
     startTransition(() => {
-      setFeedback(evaluateWriting(prompt, draft))
+      const nextFeedback = evaluateWriting(prompt, draft)
+      setFeedback(nextFeedback)
+      saveWritingHistoryEntry(
+        createWritingHistoryEntry({
+          prompt,
+          draft,
+          feedback: nextFeedback,
+        })
+      )
+      setStatusMessage(
+        `Practice result saved at ${new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+        })}`
+      )
     })
   }
 

@@ -21,6 +21,7 @@ The project is currently in the MVP foundation stage. The initial product direct
   - timer controls
   - word, paragraph, and sentence tracking
   - local practice feedback with rubric-style signals
+- Progress tracker with local history, band trend snapshots, and revision priorities
 
 ## Tech stack
 
@@ -61,6 +62,14 @@ npm run lint
 npm run build
 npm run start
 ```
+
+## Release workflow
+
+- Feature branches must be validated locally only.
+- Production deployments are allowed from `main` only.
+- When a feature branch is ready, merge it into `main`.
+- Run a local smoke test on `main` before creating a production deployment.
+- Deploy to production only after the `main` smoke test passes.
 
 ## Project structure
 

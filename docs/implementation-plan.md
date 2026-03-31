@@ -279,6 +279,14 @@ If we start immediately, this is the recommended sprint order:
 - Prioritize work that can be merged, demoed, and tested.
 - When scope changes, update this file instead of letting the plan live only in chat.
 
+## 9.1 Release Workflow
+
+- Feature branches must be tested locally and must not deploy directly to production.
+- Production deployments are allowed from `main` only.
+- Once a feature branch is ready, merge it into `main`.
+- Run a local smoke test on `main` before deploying.
+- Deploy to production only after the `main` smoke test passes.
+
 ## 10. Recommended Immediate Actions
 
 The next tasks should be:
