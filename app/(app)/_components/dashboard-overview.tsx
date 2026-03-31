@@ -4,7 +4,11 @@ import Link from 'next/link'
 import { useSyncExternalStore } from 'react'
 import { signout } from '@/app/auth/actions'
 import { isSupabaseConfigured } from '@/lib/supabase/config'
-import { getWritingHistorySnapshot, subscribeToWritingHistory } from '@/lib/ielts/writing-history'
+import {
+  getServerWritingHistorySnapshot,
+  getWritingHistorySnapshot,
+  subscribeToWritingHistory,
+} from '@/lib/ielts/writing-history'
 import {
   averageBand,
   bestBand,
@@ -25,7 +29,7 @@ export function DashboardOverview() {
   const entries = useSyncExternalStore(
     subscribeToWritingHistory,
     getWritingHistorySnapshot,
-    getWritingHistorySnapshot
+    getServerWritingHistorySnapshot
   )
 
   const latestSession = latestEntry(entries)

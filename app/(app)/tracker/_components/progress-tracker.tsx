@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useMemo, useState, useSyncExternalStore } from 'react'
 import {
   clearWritingHistory,
+  getServerWritingHistorySnapshot,
   getWritingHistorySnapshot,
   subscribeToWritingHistory,
 } from '@/lib/ielts/writing-history'
@@ -23,7 +24,7 @@ export function ProgressTracker() {
   const entries = useSyncExternalStore(
     subscribeToWritingHistory,
     getWritingHistorySnapshot,
-    getWritingHistorySnapshot
+    getServerWritingHistorySnapshot
   )
   const [selectedTask, setSelectedTask] = useState<'All' | 'Task 1' | 'Task 2'>('All')
 

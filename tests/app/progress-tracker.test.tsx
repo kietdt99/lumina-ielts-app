@@ -13,6 +13,7 @@ const clearWritingHistoryMock = vi.fn()
 
 vi.mock('@/lib/ielts/writing-history', () => ({
   clearWritingHistory: () => clearWritingHistoryMock(),
+  getServerWritingHistorySnapshot: () => [],
   getWritingHistorySnapshot: () => state.entries,
   subscribeToWritingHistory: () => () => undefined,
 }))

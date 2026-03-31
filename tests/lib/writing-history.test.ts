@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   clearWritingHistory,
   createWritingHistoryEntry,
+  getServerWritingHistorySnapshot,
   getWritingHistorySnapshot,
   saveWritingHistoryEntry,
   subscribeToWritingHistory,
@@ -15,9 +16,13 @@ describe('writing history store', () => {
   })
 
   it('returns a stable empty snapshot when no local history exists', () => {
+    const firstServerSnapshot = getServerWritingHistorySnapshot()
+    const secondServerSnapshot = getServerWritingHistorySnapshot()
     const firstSnapshot = getWritingHistorySnapshot()
     const secondSnapshot = getWritingHistorySnapshot()
 
+    expect(firstServerSnapshot).toEqual([])
+    expect(firstServerSnapshot).toBe(secondServerSnapshot)
     expect(firstSnapshot).toEqual([])
     expect(firstSnapshot).toBe(secondSnapshot)
   })

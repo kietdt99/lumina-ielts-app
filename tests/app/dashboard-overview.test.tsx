@@ -18,6 +18,7 @@ vi.mock('@/lib/supabase/config', () => ({
 }))
 
 vi.mock('@/lib/ielts/writing-history', () => ({
+  getServerWritingHistorySnapshot: () => [],
   getWritingHistorySnapshot: () => state.entries,
   subscribeToWritingHistory: () => () => undefined,
 }))
