@@ -23,7 +23,7 @@ export function ProgressTracker() {
   const entries = useSyncExternalStore(
     subscribeToWritingHistory,
     getWritingHistorySnapshot,
-    () => []
+    getWritingHistorySnapshot
   )
   const [selectedTask, setSelectedTask] = useState<'All' | 'Task 1' | 'Task 2'>('All')
 

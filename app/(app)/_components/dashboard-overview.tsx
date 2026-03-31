@@ -25,7 +25,7 @@ export function DashboardOverview() {
   const entries = useSyncExternalStore(
     subscribeToWritingHistory,
     getWritingHistorySnapshot,
-    () => []
+    getWritingHistorySnapshot
   )
 
   const latestSession = latestEntry(entries)

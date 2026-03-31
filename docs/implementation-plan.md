@@ -282,10 +282,12 @@ If we start immediately, this is the recommended sprint order:
 ## 9.1 Release Workflow
 
 - Feature branches must be tested locally and must not deploy directly to production.
-- Production deployments are allowed from `main` only.
-- Once a feature branch is ready, merge it into `main`.
-- Run a local smoke test on `main` before deploying.
-- Deploy to production only after the `main` smoke test passes.
+- Production deployments are allowed from `master` only.
+- Implement each feature on a new branch first.
+- Start the app locally and run tests after implementation is complete on the feature branch.
+- Once a feature branch is ready, merge it into `master`.
+- Start the app locally and run tests again on `master` before deploying.
+- Deploy to production only after the `master` verification pass succeeds.
 
 ## 10. Recommended Immediate Actions
 
