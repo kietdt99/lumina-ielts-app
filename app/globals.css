@@ -719,6 +719,18 @@ button {
   min-height: 280px;
 }
 
+.tracker-insights-grid {
+  align-items: stretch;
+}
+
+.tracker-focus-copy {
+  margin-bottom: 1rem;
+}
+
+.tracker-recommendation-card {
+  margin-bottom: 0;
+}
+
 .trend-bar-group {
   display: flex;
   flex-direction: column;

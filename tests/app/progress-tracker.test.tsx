@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { WritingHistoryEntry } from '@/lib/ielts/writing-history'
 import { ProgressTracker } from '@/app/(app)/tracker/_components/progress-tracker'
-import { createHistoryEntry } from '../helpers/fixtures'
+import { createHistoryEntry, createLearnerGoals } from '../helpers/fixtures'
 
 const state = {
   entries: [] as WritingHistoryEntry[],
@@ -25,7 +25,7 @@ describe('ProgressTracker', () => {
   })
 
   it('renders an empty state when there is no saved history', () => {
-    render(<ProgressTracker />)
+    render(<ProgressTracker learnerGoals={createLearnerGoals()} />)
 
     expect(
       screen.getByText('No tracked writing sessions yet')
@@ -55,11 +55,13 @@ describe('ProgressTracker', () => {
       }),
     ]
 
-    render(<ProgressTracker />)
+    render(<ProgressTracker learnerGoals={createLearnerGoals({ targetBand: 8 })} />)
 
     expect(
       screen.getByRole('button', { name: /AI tools in school education/i })
     ).toBeInTheDocument()
+    expect(screen.getByText('Target Gap')).toBeInTheDocument()
+    expect(screen.getByText('Recurring Focus')).toBeInTheDocument()
 
     const detailPanel = screen.getByText('Session detail').closest('aside')
     expect(detailPanel).not.toBeNull()
@@ -100,7 +102,14 @@ describe('ProgressTracker', () => {
       }),
     ]
 
-    render(<ProgressTracker />)
+    render(
+      <ProgressTracker
+        learnerGoals={createLearnerGoals({
+          targetBand: 7.5,
+          studyFrequency: 'Daily',
+        })}
+      />
+    )
 
     await user.click(screen.getByRole('button', { name: 'Task 1' }))
 
@@ -114,5 +123,6 @@ describe('ProgressTracker', () => {
     await user.click(screen.getByRole('button', { name: 'Clear local history' }))
 
     expect(clearWritingHistoryMock).toHaveBeenCalledTimes(1)
+    expect(screen.getByText('Target Gap')).toBeInTheDocument()
   })
 })

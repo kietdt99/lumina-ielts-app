@@ -55,7 +55,7 @@ describe('writing history sync contract', () => {
       '@/app/(app)/tracker/_components/progress-tracker'
     )
 
-    render(<ProgressTracker />)
+    render(<ProgressTracker learnerGoals={defaultLearnerGoals} />)
 
     expect(syncContract.useSyncExternalStoreMock).toHaveBeenCalledWith(
       syncContract.subscribeToWritingHistory,
