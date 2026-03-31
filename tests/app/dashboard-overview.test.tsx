@@ -36,6 +36,7 @@ describe('DashboardOverview', () => {
     expect(screen.getByText('No activity saved yet.')).toBeInTheDocument()
     expect(screen.getByText('Target Band')).toBeInTheDocument()
     expect(screen.getByText('Update goals')).toHaveAttribute('href', '/settings')
+    expect(screen.getByText('Start your writing study loop')).toBeInTheDocument()
     expect(
       screen.getByRole('link', { name: 'Start writing practice' })
     ).toHaveAttribute('href', '/writing')
@@ -85,6 +86,13 @@ describe('DashboardOverview', () => {
     expect(screen.getByText('Best Result')).toBeInTheDocument()
     expect(screen.getByText('8.0')).toBeInTheDocument()
     expect(screen.getByText(/Focus skill: Speaking/)).toBeInTheDocument()
+    expect(screen.getByText('Close the gap to Band 8.0')).toBeInTheDocument()
+    expect(screen.getByText('Recent average')).toBeInTheDocument()
+    expect(screen.getByText('Recurring focus')).toBeInTheDocument()
+    expect(
+      screen.getAllByText('Develop the second body paragraph with more precise support.')
+        .length
+    ).toBeGreaterThan(0)
     expect(screen.getAllByText('7.5')).not.toHaveLength(0)
     expect(screen.getAllByText('Entry Four')).not.toHaveLength(0)
     expect(screen.getByText('Entry Three')).toBeInTheDocument()

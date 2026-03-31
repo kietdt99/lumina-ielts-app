@@ -17,6 +17,7 @@ import {
   latestEntry,
   recentEntries,
 } from '@/lib/ielts/writing-history-insights'
+import { createStudyRecommendation } from '@/lib/ielts/study-plan'
 
 function formatDate(value: string) {
   return new Date(value).toLocaleString([], {
@@ -39,6 +40,7 @@ export function DashboardOverview({ learnerGoals }: DashboardOverviewProps) {
 
   const latestSession = latestEntry(entries)
   const recentSessions = recentEntries(entries, 3)
+  const recommendation = createStudyRecommendation(learnerGoals, entries)
 
   return (
     <div className="dashboard-stack">
@@ -142,11 +144,33 @@ export function DashboardOverview({ learnerGoals }: DashboardOverviewProps) {
           <div className="dashboard-section-header">
             <div>
               <h2 className="card-title">Next Best Step</h2>
-              <p>Use the latest result to focus the next revision cycle.</p>
+              <p>Use learner goals and recent writing data to focus the next revision cycle.</p>
             </div>
             <Link href="/writing" className="inline-link">
               Open workspace
             </Link>
+          </div>
+
+          <div className="next-step-stack">
+            <div className="metric-pill">
+              <span className="metric-label">Recommendation</span>
+              <strong>{recommendation.headline}</strong>
+            </div>
+            <div className="summary-grid">
+              <div className="summary-box">
+                <span className="metric-label">Recent average</span>
+                <strong>{recommendation.recentAverage.toFixed(1)}</strong>
+              </div>
+              <div className="summary-box">
+                <span className="metric-label">Target gap</span>
+                <strong>{recommendation.targetGap.toFixed(1)}</strong>
+              </div>
+              <div className="summary-box">
+                <span className="metric-label">Sessions this week</span>
+                <strong>{recommendation.sessionsThisWeek}</strong>
+              </div>
+            </div>
+            <p>{recommendation.summary}</p>
           </div>
 
           {latestSession ? (
@@ -166,10 +190,16 @@ export function DashboardOverview({ learnerGoals }: DashboardOverviewProps) {
                 <span className="metric-label">Study rhythm</span>
                 <strong>{learnerGoals.studyFrequency}</strong>
               </div>
+              {recommendation.recurringPriority ? (
+                <div className="metric-pill">
+                  <span className="metric-label">Recurring focus</span>
+                  <strong>{recommendation.recurringPriority}</strong>
+                </div>
+              ) : null}
               <div className="feedback-section no-divider">
                 <h3>Priority right now</h3>
                 <ul className="bullet-list compact-list">
-                  {latestSession.priorities.slice(0, 3).map((item) => (
+                  {recommendation.actions.map((item) => (
                     <li key={item}>{item}</li>
                   ))}
                 </ul>
@@ -183,6 +213,11 @@ export function DashboardOverview({ learnerGoals }: DashboardOverviewProps) {
                 writing feedback cycle and Lumina will suggest your next revision
                 focus here.
               </p>
+              <ul className="bullet-list compact-list">
+                {recommendation.actions.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
               <Link href="/settings" className="inline-link">
                 Refine learner goals
               </Link>
