@@ -64,20 +64,25 @@ npm run start
 npm run test
 npm run test:watch
 npm run test:coverage
+npm run test:e2e
+npm run test:e2e:headed
+npm run test:all
 ```
 
 ## Release workflow
 
 1. Implement new code in a new branch.
-2. Start the app locally and run tests after implementation is complete.
+2. Start the app locally and run the full test suite after implementation is complete.
 3. Merge the branch into `master`.
-4. Start the app locally and run tests again on `master`.
+4. Start the app locally and run the full test suite again on `master`.
 
 Additional guardrails:
 
 - Feature branches must be validated locally only.
 - Production deployments are allowed from `master` only.
 - Deploy to production only after the `master` verification pass succeeds.
+- UI coverage must include headless Playwright browser tests.
+- API coverage must be validated alongside UI coverage before merging.
 
 ## Project structure
 

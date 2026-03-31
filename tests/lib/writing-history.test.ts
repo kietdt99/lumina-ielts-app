@@ -44,6 +44,34 @@ describe('writing history store', () => {
     expect(snapshot.at(-1)?.id).toBe('entry-2')
   })
 
+  it('returns a stable client snapshot reference until local history changes', () => {
+    saveWritingHistoryEntry(
+      createHistoryEntry({
+        id: 'entry-2',
+        createdAt: '2026-03-31T12:00:00.000Z',
+      })
+    )
+
+    const firstSnapshot = getWritingHistorySnapshot()
+    const secondSnapshot = getWritingHistorySnapshot()
+
+    expect(firstSnapshot).toHaveLength(1)
+    expect(firstSnapshot).toBe(secondSnapshot)
+
+    saveWritingHistoryEntry(
+      createHistoryEntry({
+        id: 'entry-3',
+        createdAt: '2026-03-31T13:00:00.000Z',
+      })
+    )
+
+    const thirdSnapshot = getWritingHistorySnapshot()
+
+    expect(thirdSnapshot).toHaveLength(2)
+    expect(thirdSnapshot).not.toBe(firstSnapshot)
+    expect(getWritingHistorySnapshot()).toBe(thirdSnapshot)
+  })
+
   it('notifies subscribers when history changes', () => {
     const onStoreChange = vi.fn()
     const unsubscribe = subscribeToWritingHistory(onStoreChange)

@@ -18,6 +18,8 @@ export type WritingHistoryEntry = {
 const storageKey = 'lumina-writing-history'
 const changeEventName = 'lumina-writing-history-change'
 const emptyWritingHistory: WritingHistoryEntry[] = []
+let cachedRawValue: string | null | undefined
+let cachedSnapshot: WritingHistoryEntry[] = emptyWritingHistory
 
 export function getServerWritingHistorySnapshot() {
   return emptyWritingHistory
@@ -37,15 +39,24 @@ export function getWritingHistorySnapshot() {
 
   const rawValue = window.localStorage.getItem(storageKey)
 
+  if (rawValue === cachedRawValue) {
+    return cachedSnapshot
+  }
+
+  cachedRawValue = rawValue
+
   if (!rawValue) {
-    return getServerWritingHistorySnapshot()
+    cachedSnapshot = getServerWritingHistorySnapshot()
+    return cachedSnapshot
   }
 
   try {
     const parsedValue = JSON.parse(rawValue) as WritingHistoryEntry[]
-    return sortByNewest(parsedValue)
+    cachedSnapshot = sortByNewest(parsedValue)
+    return cachedSnapshot
   } catch {
-    return getServerWritingHistorySnapshot()
+    cachedSnapshot = getServerWritingHistorySnapshot()
+    return cachedSnapshot
   }
 }
 
