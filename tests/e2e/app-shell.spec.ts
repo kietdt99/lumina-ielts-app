@@ -20,6 +20,11 @@ test.describe('app shell', () => {
       page.getByRole('heading', { name: 'See how your writing practice is evolving' })
     ).toBeVisible()
 
+    await gotoAndAssertOk('/settings')
+    await expect(
+      page.getByRole('heading', { name: 'Set the goals that shape your study plan' })
+    ).toBeVisible()
+
     await gotoAndAssertOk('/auth')
     await expect(page.getByRole('heading', { name: 'Welcome back' })).toBeVisible()
   })
@@ -40,6 +45,12 @@ test.describe('app shell', () => {
     await expect(page).toHaveURL(/\/tracker$/)
     await expect(
       page.getByRole('heading', { name: 'See how your writing practice is evolving' })
+    ).toBeVisible()
+
+    await page.getByRole('link', { name: 'Settings' }).click()
+    await expect(page).toHaveURL(/\/settings$/)
+    await expect(
+      page.getByRole('heading', { name: 'Set the goals that shape your study plan' })
     ).toBeVisible()
 
     await page.getByRole('link', { name: 'Dashboard' }).click()

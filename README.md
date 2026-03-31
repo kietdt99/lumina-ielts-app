@@ -13,6 +13,11 @@ The project is currently in the MVP foundation stage. The initial product direct
 
 ## Current feature set
 
+- Learner goals settings with cookie-backed persistence for:
+  - target band
+  - current level
+  - focus skill
+  - study frequency
 - Email/password authentication with Supabase
 - Auth-protected learner dashboard
 - Writing practice workspace with:
@@ -89,6 +94,8 @@ Additional guardrails:
 ```text
 app/                  App Router entry points
 app/auth/             Authentication UI and callback flow
+app/api/              Route handlers for learner goals and writing submissions
+app/(app)/settings/   Learner goals settings UI
 lib/supabase/         Supabase server, client, and session helpers
 docs/                 Working implementation documents
 ```

@@ -2,6 +2,8 @@ import type { WritingEvaluation } from '@/lib/ielts/writing-feedback'
 import type { WritingHistoryEntry } from '@/lib/ielts/writing-history'
 import type { WritingPrompt } from '@/lib/ielts/writing-prompts'
 import type { WritingSubmissionSuccess } from '@/lib/ielts/writing-submissions'
+import type { LearnerGoals } from '@/lib/learner/learner-goals'
+import { defaultLearnerGoals } from '@/lib/learner/learner-goals'
 
 export function createPrompt(
   overrides: Partial<WritingPrompt> = {}
@@ -84,6 +86,15 @@ export function createSubmissionSuccess(
     ok: true,
     feedback: createEvaluation(),
     historyEntry: createHistoryEntry(),
+    ...overrides,
+  }
+}
+
+export function createLearnerGoals(
+  overrides: Partial<LearnerGoals> = {}
+): LearnerGoals {
+  return {
+    ...defaultLearnerGoals,
     ...overrides,
   }
 }

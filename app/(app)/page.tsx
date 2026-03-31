@@ -1,5 +1,8 @@
 import { DashboardOverview } from './_components/dashboard-overview'
+import { getLearnerGoalsFromCookies } from '@/lib/learner/learner-goals-cookie'
 
-export default function Dashboard() {
-  return <DashboardOverview />
+export default async function Dashboard() {
+  const learnerGoals = await getLearnerGoalsFromCookies()
+
+  return <DashboardOverview learnerGoals={learnerGoals} />
 }
