@@ -55,7 +55,7 @@ describe('WritingPracticeWorkspace', () => {
       }),
     })
 
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async () =>
       Response.json(submission, {
         status: 201,
       })
@@ -101,7 +101,7 @@ describe('WritingPracticeWorkspace', () => {
   it('shows an error message when the API returns a submission failure', async () => {
     const user = userEvent.setup()
 
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async () =>
       Response.json(
         {
           ok: false,

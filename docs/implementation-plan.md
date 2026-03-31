@@ -17,6 +17,7 @@ What already exists:
 
 - `Next 16.2.1` and `React 19`.
 - `Supabase SSR` auth scaffolding.
+- Initial Supabase schema assets and prompt seed files now live under `supabase/`.
 - `proxy.ts` following the new Next 16 convention.
 - `next build` currently passes.
 

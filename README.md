@@ -13,6 +13,14 @@ The project is currently in the MVP foundation stage. The initial product direct
 
 ## Current feature set
 
+- Supabase schema assets for:
+  - profiles
+  - learner goals
+  - writing prompts
+  - practice sessions
+  - writing submissions
+  - writing feedback
+  - activity logs
 - Learner goals settings with cookie-backed persistence for:
   - target band
   - current level
@@ -96,6 +104,7 @@ app/                  App Router entry points
 app/auth/             Authentication UI and callback flow
 app/api/              Route handlers for learner goals and writing submissions
 app/(app)/settings/   Learner goals settings UI
+supabase/             Supabase migrations, seed data, and schema notes
 lib/supabase/         Supabase server, client, and session helpers
 docs/                 Working implementation documents
 ```
