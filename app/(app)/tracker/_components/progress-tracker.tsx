@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useMemo, useState, useSyncExternalStore } from 'react'
+import { useState, useSyncExternalStore } from 'react'
+import type { LearnerGoals } from '@/lib/learner/learner-goals'
 import {
   clearWritingHistory,
   getServerWritingHistorySnapshot,
@@ -12,6 +13,7 @@ import {
   averageBand,
   bestBand,
 } from '@/lib/ielts/writing-history-insights'
+import { createStudyRecommendation } from '@/lib/ielts/study-plan'
 
 function formatDate(value: string) {
   return new Date(value).toLocaleString([], {
@@ -20,7 +22,7 @@ function formatDate(value: string) {
   })
 }
 
-export function ProgressTracker() {
+export function ProgressTracker({ learnerGoals }: { learnerGoals: LearnerGoals }) {
   const entries = useSyncExternalStore(
     subscribeToWritingHistory,
     getWritingHistorySnapshot,
@@ -37,20 +39,17 @@ export function ProgressTracker() {
     filteredEntries.find((entry) => entry.id === selectedEntryId) ??
     filteredEntries[0] ??
     null
+  const recommendation = createStudyRecommendation(learnerGoals, filteredEntries)
 
-  const timelineBars = useMemo(
-    () =>
-      filteredEntries
-        .slice(0, 8)
-        .reverse()
-        .map((entry) => ({
-          id: entry.id,
-          label: entry.promptTitle,
-          score: entry.estimatedBand,
-          height: `${Math.max(28, entry.estimatedBand * 12)}px`,
-        })),
-    [filteredEntries]
-  )
+  const timelineBars = filteredEntries
+    .slice(0, 8)
+    .reverse()
+    .map((entry) => ({
+      id: entry.id,
+      label: entry.promptTitle,
+      score: entry.estimatedBand,
+      height: `${Math.max(28, entry.estimatedBand * 12)}px`,
+    }))
 
   return (
     <div className="tracker-page">
@@ -99,6 +98,36 @@ export function ProgressTracker() {
           </button>
         ) : null}
       </section>
+
+      {entries.length ? (
+        <section className="dashboard-grid tracker-insights-grid">
+          <article className="glass dashboard-card">
+            <h2 className="card-title">Target Gap</h2>
+            <p className="dashboard-stat">{recommendation.targetGap.toFixed(1)}</p>
+            <p>
+              Based on the filtered sessions, you are working toward Band{' '}
+              {learnerGoals.targetBand.toFixed(1)}.
+            </p>
+          </article>
+
+          <article className="glass dashboard-card">
+            <h2 className="card-title">Sessions This Week</h2>
+            <p className="dashboard-stat">{recommendation.sessionsThisWeek}</p>
+            <p>Use this to check whether your current rhythm matches the study plan.</p>
+          </article>
+
+          <article className="glass dashboard-card">
+            <h2 className="card-title">Recurring Focus</h2>
+            <p className="tracker-focus-copy">
+              {recommendation.recurringPriority ??
+                'Complete more writing sessions to identify a repeated focus area.'}
+            </p>
+            <Link href="/writing" className="inline-link">
+              Open writing workspace
+            </Link>
+          </article>
+        </section>
+      ) : null}
 
       {entries.length ? (
         <div className="tracker-layout">
@@ -188,6 +217,11 @@ export function ProgressTracker() {
             <div className="panel-heading">
               <h2>Session detail</h2>
               <p>Inspect the selected submission more closely before your next revision pass.</p>
+            </div>
+
+            <div className="feedback-error tracker-recommendation-card" role="status">
+              <strong>{recommendation.headline}</strong>
+              <p>{recommendation.summary}</p>
             </div>
 
             {selectedEntry ? (
