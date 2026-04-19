@@ -38,3 +38,17 @@ export function getSupabaseConfig() {
 export function isSupabaseConfigured() {
   return getSupabaseConfig() !== null
 }
+
+export function getSupabaseServiceRoleConfig() {
+  const publicConfig = getSupabaseConfig()
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!publicConfig || !serviceRoleKey || isPlaceholder(serviceRoleKey)) {
+    return null
+  }
+
+  return {
+    url: publicConfig.url,
+    serviceRoleKey,
+  }
+}

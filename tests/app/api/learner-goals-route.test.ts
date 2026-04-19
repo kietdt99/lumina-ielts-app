@@ -8,32 +8,48 @@ const repositoryMocks = vi.hoisted(() => ({
   saveLearnerGoals: vi.fn(),
 }))
 
+const authMocks = vi.hoisted(() => ({
+  getAppSession: vi.fn(),
+}))
+
 vi.mock('@/lib/learner/learner-goals-repository', () => repositoryMocks)
+vi.mock('@/lib/auth/service', () => authMocks)
 
 describe('learner goals route', () => {
   beforeEach(() => {
     repositoryMocks.getLearnerGoals.mockReset()
     repositoryMocks.saveLearnerGoals.mockReset()
+    authMocks.getAppSession.mockReset()
+    authMocks.getAppSession.mockResolvedValue({
+      userId: 'learner-1',
+      email: 'learner@example.com',
+      fullName: 'Learner',
+      role: 'learner',
+      mustChangePassword: false,
+      onboardingCompleted: true,
+      passwordResetDeferred: false,
+      mode: 'demo',
+    })
   })
 
   it('returns learner goals from the repository', async () => {
     repositoryMocks.getLearnerGoals.mockResolvedValue({
       goals: defaultLearnerGoals,
-      storageMode: 'cookie',
+      storageMode: 'demo',
     })
 
     const response = await GET()
     const payload = (await response.json()) as {
       ok: boolean
       goals: typeof defaultLearnerGoals
-      storageMode: 'cookie' | 'supabase'
+      storageMode: 'cookie' | 'demo' | 'supabase'
     }
 
     expect(response.status).toBe(200)
     expect(payload).toEqual({
       ok: true,
       goals: defaultLearnerGoals,
-      storageMode: 'cookie',
+      storageMode: 'demo',
     })
   })
 
@@ -62,7 +78,7 @@ describe('learner goals route', () => {
     const payload = (await response.json()) as {
       ok: boolean
       goals: typeof defaultLearnerGoals
-      storageMode: 'cookie' | 'supabase'
+      storageMode: 'cookie' | 'demo' | 'supabase'
     }
 
     expect(response.status).toBe(200)

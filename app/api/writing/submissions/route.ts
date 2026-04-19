@@ -1,7 +1,20 @@
 import { listWritingSubmissionHistory, saveWritingSubmissionRecord } from '@/lib/ielts/writing-submissions-repository'
 import { createWritingSubmission, type WritingSubmissionInput } from '@/lib/ielts/writing-submissions'
+import { getAppSession } from '@/lib/auth/service'
 
 export async function GET() {
+  const session = await getAppSession()
+
+  if (!session || session.role !== 'learner') {
+    return Response.json(
+      {
+        ok: false,
+        error: 'Learner authentication is required.',
+      },
+      { status: 401 }
+    )
+  }
+
   const result = await listWritingSubmissionHistory()
 
   return Response.json({
@@ -12,6 +25,18 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const session = await getAppSession()
+
+  if (!session || session.role !== 'learner') {
+    return Response.json(
+      {
+        ok: false,
+        error: 'Learner authentication is required.',
+      },
+      { status: 401 }
+    )
+  }
+
   let payload: unknown
 
   try {

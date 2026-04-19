@@ -1,7 +1,20 @@
 import { getLearnerGoals, saveLearnerGoals } from '@/lib/learner/learner-goals-repository'
 import { validateLearnerGoals } from '@/lib/learner/learner-goals'
+import { getAppSession } from '@/lib/auth/service'
 
 export async function GET() {
+  const session = await getAppSession()
+
+  if (!session || session.role !== 'learner') {
+    return Response.json(
+      {
+        ok: false,
+        error: 'Learner authentication is required.',
+      },
+      { status: 401 }
+    )
+  }
+
   const result = await getLearnerGoals()
 
   return Response.json({
@@ -12,6 +25,18 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
+  const session = await getAppSession()
+
+  if (!session || session.role !== 'learner') {
+    return Response.json(
+      {
+        ok: false,
+        error: 'Learner authentication is required.',
+      },
+      { status: 401 }
+    )
+  }
+
   let payload: unknown
 
   try {

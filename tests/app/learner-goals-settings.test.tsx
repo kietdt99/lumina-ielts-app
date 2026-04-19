@@ -6,6 +6,7 @@ import { createLearnerGoals } from '../helpers/fixtures'
 
 const routerState = {
   refresh: vi.fn(),
+  push: vi.fn(),
 }
 
 vi.mock('next/navigation', () => ({
@@ -15,6 +16,7 @@ vi.mock('next/navigation', () => ({
 describe('LearnerGoalsSettings', () => {
   beforeEach(() => {
     routerState.refresh.mockReset()
+    routerState.push.mockReset()
     globalThis.fetch = vi.fn()
   })
 
@@ -56,7 +58,7 @@ describe('LearnerGoalsSettings', () => {
     })
 
     expect(
-      await screen.findByText('Learner goals saved for this browser.')
+      await screen.findByText('Learner goals saved for this account.')
     ).toBeInTheDocument()
     expect(routerState.refresh).toHaveBeenCalledTimes(1)
   })

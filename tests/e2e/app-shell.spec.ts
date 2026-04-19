@@ -4,10 +4,13 @@ test.describe('app shell', () => {
   test('loads the main routes without browser runtime errors', async ({
     page,
     gotoAndAssertOk,
+    loginAsDemoLearner,
   }) => {
+    await loginAsDemoLearner()
+
     await gotoAndAssertOk('/')
     await expect(
-      page.getByRole('heading', { name: 'Welcome to Lumina IELTS' })
+      page.getByRole('heading', { name: 'Welcome back, Demo Learner' })
     ).toBeVisible()
 
     await gotoAndAssertOk('/writing')
@@ -25,14 +28,17 @@ test.describe('app shell', () => {
       page.getByRole('heading', { name: 'Set the goals that shape your study plan' })
     ).toBeVisible()
 
-    await gotoAndAssertOk('/auth')
-    await expect(page.getByRole('heading', { name: 'Welcome back' })).toBeVisible()
+    await gotoAndAssertOk('/auth/login')
+    await expect(page).toHaveURL(/\/$/)
   })
 
   test('navigates through the sidebar without browser runtime errors', async ({
     page,
     gotoAndAssertOk,
+    loginAsDemoLearner,
   }) => {
+    await loginAsDemoLearner()
+
     await gotoAndAssertOk('/')
 
     await page.getByRole('link', { name: 'Writing Assistant' }).click()
@@ -47,8 +53,8 @@ test.describe('app shell', () => {
       page.getByRole('heading', { name: 'See how your writing practice is evolving' })
     ).toBeVisible()
 
-    await page.getByRole('link', { name: 'Settings' }).click()
-    await expect(page).toHaveURL(/\/settings$/)
+    await page.getByRole('link', { name: 'Profile Settings' }).click()
+    await expect(page).toHaveURL(/\/settings\/profile$/)
     await expect(
       page.getByRole('heading', { name: 'Set the goals that shape your study plan' })
     ).toBeVisible()
@@ -56,7 +62,7 @@ test.describe('app shell', () => {
     await page.getByRole('link', { name: 'Dashboard' }).click()
     await expect(page).toHaveURL(/\/$/)
     await expect(
-      page.getByRole('heading', { name: 'Welcome to Lumina IELTS' })
+      page.getByRole('heading', { name: 'Welcome back, Demo Learner' })
     ).toBeVisible()
   })
 })

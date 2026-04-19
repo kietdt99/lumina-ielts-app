@@ -1,8 +1,5 @@
-import { LearnerGoalsSettings } from './_components/learner-goals-settings'
-import { getLearnerGoals } from '@/lib/learner/learner-goals-repository'
+import { redirect } from 'next/navigation'
 
-export default async function SettingsPage() {
-  const { goals: learnerGoals } = await getLearnerGoals()
-
-  return <LearnerGoalsSettings initialGoals={learnerGoals} />
+export default function SettingsPage() {
+  redirect('/settings/profile')
 }

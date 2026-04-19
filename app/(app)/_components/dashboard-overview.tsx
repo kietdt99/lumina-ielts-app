@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useSyncExternalStore } from 'react'
 import { signout } from '@/app/auth/actions'
 import type { LearnerGoals } from '@/lib/learner/learner-goals'
-import { isSupabaseConfigured } from '@/lib/supabase/config'
 import {
   getServerWritingHistorySnapshot,
   getWritingHistorySnapshot,
@@ -28,10 +27,13 @@ function formatDate(value: string) {
 
 type DashboardOverviewProps = {
   learnerGoals: LearnerGoals
+  learnerName: string
 }
 
-export function DashboardOverview({ learnerGoals }: DashboardOverviewProps) {
-  const authEnabled = isSupabaseConfigured()
+export function DashboardOverview({
+  learnerGoals,
+  learnerName,
+}: DashboardOverviewProps) {
   const entries = useSyncExternalStore(
     subscribeToWritingHistory,
     getWritingHistorySnapshot,
@@ -47,21 +49,17 @@ export function DashboardOverview({ learnerGoals }: DashboardOverviewProps) {
       <div className="dashboard-header">
         <div className="dashboard-copy">
           <p className="section-label">Dashboard</p>
-          <h1>Welcome to Lumina IELTS</h1>
+          <h1>Welcome back, {learnerName}</h1>
           <p>
             Your AI-supported workspace for building a reliable study rhythm
             and reaching your target band.
           </p>
         </div>
-        {authEnabled ? (
-          <form action={signout}>
-            <button type="submit" className="secondary-button">
-              Sign Out
-            </button>
-          </form>
-        ) : (
-          <div className="demo-badge">Demo mode</div>
-        )}
+        <form action={signout}>
+          <button type="submit" className="secondary-button">
+            Sign Out
+          </button>
+        </form>
       </div>
 
       <div className="dashboard-grid dashboard-metrics">
@@ -71,7 +69,7 @@ export function DashboardOverview({ learnerGoals }: DashboardOverviewProps) {
               <h2 className="card-title">Target Band</h2>
               <p className="dashboard-stat">{learnerGoals.targetBand.toFixed(1)}</p>
             </div>
-            <Link href="/settings" className="inline-link">
+            <Link href="/settings/profile" className="inline-link">
               Update goals
             </Link>
           </div>
@@ -218,7 +216,7 @@ export function DashboardOverview({ learnerGoals }: DashboardOverviewProps) {
                   <li key={item}>{item}</li>
                 ))}
               </ul>
-              <Link href="/settings" className="inline-link">
+              <Link href="/settings/profile" className="inline-link">
                 Refine learner goals
               </Link>
             </div>
