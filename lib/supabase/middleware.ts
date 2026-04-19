@@ -1,11 +1,27 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { appSessionCookieName } from '@/lib/auth/cookie-names'
 import { getSupabaseConfig } from './config'
 
 export async function updateSession(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith('/api')) {
+    return NextResponse.next({
+      request,
+    })
+  }
+
   const config = getSupabaseConfig()
+  const isAuthRoute = request.nextUrl.pathname.startsWith('/auth')
 
   if (!config) {
+    const hasDemoSession = request.cookies.has(appSessionCookieName)
+
+    if (!hasDemoSession && !isAuthRoute) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/auth/login'
+      return NextResponse.redirect(url)
+    }
+
     return NextResponse.next({
       request,
     })
@@ -40,30 +56,13 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const isAuthRoute = request.nextUrl.pathname.startsWith('/auth')
-
   if (!user && !isAuthRoute) {
-    // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone()
-    url.pathname = '/auth'
+    url.pathname = '/auth/login'
     const redirectResponse = NextResponse.redirect(url)
-    
-    // Copy cookies to redirect response
-    const cookies = supabaseResponse.cookies.getAll()
-    cookies.forEach((cookie) => redirectResponse.cookies.set(cookie.name, cookie.value))
-    
-    return redirectResponse
-  }
 
-  if (user && isAuthRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = '/'
-    const redirectResponse = NextResponse.redirect(url)
-    
-    // Copy cookies to redirect response
     const cookies = supabaseResponse.cookies.getAll()
     cookies.forEach((cookie) => redirectResponse.cookies.set(cookie.name, cookie.value))
-    
     return redirectResponse
   }
 

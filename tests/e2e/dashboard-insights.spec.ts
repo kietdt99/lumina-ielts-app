@@ -10,7 +10,10 @@ test.describe('dashboard insights', () => {
   test('personalizes the next-step recommendation from goals and recent history', async ({
     page,
     gotoAndAssertOk,
+    loginAsDemoLearner,
   }) => {
+    await loginAsDemoLearner()
+
     await seedLearnerGoals(page, {
       targetBand: 8,
       currentLevel: 'Band 6.0-6.5',

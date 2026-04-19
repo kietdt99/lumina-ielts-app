@@ -1,19 +1,33 @@
 import { expect, test as base, type Page } from '@playwright/test'
-import { defaultLearnerGoals, serializeLearnerGoals, type LearnerGoals } from '@/lib/learner/learner-goals'
+import { defaultLearnerGoals, type LearnerGoals } from '@/lib/learner/learner-goals'
+import { defaultDemoLearnerId } from '@/lib/auth/demo-store'
 
 type E2EFixtures = {
   gotoAndAssertOk: (path: string) => Promise<void>
+  loginAsDemoLearner: () => Promise<void>
+  loginAsDemoAdmin: () => Promise<void>
 }
 
-const writingHistoryStorageKey = 'lumina-writing-history'
-const learnerGoalsCookieName = 'lumina-learner-goals'
+const writingHistoryStorageKeys = [
+  `lumina-writing-history:${defaultDemoLearnerId}`,
+  'lumina-writing-history',
+]
 
 function formatError(source: string, message: string) {
   return `${source}: ${message}`
 }
 
-function isExpectedNavigationAbort(url: string, errorText: string | undefined) {
-  return errorText === 'net::ERR_ABORTED' && (url.includes('_rsc=') || url.includes('/_next/'))
+function isExpectedNavigationAbort(
+  method: string,
+  url: string,
+  errorText: string | undefined
+) {
+  return (
+    errorText === 'net::ERR_ABORTED' &&
+    (url.includes('_rsc=') ||
+      url.includes('/_next/') ||
+      (method === 'POST' && !url.includes('/api/')))
+  )
 }
 
 export const test = base.extend<E2EFixtures>({
@@ -33,10 +47,7 @@ export const test = base.extend<E2EFixtures>({
     page.on('requestfailed', (request) => {
       const failureText = request.failure()?.errorText
 
-      if (
-        request.method() === 'GET' &&
-        isExpectedNavigationAbort(request.url(), failureText)
-      ) {
+      if (isExpectedNavigationAbort(request.method(), request.url(), failureText)) {
         return
       }
 
@@ -66,6 +77,25 @@ export const test = base.extend<E2EFixtures>({
         response?.ok(),
         `Navigation failed for ${baseURL ?? ''}${path} with status ${response?.status()}`
       ).toBe(true)
+    })
+  },
+  loginAsDemoLearner: async ({ page }, runFixture) => {
+    await runFixture(async () => {
+      await page.goto('/auth/login', { waitUntil: 'domcontentloaded' })
+      await page.getByRole('button', { name: 'Use demo learner' }).click()
+      await page.getByRole('button', { name: 'Sign In' }).click()
+      await expect(page).toHaveURL(/\/$/)
+      await expect(
+        page.getByRole('heading', { name: 'Welcome back, Demo Learner' })
+      ).toBeVisible()
+    })
+  },
+  loginAsDemoAdmin: async ({ page }, runFixture) => {
+    await runFixture(async () => {
+      await page.goto('/auth/login', { waitUntil: 'domcontentloaded' })
+      await page.getByRole('button', { name: 'Use demo admin' }).click()
+      await page.getByRole('button', { name: 'Sign In' }).click()
+      await expect(page).toHaveURL(/\/admin\/accounts$/)
     })
   },
 })
@@ -113,11 +143,26 @@ export function createStoredHistoryEntry(overrides: Record<string, unknown> = {}
 
 export async function seedWritingHistory(page: Page, entries: unknown[]) {
   await page.addInitScript(
-    ({ storageKey, storedEntries }) => {
-      window.localStorage.setItem(storageKey, JSON.stringify(storedEntries))
+    ({ storageKeys, storedEntries }) => {
+      for (const storageKey of storageKeys) {
+        window.localStorage.setItem(storageKey, JSON.stringify(storedEntries))
+      }
     },
     {
-      storageKey: writingHistoryStorageKey,
+      storageKeys: writingHistoryStorageKeys,
+      storedEntries: entries,
+    }
+  )
+
+  await page.evaluate(
+    ({ storageKeys, storedEntries }) => {
+      for (const storageKey of storageKeys) {
+        window.localStorage.setItem(storageKey, JSON.stringify(storedEntries))
+      }
+      window.dispatchEvent(new Event('lumina-writing-history-change'))
+    },
+    {
+      storageKeys: writingHistoryStorageKeys,
       storedEntries: entries,
     }
   )
@@ -127,13 +172,12 @@ export async function seedLearnerGoals(
   page: Page,
   goals: LearnerGoals = defaultLearnerGoals
 ) {
-  await page.context().addCookies([
+  const response = await page.context().request.put(
+    new URL('/api/learner-goals', page.url()).toString(),
     {
-      name: learnerGoalsCookieName,
-      value: serializeLearnerGoals(goals),
-      url: 'http://127.0.0.1:3100',
-      httpOnly: true,
-      sameSite: 'Lax',
-    },
-  ])
+      data: goals,
+    }
+  )
+
+  expect(response.ok()).toBe(true)
 }

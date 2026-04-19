@@ -4,7 +4,10 @@ test.describe('learner goals settings flow', () => {
   test('saves learner goals and reflects them on the dashboard', async ({
     page,
     gotoAndAssertOk,
+    loginAsDemoLearner,
   }) => {
+    await loginAsDemoLearner()
+
     await gotoAndAssertOk('/settings')
 
     await page.getByLabel('Target band').selectOption('8')
@@ -14,7 +17,7 @@ test.describe('learner goals settings flow', () => {
     await page.getByRole('button', { name: 'Save learner goals' }).click()
 
     await expect(
-      page.getByText('Learner goals saved for this browser.')
+      page.getByText('Learner goals saved for this account.')
     ).toBeVisible()
 
     await page.getByRole('link', { name: 'Dashboard' }).click()

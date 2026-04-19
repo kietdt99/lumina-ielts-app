@@ -1,5 +1,6 @@
 import type { WritingEvaluation } from './writing-feedback'
 import type { WritingPrompt } from './writing-prompts'
+import { readSessionHintFromDocument } from '@/lib/auth/session-hint'
 
 export type WritingHistoryEntry = {
   id: string
@@ -15,9 +16,10 @@ export type WritingHistoryEntry = {
   priorities: string[]
 }
 
-const storageKey = 'lumina-writing-history'
+const storageKeyPrefix = 'lumina-writing-history'
 const changeEventName = 'lumina-writing-history-change'
 const emptyWritingHistory: WritingHistoryEntry[] = []
+let cachedStorageKey: string | null = null
 let cachedRawValue: string | null | undefined
 let cachedSnapshot: WritingHistoryEntry[] = emptyWritingHistory
 
@@ -32,17 +34,23 @@ function sortByNewest(entries: WritingHistoryEntry[]) {
   )
 }
 
+export function getWritingHistoryStorageKey(scope = readSessionHintFromDocument()) {
+  return scope ? `${storageKeyPrefix}:${scope}` : storageKeyPrefix
+}
+
 export function getWritingHistorySnapshot() {
   if (typeof window === 'undefined') {
     return getServerWritingHistorySnapshot()
   }
 
+  const storageKey = getWritingHistoryStorageKey()
   const rawValue = window.localStorage.getItem(storageKey)
 
-  if (rawValue === cachedRawValue) {
+  if (storageKey === cachedStorageKey && rawValue === cachedRawValue) {
     return cachedSnapshot
   }
 
+  cachedStorageKey = storageKey
   cachedRawValue = rawValue
 
   if (!rawValue) {
@@ -85,6 +93,7 @@ export function saveWritingHistoryEntry(entry: WritingHistoryEntry) {
     return
   }
 
+  const storageKey = getWritingHistoryStorageKey()
   const nextEntries = [entry, ...getWritingHistorySnapshot()].slice(0, 20)
   window.localStorage.setItem(storageKey, JSON.stringify(nextEntries))
   notifyWritingHistoryChange()
@@ -95,6 +104,7 @@ export function clearWritingHistory() {
     return
   }
 
+  const storageKey = getWritingHistoryStorageKey()
   window.localStorage.removeItem(storageKey)
   notifyWritingHistoryChange()
 }

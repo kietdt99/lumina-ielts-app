@@ -13,6 +13,7 @@ import {
 
 type LearnerGoalsSettingsProps = {
   initialGoals: LearnerGoals
+  mode?: 'settings' | 'onboarding'
 }
 
 type LearnerGoalsResponse =
@@ -27,12 +28,14 @@ type LearnerGoalsResponse =
 
 export function LearnerGoalsSettings({
   initialGoals,
+  mode = 'settings',
 }: LearnerGoalsSettingsProps) {
   const router = useRouter()
   const [goals, setGoals] = useState(initialGoals)
   const [isSaving, setIsSaving] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
+  const isOnboarding = mode === 'onboarding'
 
   function updateGoal<K extends keyof LearnerGoals>(key: K, value: LearnerGoals[K]) {
     setGoals((current) => ({
@@ -49,7 +52,7 @@ export function LearnerGoalsSettings({
     setSuccessMessage(null)
 
     try {
-      const response = await fetch('/api/learner-goals', {
+      const response = await fetch(isOnboarding ? '/api/auth/onboarding' : '/api/learner-goals', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -68,13 +71,24 @@ export function LearnerGoalsSettings({
       }
 
       setGoals(payload.goals)
-      setSuccessMessage('Learner goals saved for this browser.')
-      router.refresh()
+      setSuccessMessage(
+        isOnboarding
+          ? 'Onboarding completed. Your study plan is ready.'
+          : 'Learner goals saved for this account.'
+      )
+
+      if (isOnboarding) {
+        router.push('/')
+      } else {
+        router.refresh()
+      }
     } catch (error) {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : 'Unable to save learner goals right now.'
+          : isOnboarding
+            ? 'Unable to complete onboarding right now.'
+            : 'Unable to save learner goals right now.'
       )
     } finally {
       setIsSaving(false)
@@ -91,11 +105,16 @@ export function LearnerGoalsSettings({
     <div className="settings-shell">
       <section className="glass writing-hero">
         <div className="writing-hero-copy">
-          <p className="section-label">Settings</p>
-          <h1>Set the goals that shape your study plan</h1>
+          <p className="section-label">{isOnboarding ? 'Onboarding' : 'Settings'}</p>
+          <h1>
+            {isOnboarding
+              ? 'Set the goals that will shape your first study plan'
+              : 'Set the goals that shape your study plan'}
+          </h1>
           <p>
-            These learner goals personalize the dashboard and keep Lumina
-            aligned with the score you are aiming for next.
+            {isOnboarding
+              ? 'Before you start practicing, tell Lumina what score you are chasing and which skill needs the most attention.'
+              : 'These learner goals personalize the dashboard and keep Lumina aligned with the score you are aiming for next.'}
           </p>
         </div>
         <div className="writing-hero-metrics">
@@ -117,10 +136,11 @@ export function LearnerGoalsSettings({
       <div className="settings-layout">
         <section className="glass writing-panel">
           <div className="panel-heading">
-            <h2>Learner goals</h2>
+            <h2>{isOnboarding ? 'Your first learner profile' : 'Learner goals'}</h2>
             <p>
-              Update your current level, target band, and weekly rhythm whenever
-              your prep plan changes.
+              {isOnboarding
+                ? 'Choose a realistic current level, the band you want next, and a study rhythm you can sustain.'
+                : 'Update your current level, target band, and weekly rhythm whenever your prep plan changes.'}
             </p>
           </div>
 
@@ -228,7 +248,13 @@ export function LearnerGoalsSettings({
               disabled={isSaving}
               onClick={handleSave}
             >
-              {isSaving ? 'Saving goals...' : 'Save learner goals'}
+              {isSaving
+                ? isOnboarding
+                  ? 'Saving onboarding...'
+                  : 'Saving goals...'
+                : isOnboarding
+                  ? 'Save and continue'
+                  : 'Save learner goals'}
             </button>
             <button
               type="button"
@@ -245,8 +271,9 @@ export function LearnerGoalsSettings({
           <div className="panel-heading">
             <h2>Current plan snapshot</h2>
             <p>
-              Keep this aligned with your latest IELTS timeline so the dashboard
-              recommendations stay relevant.
+              {isOnboarding
+                ? 'This snapshot becomes the baseline for your dashboard, tracker, and next-step recommendations.'
+                : 'Keep this aligned with your latest IELTS timeline so the dashboard recommendations stay relevant.'}
             </p>
           </div>
 

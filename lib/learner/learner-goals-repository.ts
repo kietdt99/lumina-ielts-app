@@ -4,10 +4,24 @@ import {
   validateLearnerGoals,
 } from './learner-goals'
 import { getLearnerGoalsFromCookies, saveLearnerGoalsToCookies } from './learner-goals-cookie'
+import { getDemoLearnerGoals, saveDemoLearnerGoals } from '@/lib/auth/demo-store'
+import { readAppSessionCookie } from '@/lib/auth/session-cookies'
 import { createClient } from '@/lib/supabase/server'
 import { ensureProfileForUser, getAuthenticatedUser } from '@/lib/supabase/session'
+import { isSupabaseConfigured } from '@/lib/supabase/config'
 
 export async function getLearnerGoals() {
+  if (!isSupabaseConfigured()) {
+    const sessionCookie = await readAppSessionCookie()
+
+    if (sessionCookie?.userId) {
+      return {
+        goals: getDemoLearnerGoals(sessionCookie.userId) ?? defaultLearnerGoals,
+        storageMode: 'demo' as const,
+      }
+    }
+  }
+
   const user = await getAuthenticatedUser()
 
   if (!user) {
@@ -46,6 +60,21 @@ export async function getLearnerGoals() {
 }
 
 export async function saveLearnerGoals(goals: LearnerGoals) {
+  if (!isSupabaseConfigured()) {
+    const sessionCookie = await readAppSessionCookie()
+
+    if (sessionCookie?.userId) {
+      const result = saveDemoLearnerGoals(sessionCookie.userId, goals)
+
+      if (result.ok) {
+        return {
+          goals: result.goals,
+          storageMode: 'demo' as const,
+        }
+      }
+    }
+  }
+
   const user = await getAuthenticatedUser()
 
   if (!user) {

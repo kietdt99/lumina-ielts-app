@@ -27,10 +27,6 @@ vi.mock('@/lib/ielts/writing-history', () => ({
   clearWritingHistory: vi.fn(),
 }))
 
-vi.mock('@/lib/supabase/config', () => ({
-  isSupabaseConfigured: () => false,
-}))
-
 vi.mock('@/app/auth/actions', () => ({
   signout: vi.fn(),
 }))
@@ -41,7 +37,12 @@ describe('writing history sync contract', () => {
       '@/app/(app)/_components/dashboard-overview'
     )
 
-    render(<DashboardOverview learnerGoals={defaultLearnerGoals} />)
+    render(
+      <DashboardOverview
+        learnerGoals={defaultLearnerGoals}
+        learnerName="Demo Learner"
+      />
+    )
 
     expect(syncContract.useSyncExternalStoreMock).toHaveBeenCalledWith(
       syncContract.subscribeToWritingHistory,

@@ -5,16 +5,11 @@ import { DashboardOverview } from '@/app/(app)/_components/dashboard-overview'
 import { createHistoryEntry, createLearnerGoals } from '../helpers/fixtures'
 
 const state = {
-  authEnabled: false,
   entries: [] as WritingHistoryEntry[],
 }
 
 vi.mock('@/app/auth/actions', () => ({
   signout: vi.fn(),
-}))
-
-vi.mock('@/lib/supabase/config', () => ({
-  isSupabaseConfigured: () => state.authEnabled,
 }))
 
 vi.mock('@/lib/ielts/writing-history', () => ({
@@ -25,17 +20,24 @@ vi.mock('@/lib/ielts/writing-history', () => ({
 
 describe('DashboardOverview', () => {
   beforeEach(() => {
-    state.authEnabled = false
     state.entries = []
   })
 
-  it('renders a demo empty state when no writing history exists', () => {
-    render(<DashboardOverview learnerGoals={createLearnerGoals()} />)
+  it('renders an empty state when no writing history exists', () => {
+    render(
+      <DashboardOverview
+        learnerGoals={createLearnerGoals()}
+        learnerName="Demo Learner"
+      />
+    )
 
-    expect(screen.getByText('Demo mode')).toBeInTheDocument()
+    expect(screen.getByText('Welcome back, Demo Learner')).toBeInTheDocument()
     expect(screen.getByText('No activity saved yet.')).toBeInTheDocument()
     expect(screen.getByText('Target Band')).toBeInTheDocument()
-    expect(screen.getByText('Update goals')).toHaveAttribute('href', '/settings')
+    expect(screen.getByText('Update goals')).toHaveAttribute(
+      'href',
+      '/settings/profile'
+    )
     expect(screen.getByText('Start your writing study loop')).toBeInTheDocument()
     expect(
       screen.getByRole('link', { name: 'Start writing practice' })
@@ -43,7 +45,6 @@ describe('DashboardOverview', () => {
   })
 
   it('renders metrics, recent activity, and auth actions when history exists', () => {
-    state.authEnabled = true
     state.entries = [
       createHistoryEntry({
         id: 'entry-4',
@@ -78,6 +79,7 @@ describe('DashboardOverview', () => {
           focusSkill: 'Speaking',
           studyFrequency: 'Daily',
         })}
+        learnerName="Ava"
       />
     )
 

@@ -5,6 +5,7 @@ import {
   getDraftMetrics,
   type WritingEvaluation,
 } from '@/lib/ielts/writing-feedback'
+import { readSessionHintFromDocument } from '@/lib/auth/session-hint'
 import { saveWritingHistoryEntry } from '@/lib/ielts/writing-history'
 import type { WritingSubmissionResponse } from '@/lib/ielts/writing-submissions'
 import type { WritingPrompt } from '@/lib/ielts/writing-prompts'
@@ -26,7 +27,10 @@ function formatTime(totalSeconds: number) {
 }
 
 function getStorageKey(promptId: string) {
-  return `lumina-writing-draft:${promptId}`
+  const scope = readSessionHintFromDocument()
+  return scope
+    ? `lumina-writing-draft:${scope}:${promptId}`
+    : `lumina-writing-draft:${promptId}`
 }
 
 function getDefaultDraftState(prompt: WritingPrompt): DraftState {

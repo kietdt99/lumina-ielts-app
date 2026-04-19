@@ -7,12 +7,28 @@ const repositoryMocks = vi.hoisted(() => ({
   saveWritingSubmissionRecord: vi.fn(),
 }))
 
+const authMocks = vi.hoisted(() => ({
+  getAppSession: vi.fn(),
+}))
+
 vi.mock('@/lib/ielts/writing-submissions-repository', () => repositoryMocks)
+vi.mock('@/lib/auth/service', () => authMocks)
 
 describe('/api/writing/submissions', () => {
   beforeEach(() => {
     repositoryMocks.listWritingSubmissionHistory.mockReset()
     repositoryMocks.saveWritingSubmissionRecord.mockReset()
+    authMocks.getAppSession.mockReset()
+    authMocks.getAppSession.mockResolvedValue({
+      userId: 'learner-1',
+      email: 'learner@example.com',
+      fullName: 'Learner',
+      role: 'learner',
+      mustChangePassword: false,
+      onboardingCompleted: true,
+      passwordResetDeferred: false,
+      mode: 'demo',
+    })
   })
 
   it('returns writing history entries from the repository', async () => {

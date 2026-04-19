@@ -9,7 +9,10 @@ test.describe('writing flow', () => {
   test('saves a reviewed draft and exposes it in the tracker', async ({
     page,
     gotoAndAssertOk,
+    loginAsDemoLearner,
   }) => {
+    await loginAsDemoLearner()
+
     await gotoAndAssertOk('/writing')
 
     await page.getByLabel('Draft editor').fill(
@@ -45,7 +48,10 @@ test.describe('writing flow', () => {
   test('shows a visible error state when the submissions API fails', async ({
     page,
     gotoAndAssertOk,
+    loginAsDemoLearner,
   }) => {
+    await loginAsDemoLearner()
+
     await page.route('**/api/writing/submissions', async (route) => {
       await route.fulfill({
         status: 200,
@@ -73,7 +79,10 @@ test.describe('writing flow', () => {
   test('hydrates dashboard and tracker from saved history without runtime errors', async ({
     page,
     gotoAndAssertOk,
+    loginAsDemoLearner,
   }) => {
+    await loginAsDemoLearner()
+
     await seedWritingHistory(page, [
       createStoredHistoryEntry(),
       createStoredHistoryEntry({
@@ -118,7 +127,10 @@ test.describe('writing flow', () => {
   test('opens a dedicated submission detail page from the tracker', async ({
     page,
     gotoAndAssertOk,
+    loginAsDemoLearner,
   }) => {
+    await loginAsDemoLearner()
+
     await seedWritingHistory(page, [
       createStoredHistoryEntry({
         id: 'entry-detail',

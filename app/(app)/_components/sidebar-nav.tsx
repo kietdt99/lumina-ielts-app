@@ -3,19 +3,21 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-const navigation = [
-  { href: '/', label: 'Dashboard' },
-  { href: '/writing', label: 'Writing Assistant' },
-  { href: '/tracker', label: 'Score Tracker' },
-  { href: '/settings', label: 'Settings' },
-]
+type NavigationItem = {
+  href: string
+  label: string
+}
 
-export function SidebarNav() {
+type SidebarNavProps = {
+  items: NavigationItem[]
+}
+
+export function SidebarNav({ items }: SidebarNavProps) {
   const pathname = usePathname()
 
   return (
     <div className="sidebar-nav">
-      {navigation.map((item) => {
+      {items.map((item) => {
         const isActive =
           item.href === '/' ? pathname === item.href : pathname.startsWith(item.href)
 
