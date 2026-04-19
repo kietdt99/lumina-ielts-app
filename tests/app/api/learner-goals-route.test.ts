@@ -1,68 +1,52 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { GET, PUT } from '@/app/api/learner-goals/route'
-import { defaultLearnerGoals, serializeLearnerGoals } from '@/lib/learner/learner-goals'
+import { defaultLearnerGoals } from '@/lib/learner/learner-goals'
 import { createLearnerGoals } from '../../helpers/fixtures'
 
-const cookieState = vi.hoisted(() => ({
-  value: undefined as string | undefined,
-  set: vi.fn(),
+const repositoryMocks = vi.hoisted(() => ({
+  getLearnerGoals: vi.fn(),
+  saveLearnerGoals: vi.fn(),
 }))
 
-vi.mock('next/headers', () => ({
-  cookies: vi.fn(async () => ({
-    get: () =>
-      cookieState.value
-        ? {
-            name: 'lumina-learner-goals',
-            value: cookieState.value,
-          }
-        : undefined,
-    set: cookieState.set,
-  })),
-}))
+vi.mock('@/lib/learner/learner-goals-repository', () => repositoryMocks)
 
 describe('learner goals route', () => {
   beforeEach(() => {
-    cookieState.value = undefined
-    cookieState.set.mockReset()
+    repositoryMocks.getLearnerGoals.mockReset()
+    repositoryMocks.saveLearnerGoals.mockReset()
   })
 
-  it('returns default learner goals when no cookie has been saved yet', async () => {
+  it('returns learner goals from the repository', async () => {
+    repositoryMocks.getLearnerGoals.mockResolvedValue({
+      goals: defaultLearnerGoals,
+      storageMode: 'cookie',
+    })
+
     const response = await GET()
     const payload = (await response.json()) as {
       ok: boolean
       goals: typeof defaultLearnerGoals
+      storageMode: 'cookie' | 'supabase'
     }
 
     expect(response.status).toBe(200)
     expect(payload).toEqual({
       ok: true,
       goals: defaultLearnerGoals,
+      storageMode: 'cookie',
     })
   })
 
-  it('returns learner goals from the saved cookie', async () => {
-    const goals = createLearnerGoals({
-      targetBand: 8,
-      focusSkill: 'Reading',
-    })
-
-    cookieState.value = serializeLearnerGoals(goals)
-
-    const response = await GET()
-    const payload = (await response.json()) as {
-      ok: boolean
-      goals: typeof defaultLearnerGoals
-    }
-
-    expect(payload.goals).toEqual(goals)
-  })
-
-  it('persists learner goals to the cookie store for a valid payload', async () => {
+  it('persists learner goals through the repository for a valid payload', async () => {
     const goals = createLearnerGoals({
       targetBand: 6.5,
       currentLevel: 'Band 5.0-5.5',
       focusSkill: 'Listening',
+    })
+
+    repositoryMocks.saveLearnerGoals.mockResolvedValue({
+      goals,
+      storageMode: 'supabase',
     })
 
     const response = await PUT(
@@ -78,21 +62,16 @@ describe('learner goals route', () => {
     const payload = (await response.json()) as {
       ok: boolean
       goals: typeof defaultLearnerGoals
+      storageMode: 'cookie' | 'supabase'
     }
 
     expect(response.status).toBe(200)
     expect(payload).toEqual({
       ok: true,
       goals,
+      storageMode: 'supabase',
     })
-    expect(cookieState.set).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: 'lumina-learner-goals',
-        value: serializeLearnerGoals(goals),
-        httpOnly: true,
-        path: '/',
-      })
-    )
+    expect(repositoryMocks.saveLearnerGoals).toHaveBeenCalledWith(goals)
   })
 
   it('rejects invalid learner goals payloads', async () => {
@@ -115,6 +94,6 @@ describe('learner goals route', () => {
 
     expect(response.status).toBe(400)
     expect(payload.ok).toBe(false)
-    expect(cookieState.set).not.toHaveBeenCalled()
+    expect(repositoryMocks.saveLearnerGoals).not.toHaveBeenCalled()
   })
 })

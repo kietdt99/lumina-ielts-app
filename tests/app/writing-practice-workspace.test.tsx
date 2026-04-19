@@ -43,7 +43,6 @@ describe('WritingPracticeWorkspace', () => {
   })
 
   it('generates feedback and saves a practice result to local history', async () => {
-    const user = userEvent.setup()
     const submission = createSubmissionSuccess({
       feedback: createEvaluation({
         estimatedBand: 7.5,
@@ -63,21 +62,19 @@ describe('WritingPracticeWorkspace', () => {
 
     render(<WritingPracticeWorkspace prompts={writingPrompts} />)
 
-    const editor = screen.getByLabelText('Draft editor')
-    await user.type(
-      editor,
-      [
-        'Remote work can improve productivity when employees have fewer interruptions and better control over their schedule.',
-        '',
-        'However, teams still need clear systems because some workers benefit from direct collaboration and immediate feedback.',
-        '',
-        'In conclusion, remote work is effective when companies support communication and set strong expectations.',
-      ].join('\n')
-    )
+    fireEvent.change(screen.getByLabelText('Draft editor'), {
+      target: {
+        value: [
+          'Remote work can improve productivity when employees have fewer interruptions and better control over their schedule.',
+          '',
+          'However, teams still need clear systems because some workers benefit from direct collaboration and immediate feedback.',
+          '',
+          'In conclusion, remote work is effective when companies support communication and set strong expectations.',
+        ].join('\n'),
+      },
+    })
 
-    await user.click(
-      screen.getByRole('button', { name: 'Generate practice feedback' })
-    )
+    fireEvent.click(screen.getByRole('button', { name: 'Generate practice feedback' }))
 
     await waitFor(() => {
       expect(screen.getByText('Estimated band')).toBeInTheDocument()

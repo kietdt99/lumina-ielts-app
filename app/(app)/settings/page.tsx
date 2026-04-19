@@ -1,8 +1,8 @@
 import { LearnerGoalsSettings } from './_components/learner-goals-settings'
-import { getLearnerGoalsFromCookies } from '@/lib/learner/learner-goals-cookie'
+import { getLearnerGoals } from '@/lib/learner/learner-goals-repository'
 
 export default async function SettingsPage() {
-  const learnerGoals = await getLearnerGoalsFromCookies()
+  const { goals: learnerGoals } = await getLearnerGoals()
 
   return <LearnerGoalsSettings initialGoals={learnerGoals} />
 }
