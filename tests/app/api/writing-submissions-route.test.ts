@@ -1,8 +1,51 @@
-import { describe, expect, it } from 'vitest'
-import { POST } from '@/app/api/writing/submissions/route'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { GET, POST } from '@/app/api/writing/submissions/route'
+import { createSubmissionSuccess } from '../../helpers/fixtures'
 
-describe('POST /api/writing/submissions', () => {
+const repositoryMocks = vi.hoisted(() => ({
+  listWritingSubmissionHistory: vi.fn(),
+  saveWritingSubmissionRecord: vi.fn(),
+}))
+
+vi.mock('@/lib/ielts/writing-submissions-repository', () => repositoryMocks)
+
+describe('/api/writing/submissions', () => {
+  beforeEach(() => {
+    repositoryMocks.listWritingSubmissionHistory.mockReset()
+    repositoryMocks.saveWritingSubmissionRecord.mockReset()
+  })
+
+  it('returns writing history entries from the repository', async () => {
+    const submission = createSubmissionSuccess()
+
+    repositoryMocks.listWritingSubmissionHistory.mockResolvedValue({
+      entries: [submission.historyEntry],
+      storageMode: 'supabase',
+    })
+
+    const response = await GET()
+    const payload = (await response.json()) as {
+      ok: boolean
+      entries: Array<{ promptId: string }>
+      storageMode: 'browser' | 'supabase'
+    }
+
+    expect(response.status).toBe(200)
+    expect(payload).toEqual({
+      ok: true,
+      entries: [submission.historyEntry],
+      storageMode: 'supabase',
+    })
+  })
+
   it('returns a feedback payload for a valid writing submission', async () => {
+    const submission = createSubmissionSuccess()
+
+    repositoryMocks.saveWritingSubmissionRecord.mockResolvedValue({
+      historyEntry: submission.historyEntry,
+      storageMode: 'supabase',
+    })
+
     const request = new Request('http://localhost/api/writing/submissions', {
       method: 'POST',
       headers: {
@@ -25,12 +68,15 @@ describe('POST /api/writing/submissions', () => {
       ok: boolean
       feedback?: { rubric: unknown[] }
       historyEntry?: { promptId: string }
+      storageMode?: 'browser' | 'supabase'
     }
 
     expect(response.status).toBe(201)
     expect(payload.ok).toBe(true)
     expect(payload.historyEntry?.promptId).toBe('task2-remote-work')
     expect(payload.feedback?.rubric).toHaveLength(4)
+    expect(payload.storageMode).toBe('supabase')
+    expect(repositoryMocks.saveWritingSubmissionRecord).toHaveBeenCalledOnce()
   })
 
   it('returns 400 when the request body is not valid JSON', async () => {
@@ -72,5 +118,6 @@ describe('POST /api/writing/submissions', () => {
       ok: false,
       error: 'The selected writing prompt could not be found.',
     })
+    expect(repositoryMocks.saveWritingSubmissionRecord).not.toHaveBeenCalled()
   })
 })

@@ -1,12 +1,13 @@
-import { getLearnerGoalsFromCookies, saveLearnerGoalsToCookies } from '@/lib/learner/learner-goals-cookie'
+import { getLearnerGoals, saveLearnerGoals } from '@/lib/learner/learner-goals-repository'
 import { validateLearnerGoals } from '@/lib/learner/learner-goals'
 
 export async function GET() {
-  const goals = await getLearnerGoalsFromCookies()
+  const result = await getLearnerGoals()
 
   return Response.json({
     ok: true,
-    goals,
+    goals: result.goals,
+    storageMode: result.storageMode,
   })
 }
 
@@ -31,10 +32,11 @@ export async function PUT(request: Request) {
     return Response.json(validation, { status: 400 })
   }
 
-  await saveLearnerGoalsToCookies(validation.goals)
+  const result = await saveLearnerGoals(validation.goals)
 
   return Response.json({
     ok: true,
-    goals: validation.goals,
+    goals: result.goals,
+    storageMode: result.storageMode,
   })
 }

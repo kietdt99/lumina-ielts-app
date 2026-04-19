@@ -6,7 +6,7 @@ Lumina IELTS is an IELTS preparation app focused on guided practice, measurable 
 
 MVP goals:
 
-- Allow users to sign up, sign in, and store their learner profile.
+- Allow the admin to provision learner accounts, and allow learners to sign in and store their learner profile.
 - Provide a dashboard with target band, recent practice activity, and next-step recommendations.
 - Launch at least one complete practice module.
 - Prioritize `Writing` as the first module because it fits AI feedback especially well, proves product value early, and is the fastest path to an MVP.
@@ -41,7 +41,7 @@ Technical risks that should be addressed first:
 
 What should be included:
 
-- Email/password auth.
+- Admin-managed email/password auth.
 - Learner profile: target band, priority skill, current level.
 - Personal dashboard.
 - Writing practice:
@@ -161,20 +161,28 @@ Goal: support real users, real sign-in, and basic learner data.
 
 Tasks:
 
-- Complete login, signup, and logout flows.
+- Complete login and logout flows.
 - Add complete auth callback and auth error states.
 - Create `profiles` and `user_goals`.
-- Add a post-signup onboarding flow:
+- Add an admin-only account provisioning flow:
+  - create learner account
+  - auto-generate a temporary password
+  - mark the learner as `must_change_password`
+- Add a first-login password reset flow for learners.
+- Add profile settings with password change support.
+- Add a post-login onboarding flow:
   - target band
   - current level
   - focus skill
   - study frequency
 - Protect routes for the authenticated app area.
+- Restrict learner registration so accounts can only be created by the admin.
 
 Definition of done:
 
-- A new user goes through onboarding after signup.
-- A returning user can sign in successfully.
+- The admin can create a learner account and hand over credentials.
+- A learner is redirected to the password-change screen after the first successful sign-in.
+- A returning learner can sign in successfully.
 - Learner profile data is stored in Supabase.
 
 ## Phase 2 - Dashboard MVP

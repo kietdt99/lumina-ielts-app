@@ -20,6 +20,7 @@ export type WritingSubmissionSuccess = {
   ok: true
   feedback: WritingEvaluation
   historyEntry: WritingHistoryEntry
+  storageMode?: 'browser' | 'supabase'
 }
 
 export type WritingSubmissionFailure = {
