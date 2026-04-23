@@ -1,13 +1,15 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useSyncExternalStore } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import type { LearnerGoals } from '@/lib/learner/learner-goals'
 import {
   clearWritingHistory,
+  hydrateWritingHistory,
   getServerWritingHistorySnapshot,
   getWritingHistorySnapshot,
   subscribeToWritingHistory,
+  type WritingHistoryEntry,
 } from '@/lib/ielts/writing-history'
 import {
   averageBand,
@@ -22,11 +24,26 @@ function formatDate(value: string) {
   })
 }
 
-export function ProgressTracker({ learnerGoals }: { learnerGoals: LearnerGoals }) {
+export function ProgressTracker({
+  learnerGoals,
+  initialEntries = [],
+}: {
+  learnerGoals: LearnerGoals
+  initialEntries?: WritingHistoryEntry[]
+}) {
+  useEffect(() => {
+    if (initialEntries.length) {
+      hydrateWritingHistory(initialEntries)
+    }
+  }, [initialEntries])
+
   const entries = useSyncExternalStore(
     subscribeToWritingHistory,
     getWritingHistorySnapshot,
-    getServerWritingHistorySnapshot
+    () =>
+      initialEntries.length
+        ? initialEntries
+        : getServerWritingHistorySnapshot()
   )
   const [selectedTask, setSelectedTask] = useState<'All' | 'Task 1' | 'Task 2'>('All')
 
@@ -58,8 +75,8 @@ export function ProgressTracker({ learnerGoals }: { learnerGoals: LearnerGoals }
           <p className="section-label">Progress Tracker</p>
           <h1>See how your writing practice is evolving</h1>
           <p>
-            Every feedback run in the writing workspace is saved locally and
-            appears here as a new practice checkpoint.
+            Every feedback run in the writing workspace is stored for this
+            learner account and appears here as a new practice checkpoint.
           </p>
         </div>
         <div className="writing-hero-metrics">

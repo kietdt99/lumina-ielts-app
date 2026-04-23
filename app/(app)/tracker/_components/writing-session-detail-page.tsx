@@ -1,11 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { useSyncExternalStore } from 'react'
+import { useEffect, useSyncExternalStore } from 'react'
 import {
+  hydrateWritingHistory,
   getServerWritingHistorySnapshot,
   getWritingHistorySnapshot,
   subscribeToWritingHistory,
+  type WritingHistoryEntry,
 } from '@/lib/ielts/writing-history'
 
 function formatDate(value: string) {
@@ -15,11 +17,26 @@ function formatDate(value: string) {
   })
 }
 
-export function WritingSessionDetailPage({ entryId }: { entryId: string }) {
+export function WritingSessionDetailPage({
+  entryId,
+  initialEntries = [],
+}: {
+  entryId: string
+  initialEntries?: WritingHistoryEntry[]
+}) {
+  useEffect(() => {
+    if (initialEntries.length) {
+      hydrateWritingHistory(initialEntries)
+    }
+  }, [initialEntries])
+
   const entries = useSyncExternalStore(
     subscribeToWritingHistory,
     getWritingHistorySnapshot,
-    getServerWritingHistorySnapshot
+    () =>
+      initialEntries.length
+        ? initialEntries
+        : getServerWritingHistorySnapshot()
   )
 
   const entry = entries.find((item) => item.id === entryId) ?? null
@@ -33,7 +50,7 @@ export function WritingSessionDetailPage({ entryId }: { entryId: string }) {
             <h1>That writing session is no longer available</h1>
             <p>
               The selected session could not be found in this browser history.
-              It may have been cleared or never saved on this device.
+              It may have been cleared locally or does not exist for this learner account.
             </p>
           </div>
           <div className="settings-actions">

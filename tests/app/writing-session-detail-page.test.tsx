@@ -8,7 +8,11 @@ const state = {
   entries: [] as WritingHistoryEntry[],
 }
 
+const hydrateWritingHistoryMock = vi.fn()
+
 vi.mock('@/lib/ielts/writing-history', () => ({
+  hydrateWritingHistory: (entries: WritingHistoryEntry[]) =>
+    hydrateWritingHistoryMock(entries),
   getServerWritingHistorySnapshot: () => [],
   getWritingHistorySnapshot: () => state.entries,
   subscribeToWritingHistory: () => () => undefined,
@@ -17,6 +21,7 @@ vi.mock('@/lib/ielts/writing-history', () => ({
 describe('WritingSessionDetailPage', () => {
   beforeEach(() => {
     state.entries = []
+    hydrateWritingHistoryMock.mockClear()
   })
 
   it('renders a missing-session state when the entry cannot be found', () => {
@@ -51,5 +56,27 @@ describe('WritingSessionDetailPage', () => {
     expect(
       screen.getByRole('link', { name: 'Open writing workspace' })
     ).toHaveAttribute('href', '/writing')
+  })
+
+  it('renders server-backed session detail immediately when initial entries exist', () => {
+    const initialEntries = [
+      createHistoryEntry({
+        id: 'entry-server',
+        promptTitle: 'Server-backed detail entry',
+      }),
+    ]
+    state.entries = initialEntries
+
+    render(
+      <WritingSessionDetailPage
+        entryId="entry-server"
+        initialEntries={initialEntries}
+      />
+    )
+
+    expect(hydrateWritingHistoryMock).toHaveBeenCalledWith(initialEntries)
+    expect(
+      screen.getByRole('heading', { name: 'Server-backed detail entry' })
+    ).toBeInTheDocument()
   })
 })

@@ -150,4 +150,39 @@ test.describe('writing flow', () => {
     await expect(page.getByText('Rubric breakdown')).toBeVisible()
     await expect(page.getByText('Clarify the thesis in the introduction.')).toBeVisible()
   })
+
+  test('restores account-backed writing history after the learner signs in again', async ({
+    page,
+    gotoAndAssertOk,
+    loginAsDemoLearner,
+  }) => {
+    await loginAsDemoLearner()
+    await gotoAndAssertOk('/writing')
+
+    await page.getByLabel('Draft editor').fill(
+      [
+        'Remote work can improve productivity when communication is consistent.',
+        'Employees gain flexibility, but teams still need accountability and clear targets.',
+        'Overall, remote work works best when structure supports autonomy.',
+      ].join('\n\n')
+    )
+
+    await page.getByRole('button', { name: 'Generate practice feedback' }).click()
+    await expect(page.getByText(/Practice result saved at/)).toBeVisible()
+
+    await page.getByRole('button', { name: 'Sign Out' }).first().click()
+    await expect(page).toHaveURL(/\/auth\/login$/)
+
+    await page.getByRole('button', { name: 'Use demo learner' }).click()
+    await page.getByRole('button', { name: 'Sign In' }).click()
+    await expect(page).toHaveURL(/\/$/)
+
+    await gotoAndAssertOk('/tracker')
+    await expect(
+      page.getByRole('heading', {
+        name: 'Remote work and employee productivity',
+        exact: true,
+      })
+    ).toBeVisible()
+  })
 })

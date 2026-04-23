@@ -10,9 +10,12 @@ const state = {
 }
 
 const clearWritingHistoryMock = vi.fn()
+const hydrateWritingHistoryMock = vi.fn()
 
 vi.mock('@/lib/ielts/writing-history', () => ({
   clearWritingHistory: () => clearWritingHistoryMock(),
+  hydrateWritingHistory: (entries: WritingHistoryEntry[]) =>
+    hydrateWritingHistoryMock(entries),
   getServerWritingHistorySnapshot: () => [],
   getWritingHistorySnapshot: () => state.entries,
   subscribeToWritingHistory: () => () => undefined,
@@ -22,6 +25,7 @@ describe('ProgressTracker', () => {
   beforeEach(() => {
     state.entries = []
     clearWritingHistoryMock.mockClear()
+    hydrateWritingHistoryMock.mockClear()
   })
 
   it('renders an empty state when there is no saved history', () => {
@@ -33,6 +37,29 @@ describe('ProgressTracker', () => {
     expect(
       screen.getByRole('link', { name: 'Open writing workspace' })
     ).toHaveAttribute('href', '/writing')
+  })
+
+  it('renders account-backed entries passed from the server', () => {
+    const initialEntries = [
+      createHistoryEntry({
+        id: 'entry-server',
+        promptTitle: 'Server-backed tracker entry',
+        estimatedBand: 7,
+      }),
+    ]
+    state.entries = initialEntries
+
+    render(
+      <ProgressTracker
+        learnerGoals={createLearnerGoals()}
+        initialEntries={initialEntries}
+      />
+    )
+
+    expect(hydrateWritingHistoryMock).toHaveBeenCalledWith(initialEntries)
+    expect(
+      screen.getByRole('button', { name: /Server-backed tracker entry/i })
+    ).toBeInTheDocument()
   })
 
   it('shows the selected session detail and lets the user switch between entries', async () => {
