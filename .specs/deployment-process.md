@@ -39,3 +39,7 @@ Also smoke-check the routes affected by the release candidate in a real local br
 - The Vercel project must use `release` as the production branch.
 - `master` must not auto-deploy to production.
 - Preview deployments may continue to exist for non-production branches if desired.
+
+## Working Reference
+
+- Use `.specs/release-checklist.md` as the step-by-step operator checklist for each production update.
