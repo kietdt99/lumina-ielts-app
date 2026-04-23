@@ -4,7 +4,7 @@
 
 Define the mandatory workflow that must happen every time a feature or fix is completed on a branch.
 
-This process exists to prevent skipped checks, reduce regressions, and keep `master` stable.
+This process exists to prevent skipped checks, reduce regressions, keep `master` stable, and ensure production deploys only from the dedicated release branch.
 
 ## Mandatory Workflow
 
@@ -16,6 +16,7 @@ This process exists to prevent skipped checks, reduce regressions, and keep `mas
 6. Run the app locally again on `master`.
 7. Run the full verification suite again on `master`.
 8. Only after the `master` verification pass is clean can the work be considered complete.
+9. Update `release` only when a production deploy is intentionally approved.
 
 ## Required Verification Commands
 
@@ -55,8 +56,10 @@ At minimum, smoke-check the routes affected by the branch.
 
 ## Deployment Rules
 
-- Production deployment is allowed from `master` only.
+- `master` is the integration branch.
+- Production deployment is allowed from `release` only.
 - Feature branches are for local development and verification only.
+- `release` should only be updated from a verified `master` state.
 - Deployment should happen only after the `master` verification pass is complete.
 
 ## Documentation Rules
@@ -75,5 +78,6 @@ For every branch, follow this exact sequence:
 4. merge to `master`
 5. run locally on `master`
 6. run full verification on `master`
+7. update `release` only for an intentional production deploy
 
 Do not skip steps even for small fixes.

@@ -88,12 +88,14 @@ npm run test:all
 2. Start the app locally and run the full test suite after implementation is complete.
 3. Merge the branch into `master`.
 4. Start the app locally and run the full test suite again on `master`.
+5. Promote the verified `master` state into `release` only when a production deployment is intentionally approved.
 
 Additional guardrails:
 
 - Feature branches must be validated locally only.
-- Production deployments are allowed from `master` only.
-- Deploy to production only after the `master` verification pass succeeds.
+- `master` is the integration branch, not the production deployment branch.
+- Production deployments are allowed from `release` only.
+- Update `release` only after the `master` verification pass succeeds.
 - UI coverage must include headless Playwright browser tests.
 - API coverage must be validated alongside UI coverage before merging.
 
