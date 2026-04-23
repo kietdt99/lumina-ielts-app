@@ -106,11 +106,12 @@ app/api/              Route handlers for learner goals and writing submissions
 app/(app)/settings/   Learner goals settings UI
 supabase/             Supabase migrations, seed data, and schema notes
 lib/supabase/         Supabase server, client, and session helpers
-docs/                 Working implementation documents
+.specs/               Working implementation specs
 ```
 
 ## Working notes
 
 - The active App Router lives in `app/`.
 - `proxy.ts` is used for auth-aware route protection.
-- The implementation roadmap is documented in `docs/implementation-plan.md`.
+- The implementation roadmap is documented in `.specs/implementation-plan.md`.
+- The mandatory post-branch workflow is documented in `.specs/branch-completion-process.md`.
