@@ -1,13 +1,15 @@
 'use client'
 
 import Link from 'next/link'
-import { useSyncExternalStore } from 'react'
+import { useEffect, useSyncExternalStore } from 'react'
 import { signout } from '@/app/auth/actions'
 import type { LearnerGoals } from '@/lib/learner/learner-goals'
 import {
+  hydrateWritingHistory,
   getServerWritingHistorySnapshot,
   getWritingHistorySnapshot,
   subscribeToWritingHistory,
+  type WritingHistoryEntry,
 } from '@/lib/ielts/writing-history'
 import {
   averageBand,
@@ -28,16 +30,27 @@ function formatDate(value: string) {
 type DashboardOverviewProps = {
   learnerGoals: LearnerGoals
   learnerName: string
+  initialEntries?: WritingHistoryEntry[]
 }
 
 export function DashboardOverview({
   learnerGoals,
   learnerName,
+  initialEntries = [],
 }: DashboardOverviewProps) {
+  useEffect(() => {
+    if (initialEntries.length) {
+      hydrateWritingHistory(initialEntries)
+    }
+  }, [initialEntries])
+
   const entries = useSyncExternalStore(
     subscribeToWritingHistory,
     getWritingHistorySnapshot,
-    getServerWritingHistorySnapshot
+    () =>
+      initialEntries.length
+        ? initialEntries
+        : getServerWritingHistorySnapshot()
   )
 
   const latestSession = latestEntry(entries)
@@ -81,7 +94,7 @@ export function DashboardOverview({
         <div className="glass dashboard-card">
           <h2 className="card-title">Average Band</h2>
           <p className="dashboard-stat">{averageBand(entries).toFixed(1)}</p>
-          <p>Calculated from the writing practice sessions saved on this device.</p>
+          <p>Calculated from the writing practice sessions saved for this learner account.</p>
         </div>
         <div className="glass dashboard-card">
           <h2 className="card-title">Best Result</h2>

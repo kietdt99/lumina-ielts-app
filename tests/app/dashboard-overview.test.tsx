@@ -8,11 +8,15 @@ const state = {
   entries: [] as WritingHistoryEntry[],
 }
 
+const hydrateWritingHistoryMock = vi.fn()
+
 vi.mock('@/app/auth/actions', () => ({
   signout: vi.fn(),
 }))
 
 vi.mock('@/lib/ielts/writing-history', () => ({
+  hydrateWritingHistory: (entries: WritingHistoryEntry[]) =>
+    hydrateWritingHistoryMock(entries),
   getServerWritingHistorySnapshot: () => [],
   getWritingHistorySnapshot: () => state.entries,
   subscribeToWritingHistory: () => () => undefined,
@@ -21,6 +25,7 @@ vi.mock('@/lib/ielts/writing-history', () => ({
 describe('DashboardOverview', () => {
   beforeEach(() => {
     state.entries = []
+    hydrateWritingHistoryMock.mockClear()
   })
 
   it('renders an empty state when no writing history exists', () => {
@@ -104,5 +109,28 @@ describe('DashboardOverview', () => {
       '/tracker/entry-4'
     )
     expect(screen.queryByText('Entry One')).not.toBeInTheDocument()
+  })
+
+  it('hydrates account-backed history into the browser store on mount', () => {
+    const initialEntries = [
+      createHistoryEntry({
+        id: 'entry-server',
+        promptTitle: 'Server-backed entry',
+      }),
+    ]
+    state.entries = initialEntries
+
+    render(
+      <DashboardOverview
+        learnerGoals={createLearnerGoals()}
+        learnerName="Ava"
+        initialEntries={initialEntries}
+      />
+    )
+
+    expect(hydrateWritingHistoryMock).toHaveBeenCalledWith(initialEntries)
+    expect(
+      screen.getByRole('heading', { level: 3, name: 'Server-backed entry' })
+    ).toBeInTheDocument()
   })
 })

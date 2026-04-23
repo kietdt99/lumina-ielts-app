@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { defaultLearnerGoals } from '@/lib/learner/learner-goals'
 
 const syncContract = vi.hoisted(() => {
@@ -32,6 +32,13 @@ vi.mock('@/app/auth/actions', () => ({
 }))
 
 describe('writing history sync contract', () => {
+  beforeEach(() => {
+    syncContract.useSyncExternalStoreMock.mockClear()
+    syncContract.subscribeToWritingHistory.mockClear()
+    syncContract.getWritingHistorySnapshot.mockClear()
+    syncContract.getServerWritingHistorySnapshot.mockClear()
+  })
+
   it('wires DashboardOverview to a dedicated server snapshot', async () => {
     const { DashboardOverview } = await import(
       '@/app/(app)/_components/dashboard-overview'
@@ -44,11 +51,17 @@ describe('writing history sync contract', () => {
       />
     )
 
-    expect(syncContract.useSyncExternalStoreMock).toHaveBeenCalledWith(
-      syncContract.subscribeToWritingHistory,
-      syncContract.getWritingHistorySnapshot,
-      syncContract.getServerWritingHistorySnapshot
+    expect(syncContract.useSyncExternalStoreMock).toHaveBeenCalledTimes(1)
+    const [, , getServerSnapshot] =
+      syncContract.useSyncExternalStoreMock.mock.calls[0] ?? []
+    expect(syncContract.useSyncExternalStoreMock.mock.calls[0]?.[0]).toBe(
+      syncContract.subscribeToWritingHistory
     )
+    expect(syncContract.useSyncExternalStoreMock.mock.calls[0]?.[1]).toBe(
+      syncContract.getWritingHistorySnapshot
+    )
+    expect(typeof getServerSnapshot).toBe('function')
+    expect(getServerSnapshot()).toEqual([])
   })
 
   it('wires ProgressTracker to a dedicated server snapshot', async () => {
@@ -58,10 +71,16 @@ describe('writing history sync contract', () => {
 
     render(<ProgressTracker learnerGoals={defaultLearnerGoals} />)
 
-    expect(syncContract.useSyncExternalStoreMock).toHaveBeenCalledWith(
-      syncContract.subscribeToWritingHistory,
-      syncContract.getWritingHistorySnapshot,
-      syncContract.getServerWritingHistorySnapshot
+    expect(syncContract.useSyncExternalStoreMock).toHaveBeenCalledTimes(1)
+    const [, , getServerSnapshot] =
+      syncContract.useSyncExternalStoreMock.mock.calls[0] ?? []
+    expect(syncContract.useSyncExternalStoreMock.mock.calls[0]?.[0]).toBe(
+      syncContract.subscribeToWritingHistory
     )
+    expect(syncContract.useSyncExternalStoreMock.mock.calls[0]?.[1]).toBe(
+      syncContract.getWritingHistorySnapshot
+    )
+    expect(typeof getServerSnapshot).toBe('function')
+    expect(getServerSnapshot()).toEqual([])
   })
 })

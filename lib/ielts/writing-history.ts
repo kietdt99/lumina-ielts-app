@@ -34,6 +34,13 @@ function sortByNewest(entries: WritingHistoryEntry[]) {
   )
 }
 
+function areEntriesEqual(
+  left: WritingHistoryEntry[],
+  right: WritingHistoryEntry[]
+) {
+  return JSON.stringify(left) === JSON.stringify(right)
+}
+
 export function getWritingHistoryStorageKey(scope = readSessionHintFromDocument()) {
   return scope ? `${storageKeyPrefix}:${scope}` : storageKeyPrefix
 }
@@ -66,6 +73,23 @@ export function getWritingHistorySnapshot() {
     cachedSnapshot = getServerWritingHistorySnapshot()
     return cachedSnapshot
   }
+}
+
+export function hydrateWritingHistory(entries: WritingHistoryEntry[]) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  const storageKey = getWritingHistoryStorageKey()
+  const nextEntries = sortByNewest(entries)
+  const currentEntries = getWritingHistorySnapshot()
+
+  if (areEntriesEqual(currentEntries, nextEntries)) {
+    return
+  }
+
+  window.localStorage.setItem(storageKey, JSON.stringify(nextEntries))
+  notifyWritingHistoryChange()
 }
 
 function notifyWritingHistoryChange() {
