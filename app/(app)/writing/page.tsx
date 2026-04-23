@@ -1,6 +1,8 @@
 import { WritingPracticeWorkspace } from './_components/writing-practice-workspace'
-import { writingPrompts } from '@/lib/ielts/writing-prompts'
+import { listWritingPrompts } from '@/lib/ielts/writing-prompts-repository'
 
-export default function WritingPage() {
-  return <WritingPracticeWorkspace prompts={writingPrompts} />
+export default async function WritingPage() {
+  const { prompts } = await listWritingPrompts()
+
+  return <WritingPracticeWorkspace prompts={prompts} />
 }

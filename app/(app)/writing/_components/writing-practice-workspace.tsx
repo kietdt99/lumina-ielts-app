@@ -20,6 +20,9 @@ type DraftState = {
   statusMessage: string
 }
 
+const defaultTaskType: WritingPrompt['taskType'] = 'Task 2'
+const defaultPromptId = 'task2-remote-work'
+
 function formatTime(totalSeconds: number) {
   const minutes = Math.floor(totalSeconds / 60)
   const seconds = totalSeconds % 60
@@ -74,9 +77,18 @@ function loadDraftState(prompt: WritingPrompt): DraftState {
 export function WritingPracticeWorkspace({
   prompts,
 }: WritingPracticeWorkspaceProps) {
-  const [selectedTask, setSelectedTask] = useState<'Task 1' | 'Task 2'>('Task 2')
+  const initialTask =
+    prompts.find((prompt) => prompt.taskType === defaultTaskType)?.taskType ??
+    prompts[0]?.taskType ??
+    defaultTaskType
+  const [selectedTask, setSelectedTask] = useState<'Task 1' | 'Task 2'>(initialTask)
   const filteredPrompts = prompts.filter((prompt) => prompt.taskType === selectedTask)
-  const [selectedPromptId, setSelectedPromptId] = useState(filteredPrompts[0]?.id ?? prompts[0].id)
+  const [selectedPromptId, setSelectedPromptId] = useState(
+    filteredPrompts.find((prompt) => prompt.id === defaultPromptId)?.id ??
+      filteredPrompts[0]?.id ??
+      prompts[0]?.id ??
+      ''
+  )
   const selectedPrompt =
     filteredPrompts.find((prompt) => prompt.id === selectedPromptId) ?? filteredPrompts[0]
 

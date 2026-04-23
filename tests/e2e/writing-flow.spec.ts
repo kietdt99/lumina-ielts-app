@@ -14,6 +14,11 @@ test.describe('writing flow', () => {
     await loginAsDemoLearner()
 
     await gotoAndAssertOk('/writing')
+    const selectedPromptTitle = (
+      await page.locator('.editor-panel .panel-heading h2').textContent()
+    )?.trim()
+
+    expect(selectedPromptTitle).toBeTruthy()
 
     await page.getByLabel('Draft editor').fill(
       [
@@ -39,7 +44,7 @@ test.describe('writing flow', () => {
     ).toBeVisible()
     await expect(
       page.getByRole('heading', {
-        name: 'Remote work and employee productivity',
+        name: selectedPromptTitle!,
         exact: true,
       })
     ).toBeVisible()
@@ -158,6 +163,11 @@ test.describe('writing flow', () => {
   }) => {
     await loginAsDemoLearner()
     await gotoAndAssertOk('/writing')
+    const selectedPromptTitle = (
+      await page.locator('.editor-panel .panel-heading h2').textContent()
+    )?.trim()
+
+    expect(selectedPromptTitle).toBeTruthy()
 
     await page.getByLabel('Draft editor').fill(
       [
@@ -180,7 +190,7 @@ test.describe('writing flow', () => {
     await gotoAndAssertOk('/tracker')
     await expect(
       page.getByRole('heading', {
-        name: 'Remote work and employee productivity',
+        name: selectedPromptTitle!,
         exact: true,
       })
     ).toBeVisible()
