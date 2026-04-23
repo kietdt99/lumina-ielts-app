@@ -11,3 +11,4 @@ Creating turbopack project { dir: 'D:\\IT\\Sourcecode\\lumina-ielts-app', testMo
 
  GET /auth/login 200 in 303ms (next.js: 116ms, proxy.ts: 6ms, application-code: 182ms)
  GET /api/writing/prompts 200 in 238ms (next.js: 226ms, application-code: 12ms)
+[?25h
