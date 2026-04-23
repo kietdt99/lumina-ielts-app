@@ -15,7 +15,7 @@
 /playwright-report
 /test-results
 /blob-report
-/docs/temp
+/.specs/temp
 
 # next.js
 /.next/

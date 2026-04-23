@@ -297,6 +297,7 @@ If we start immediately, this is the recommended sprint order:
 - Once a feature branch is ready, merge it into `master`.
 - Start the app locally and run tests again on `master` before deploying.
 - Deploy to production only after the `master` verification pass succeeds.
+- The canonical checklist for this flow is documented in `.specs/branch-completion-process.md`.
 
 ## 10. Recommended Immediate Actions
 
