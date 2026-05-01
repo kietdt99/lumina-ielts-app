@@ -645,6 +645,16 @@ button {
   font-weight: 600;
 }
 
+.soft-note {
+  border: 1px dashed color-mix(in srgb, var(--primary) 22%, white);
+  border-radius: 0.95rem;
+  background: color-mix(in srgb, var(--accent) 42%, white);
+  color: var(--accent-foreground);
+  font-size: 0.92rem;
+  line-height: 1.6;
+  padding: 0.95rem 1rem;
+}
+
 .text-input {
   width: 100%;
   border: 1px solid var(--border);
@@ -653,10 +663,18 @@ button {
   color: var(--foreground);
   outline: none;
   padding: 0.85rem 1rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.text-input:hover {
+  transform: translateY(-1px);
 }
 
 .text-input:focus {
-  border-color: var(--primary);
+  border-color: color-mix(in srgb, var(--primary) 34%, white);
   box-shadow: 0 0 0 4px var(--ring);
 }
 
