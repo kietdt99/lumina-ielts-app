@@ -73,6 +73,11 @@ export function DashboardOverview({
             Your AI-supported workspace for building a reliable study rhythm
             and reaching your target band.
           </p>
+          <div className="hero-badge-row">
+            <span className="hero-badge">Target {learnerGoals.targetBand.toFixed(1)}</span>
+            <span className="hero-badge">{learnerGoals.focusSkill} focus</span>
+            <span className="hero-badge">{learnerGoals.studyFrequency}</span>
+          </div>
         </div>
         <form action={signout}>
           <button type="submit" className="secondary-button">
@@ -85,6 +90,7 @@ export function DashboardOverview({
         <div className="glass dashboard-card">
           <div className="dashboard-section-header">
             <div>
+              <span className="surface-kicker">Learning path</span>
               <h2 className="card-title icon-heading">
                 <TargetIcon className="section-icon" />
                 <span>Target Band</span>
@@ -101,6 +107,7 @@ export function DashboardOverview({
           </p>
         </div>
         <div className="glass dashboard-card">
+          <span className="surface-kicker">Momentum</span>
           <h2 className="card-title icon-heading">
             <SparklesIcon className="section-icon" />
             <span>Average Band</span>
@@ -109,6 +116,7 @@ export function DashboardOverview({
           <p>Calculated from the writing practice sessions saved for this learner account.</p>
         </div>
         <div className="glass dashboard-card">
+          <span className="surface-kicker">Best snapshot</span>
           <h2 className="card-title icon-heading">
             <TrophyIcon className="section-icon" />
             <span>Best Result</span>
