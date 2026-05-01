@@ -11,6 +11,7 @@ import {
   TimerIcon,
   TrackerIcon,
 } from '@/app/_components/ui/app-icons'
+import { EmptyStateIllustration } from '@/app/_components/ui/pastel-illustrations'
 import type { LearnerGoals } from '@/lib/learner/learner-goals'
 import {
   clearWritingHistory,
@@ -359,6 +360,9 @@ export function ProgressTracker({
         </div>
       ) : (
         <section className="glass writing-panel empty-state-panel">
+          <div className="empty-state-illustration-wrap">
+            <EmptyStateIllustration className="empty-state-illustration" />
+          </div>
           <div className="panel-heading">
             <h2>No tracked writing sessions yet</h2>
             <p>
