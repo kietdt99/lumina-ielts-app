@@ -8,6 +8,7 @@ import {
   SparklesIcon,
   TrackerIcon,
 } from '@/app/_components/ui/app-icons'
+import { EmptyStateIllustration } from '@/app/_components/ui/pastel-illustrations'
 import {
   hydrateWritingHistory,
   getServerWritingHistorySnapshot,
@@ -51,6 +52,9 @@ export function WritingSessionDetailPage({
     return (
       <div className="tracker-page">
         <section className="glass writing-panel empty-state-panel">
+          <div className="empty-state-illustration-wrap">
+            <EmptyStateIllustration className="empty-state-illustration" />
+          </div>
           <div className="panel-heading">
             <p className="section-label">Submission Detail</p>
             <h1>That writing session is no longer available</h1>

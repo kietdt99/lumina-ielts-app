@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { AdminIllustration } from '@/app/_components/ui/pastel-illustrations'
 import type { ManagedLearnerAccount } from '@/lib/auth/types'
 
 type ResetPasswordResponse =
@@ -80,6 +81,9 @@ export function AdminAccountsManager({
             Create learner credentials, monitor onboarding status, and reissue
             temporary passwords when needed.
           </p>
+        </div>
+        <div className="writing-hero-visual">
+          <AdminIllustration className="hero-illustration" />
         </div>
         <div className="writing-hero-metrics">
           <div className="metric-pill">

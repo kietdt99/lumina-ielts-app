@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { isSupabaseConfigured } from '@/lib/supabase/config'
+import { LoginIllustration } from '@/app/_components/ui/pastel-illustrations'
 
 type LoginResponse =
   | {
@@ -85,6 +86,9 @@ export function LoginForm({ demoCredentials }: LoginFormProps) {
   return (
     <div className="auth-shell">
       <div className="glass auth-card">
+        <div className="auth-illustration-wrap">
+          <LoginIllustration className="auth-illustration" />
+        </div>
         <div className="auth-copy">
           <p className="section-label">Authentication</p>
           <h1>Sign in to Lumina IELTS</h1>
