@@ -17,6 +17,7 @@ import {
   readAppSessionCookie,
   writeAppSessionCookies,
 } from './session-cookies'
+import { assignNextPastelTheme } from '@/lib/theme/pastel-theme'
 import {
   generateTemporaryPassword,
   validatePassword,
@@ -167,6 +168,8 @@ async function writeSessionFromResolvedSession(session: AppSession) {
     userId: session.userId,
     passwordResetDeferred: session.passwordResetDeferred,
   })
+
+  return assignNextPastelTheme()
 }
 
 export async function getAppSession() {
@@ -290,7 +293,7 @@ export async function loginUser(args: {
       }
     }
 
-    await writeSessionFromResolvedSession({
+    const theme = await writeSessionFromResolvedSession({
       ...session,
       passwordResetDeferred: false,
     })
@@ -301,6 +304,7 @@ export async function loginUser(args: {
         ...session,
         passwordResetDeferred: false,
       },
+      theme,
     }
   }
 
@@ -324,11 +328,12 @@ export async function loginUser(args: {
     mode: 'demo',
   } satisfies AppSession
 
-  await writeSessionFromResolvedSession(session)
+  const theme = await writeSessionFromResolvedSession(session)
 
   return {
     ok: true as const,
     session,
+    theme,
   }
 }
 

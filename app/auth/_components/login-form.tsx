@@ -8,6 +8,7 @@ type LoginResponse =
   | {
       ok: true
       redirectTo: string
+      theme: string
     }
   | {
       ok: false
@@ -59,6 +60,7 @@ export function LoginForm({ demoCredentials }: LoginFormProps) {
         )
       }
 
+      document.documentElement.dataset.theme = payload.theme
       router.push(payload.redirectTo)
       router.refresh()
     } catch (error) {
