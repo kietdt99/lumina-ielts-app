@@ -115,6 +115,11 @@ export function WritingPracticeWorkspace({
             Pick a prompt, manage your timer, build your draft, and receive a
             structured practice estimate before we wire in full AI review.
           </p>
+          <div className="hero-badge-row">
+            <span className="hero-badge">{selectedPrompt.taskType}</span>
+            <span className="hero-badge">{selectedPrompt.durationMinutes} minute focus</span>
+            <span className="hero-badge">{selectedPrompt.minimumWords}+ words</span>
+          </div>
         </div>
         <div className="writing-hero-metrics">
           <div className="metric-pill">
