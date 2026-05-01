@@ -96,6 +96,10 @@ export function LoginForm({ demoCredentials }: LoginFormProps) {
             Lumina uses admin-managed learner accounts. Enter the credentials
             you received to access your IELTS practice workspace.
           </p>
+          <div className="hero-badge-row">
+            <span className="hero-badge">Learner-only access</span>
+            <span className="hero-badge">Pastel theme on each login</span>
+          </div>
         </div>
 
         {!isSupabaseConfigured() && demoCredentials ? (

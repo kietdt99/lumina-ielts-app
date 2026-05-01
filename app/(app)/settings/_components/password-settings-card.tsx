@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { ProfileIcon } from '@/app/_components/ui/app-icons'
 
 type PasswordSettingsCardProps = {
   mustChangePassword: boolean
@@ -81,11 +82,19 @@ export function PasswordSettingsCard({
   return (
     <section className="glass writing-panel">
       <div className="panel-heading">
-        <h2>Password</h2>
+        <h2 className="icon-heading">
+          <ProfileIcon className="section-icon" />
+          <span>Password</span>
+        </h2>
         <p>
           Keep your learner account secure. You can change your password here at
           any time.
         </p>
+      </div>
+
+      <div className="soft-note">
+        Use a long passphrase you will remember. A stronger password means fewer
+        interruptions while you focus on practice.
       </div>
 
       {mustChangePassword ? (
