@@ -2,6 +2,13 @@
 
 import { useDeferredValue, useEffect, useState } from 'react'
 import {
+  ChecklistIcon,
+  QuillIcon,
+  RibbonIcon,
+  SparklesIcon,
+  TimerIcon,
+} from '@/app/_components/ui/app-icons'
+import {
   getDraftMetrics,
   type WritingEvaluation,
 } from '@/lib/ielts/writing-feedback'
@@ -111,14 +118,23 @@ export function WritingPracticeWorkspace({
         </div>
         <div className="writing-hero-metrics">
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <QuillIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Task</span>
             <strong>{selectedPrompt.taskType}</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <ChecklistIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Word target</span>
             <strong>{selectedPrompt.minimumWords}+</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <SparklesIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Focus</span>
             <strong>{selectedPrompt.title}</strong>
           </div>
@@ -305,14 +321,23 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
 
         <div className="writing-meta-grid">
           <div className="meta-card">
+            <div className="metric-pill-header">
+              <TimerIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Recommended time</span>
             <strong>{prompt.durationMinutes} minutes</strong>
           </div>
           <div className="meta-card">
+            <div className="metric-pill-header">
+              <QuillIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Word count</span>
             <strong>{draftMetrics.wordCount} words</strong>
           </div>
           <div className="meta-card">
+            <div className="metric-pill-header">
+              <SparklesIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Autosave</span>
             <strong>{statusMessage}</strong>
           </div>
@@ -347,7 +372,10 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
 
         <div className="writing-guidance">
           <div>
-            <h3>Instructions</h3>
+            <h3 className="icon-heading">
+              <QuillIcon className="section-icon" />
+              <span>Instructions</span>
+            </h3>
             <ul className="bullet-list">
               {prompt.instructions.map((instruction) => (
                 <li key={instruction}>{instruction}</li>
@@ -355,7 +383,10 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
             </ul>
           </div>
           <div>
-            <h3>Planning checklist</h3>
+            <h3 className="icon-heading">
+              <ChecklistIcon className="section-icon" />
+              <span>Planning checklist</span>
+            </h3>
             <ul className="bullet-list">
               {prompt.planningChecklist.map((item) => (
                 <li key={item}>{item}</li>
@@ -393,7 +424,10 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
 
       <aside className="glass writing-panel feedback-panel">
         <div className="panel-heading">
-          <h2>Feedback Snapshot</h2>
+          <h2 className="icon-heading">
+            <RibbonIcon className="section-icon" />
+            <span>Feedback Snapshot</span>
+          </h2>
           <p>
             This practice estimate runs locally and is designed to guide your
             next revision pass.
@@ -443,7 +477,10 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
             </div>
 
             <div className="feedback-section">
-              <h3>Strengths</h3>
+              <h3 className="icon-heading">
+                <SparklesIcon className="section-icon" />
+                <span>Strengths</span>
+              </h3>
               <ul className="bullet-list">
                 {feedback.strengths.map((item) => (
                   <li key={item}>{item}</li>
@@ -452,7 +489,10 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
             </div>
 
             <div className="feedback-section">
-              <h3>Revision priorities</h3>
+              <h3 className="icon-heading">
+                <ChecklistIcon className="section-icon" />
+                <span>Revision priorities</span>
+              </h3>
               <ul className="bullet-list">
                 {feedback.priorities.map((item) => (
                   <li key={item}>{item}</li>

@@ -2,6 +2,12 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import {
+  DashboardIcon,
+  ProfileIcon,
+  TrackerIcon,
+  WritingIcon,
+} from '@/app/_components/ui/app-icons'
 
 type NavigationItem = {
   href: string
@@ -14,6 +20,12 @@ type SidebarNavProps = {
 
 export function SidebarNav({ items }: SidebarNavProps) {
   const pathname = usePathname()
+  const iconMap: Record<string, React.ReactNode> = {
+    '/': <DashboardIcon className="sidebar-icon" />,
+    '/writing': <WritingIcon className="sidebar-icon" />,
+    '/tracker': <TrackerIcon className="sidebar-icon" />,
+    '/settings/profile': <ProfileIcon className="sidebar-icon" />,
+  }
 
   return (
     <div className="sidebar-nav">
@@ -27,7 +39,10 @@ export function SidebarNav({ items }: SidebarNavProps) {
             href={item.href}
             className={`sidebar-link${isActive ? ' is-active' : ''}`}
           >
-            {item.label}
+            <span className="sidebar-link-content">
+              {iconMap[item.href] ?? <DashboardIcon className="sidebar-icon" />}
+              <span>{item.label}</span>
+            </span>
           </Link>
         )
       })}

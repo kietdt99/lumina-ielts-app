@@ -3,6 +3,12 @@
 import Link from 'next/link'
 import { useEffect, useSyncExternalStore } from 'react'
 import {
+  ChecklistIcon,
+  RibbonIcon,
+  SparklesIcon,
+  TrackerIcon,
+} from '@/app/_components/ui/app-icons'
+import {
   hydrateWritingHistory,
   getServerWritingHistorySnapshot,
   getWritingHistorySnapshot,
@@ -96,7 +102,10 @@ export function WritingSessionDetailPage({
       <div className="tracker-layout tracker-detail-layout">
         <section className="glass writing-panel">
           <div className="panel-heading">
-            <h2>Rubric breakdown</h2>
+            <h2 className="icon-heading">
+              <TrackerIcon className="section-icon" />
+              <span>Rubric breakdown</span>
+            </h2>
             <p>See how this submission performed across the four IELTS writing criteria.</p>
           </div>
 
@@ -130,17 +139,26 @@ export function WritingSessionDetailPage({
 
         <aside className="glass writing-panel">
           <div className="panel-heading">
-            <h2>Revision notes</h2>
+            <h2 className="icon-heading">
+              <RibbonIcon className="section-icon" />
+              <span>Revision notes</span>
+            </h2>
             <p>Use the saved excerpt and priorities below to plan the next practice pass.</p>
           </div>
 
           <div className="feedback-section no-divider">
-            <h3>Draft excerpt</h3>
+            <h3 className="icon-heading">
+              <SparklesIcon className="section-icon" />
+              <span>Draft excerpt</span>
+            </h3>
             <p>{entry.draftExcerpt}...</p>
           </div>
 
           <div className="feedback-section">
-            <h3>Strengths</h3>
+            <h3 className="icon-heading">
+              <SparklesIcon className="section-icon" />
+              <span>Strengths</span>
+            </h3>
             <ul className="bullet-list compact-list">
               {entry.strengths.map((item) => (
                 <li key={item}>{item}</li>
@@ -149,7 +167,10 @@ export function WritingSessionDetailPage({
           </div>
 
           <div className="feedback-section">
-            <h3>Revision priorities</h3>
+            <h3 className="icon-heading">
+              <ChecklistIcon className="section-icon" />
+              <span>Revision priorities</span>
+            </h3>
             <ul className="bullet-list compact-list">
               {entry.priorities.map((item) => (
                 <li key={item}>{item}</li>

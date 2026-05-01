@@ -284,6 +284,40 @@ button {
     transform 0.2s ease;
 }
 
+.sidebar-link-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sidebar-icon,
+.section-icon,
+.metric-icon {
+  flex-shrink: 0;
+}
+
+.sidebar-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.section-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.metric-icon {
+  width: 1rem;
+  height: 1rem;
+  opacity: 0.82;
+}
+
+.icon-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
 .sidebar-link:hover {
   opacity: 1;
   transform: translateX(2px);
@@ -538,6 +572,13 @@ button {
   border-radius: 0.95rem;
   background: rgba(255, 255, 255, 0.66);
   padding: 1rem;
+}
+
+.metric-pill-header {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.45rem;
 }
 
 .metric-label {

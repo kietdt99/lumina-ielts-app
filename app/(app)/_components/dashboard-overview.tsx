@@ -3,6 +3,12 @@
 import Link from 'next/link'
 import { useEffect, useSyncExternalStore } from 'react'
 import { signout } from '@/app/auth/actions'
+import {
+  CompassIcon,
+  SparklesIcon,
+  TargetIcon,
+  TrophyIcon,
+} from '@/app/_components/ui/app-icons'
 import type { LearnerGoals } from '@/lib/learner/learner-goals'
 import {
   hydrateWritingHistory,
@@ -79,7 +85,10 @@ export function DashboardOverview({
         <div className="glass dashboard-card">
           <div className="dashboard-section-header">
             <div>
-              <h2 className="card-title">Target Band</h2>
+              <h2 className="card-title icon-heading">
+                <TargetIcon className="section-icon" />
+                <span>Target Band</span>
+              </h2>
               <p className="dashboard-stat">{learnerGoals.targetBand.toFixed(1)}</p>
             </div>
             <Link href="/settings/profile" className="inline-link">
@@ -92,12 +101,18 @@ export function DashboardOverview({
           </p>
         </div>
         <div className="glass dashboard-card">
-          <h2 className="card-title">Average Band</h2>
+          <h2 className="card-title icon-heading">
+            <SparklesIcon className="section-icon" />
+            <span>Average Band</span>
+          </h2>
           <p className="dashboard-stat">{averageBand(entries).toFixed(1)}</p>
           <p>Calculated from the writing practice sessions saved for this learner account.</p>
         </div>
         <div className="glass dashboard-card">
-          <h2 className="card-title">Best Result</h2>
+          <h2 className="card-title icon-heading">
+            <TrophyIcon className="section-icon" />
+            <span>Best Result</span>
+          </h2>
           <p className="dashboard-stat">{bestBand(entries).toFixed(1)}</p>
           <p>
             {entries.length
@@ -111,7 +126,10 @@ export function DashboardOverview({
         <section className="glass dashboard-card">
           <div className="dashboard-section-header">
             <div>
-              <h2 className="card-title">Recent Activity</h2>
+              <h2 className="card-title icon-heading">
+                <SparklesIcon className="section-icon" />
+                <span>Recent Activity</span>
+              </h2>
               <p>Your latest writing checkpoints appear here automatically.</p>
             </div>
             <Link href="/tracker" className="inline-link">
@@ -154,7 +172,10 @@ export function DashboardOverview({
         <section className="glass dashboard-card">
           <div className="dashboard-section-header">
             <div>
-              <h2 className="card-title">Next Best Step</h2>
+              <h2 className="card-title icon-heading">
+                <CompassIcon className="section-icon" />
+                <span>Next Best Step</span>
+              </h2>
               <p>Use learner goals and recent writing data to focus the next revision cycle.</p>
             </div>
             <Link href="/writing" className="inline-link">
