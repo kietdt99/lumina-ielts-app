@@ -2,6 +2,15 @@
 
 import Link from 'next/link'
 import { useEffect, useState, useSyncExternalStore } from 'react'
+import {
+  ChecklistIcon,
+  CompassIcon,
+  RibbonIcon,
+  SparklesIcon,
+  TargetIcon,
+  TimerIcon,
+  TrackerIcon,
+} from '@/app/_components/ui/app-icons'
 import type { LearnerGoals } from '@/lib/learner/learner-goals'
 import {
   clearWritingHistory,
@@ -119,7 +128,10 @@ export function ProgressTracker({
       {entries.length ? (
         <section className="dashboard-grid tracker-insights-grid">
           <article className="glass dashboard-card">
-            <h2 className="card-title">Target Gap</h2>
+            <h2 className="card-title icon-heading">
+              <TargetIcon className="section-icon" />
+              <span>Target Gap</span>
+            </h2>
             <p className="dashboard-stat">{recommendation.targetGap.toFixed(1)}</p>
             <p>
               Based on the filtered sessions, you are working toward Band{' '}
@@ -128,13 +140,19 @@ export function ProgressTracker({
           </article>
 
           <article className="glass dashboard-card">
-            <h2 className="card-title">Sessions This Week</h2>
+            <h2 className="card-title icon-heading">
+              <TimerIcon className="section-icon" />
+              <span>Sessions This Week</span>
+            </h2>
             <p className="dashboard-stat">{recommendation.sessionsThisWeek}</p>
             <p>Use this to check whether your current rhythm matches the study plan.</p>
           </article>
 
           <article className="glass dashboard-card">
-            <h2 className="card-title">Recurring Focus</h2>
+            <h2 className="card-title icon-heading">
+              <CompassIcon className="section-icon" />
+              <span>Recurring Focus</span>
+            </h2>
             <p className="tracker-focus-copy">
               {recommendation.recurringPriority ??
                 'Complete more writing sessions to identify a repeated focus area.'}
@@ -150,7 +168,10 @@ export function ProgressTracker({
         <div className="tracker-layout">
           <section className="glass writing-panel tracker-overview">
             <div className="panel-heading">
-              <h2>Band trend</h2>
+              <h2 className="icon-heading">
+                <TrackerIcon className="section-icon" />
+                <span>Band trend</span>
+              </h2>
               <p>The most recent practice checkpoints saved from your writing workspace.</p>
             </div>
 
@@ -167,7 +188,10 @@ export function ProgressTracker({
 
           <section className="glass writing-panel tracker-history">
             <div className="panel-heading">
-              <h2>Practice history</h2>
+              <h2 className="icon-heading">
+                <SparklesIcon className="section-icon" />
+                <span>Practice history</span>
+              </h2>
               <p>Open your latest drafts and revision priorities in one place.</p>
             </div>
 
@@ -232,7 +256,10 @@ export function ProgressTracker({
 
           <aside className="glass writing-panel tracker-detail">
             <div className="panel-heading">
-              <h2>Session detail</h2>
+              <h2 className="icon-heading">
+                <RibbonIcon className="section-icon" />
+                <span>Session detail</span>
+              </h2>
               <p>Inspect the selected submission more closely before your next revision pass.</p>
             </div>
 
@@ -280,12 +307,18 @@ export function ProgressTracker({
                 </div>
 
                 <div className="feedback-section">
-                  <h3>Draft excerpt</h3>
+                  <h3 className="icon-heading">
+                    <SparklesIcon className="section-icon" />
+                    <span>Draft excerpt</span>
+                  </h3>
                   <p>{selectedEntry.draftExcerpt}...</p>
                 </div>
 
                 <div className="feedback-section">
-                  <h3>Strengths</h3>
+                  <h3 className="icon-heading">
+                    <SparklesIcon className="section-icon" />
+                    <span>Strengths</span>
+                  </h3>
                   <ul className="bullet-list compact-list">
                     {selectedEntry.strengths.map((item) => (
                       <li key={item}>{item}</li>
@@ -294,7 +327,10 @@ export function ProgressTracker({
                 </div>
 
                 <div className="feedback-section">
-                  <h3>Revision priorities</h3>
+                  <h3 className="icon-heading">
+                    <ChecklistIcon className="section-icon" />
+                    <span>Revision priorities</span>
+                  </h3>
                   <ul className="bullet-list compact-list">
                     {selectedEntry.priorities.map((item) => (
                       <li key={item}>{item}</li>
