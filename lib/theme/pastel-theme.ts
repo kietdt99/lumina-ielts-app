@@ -12,6 +12,17 @@ export const pastelThemes = [
   'apricot',
 ] as const
 
+export const pastelThemeLabels: Record<PastelThemeName, string> = {
+  peach: 'Peach Glow',
+  mint: 'Mint Breeze',
+  sky: 'Sky Whisper',
+  lavender: 'Lavender Note',
+  lemon: 'Lemon Cream',
+  blush: 'Blush Bloom',
+  seafoam: 'Seafoam Day',
+  apricot: 'Apricot Light',
+}
+
 export type PastelThemeName = (typeof pastelThemes)[number]
 
 export const defaultPastelTheme: PastelThemeName = 'peach'

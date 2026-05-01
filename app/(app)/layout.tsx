@@ -1,5 +1,6 @@
 import { signout } from '@/app/auth/actions'
 import { requireLearnerAppSession } from '@/lib/auth/service'
+import { pastelThemeLabels, readPastelThemeCookie } from '@/lib/theme/pastel-theme'
 import { SidebarNav } from './_components/sidebar-nav'
 
 const learnerNavigation = [
@@ -15,6 +16,7 @@ export default async function AppLayout({
   children: React.ReactNode
 }) {
   const session = await requireLearnerAppSession()
+  const theme = await readPastelThemeCookie()
 
   return (
     <div className="layout-container">
@@ -23,6 +25,10 @@ export default async function AppLayout({
           <p className="sidebar-eyebrow">Personal prep workspace</p>
           <h2 className="sidebar-title">Lumina IELTS</h2>
           <p className="sidebar-subtitle">{session.fullName}</p>
+          <div className="theme-chip" aria-label={`Current pastel theme: ${pastelThemeLabels[theme]}`}>
+            <span className="theme-chip-dot" />
+            <span>{pastelThemeLabels[theme]}</span>
+          </div>
         </div>
         <SidebarNav items={learnerNavigation} />
         <div className="sidebar-footer">

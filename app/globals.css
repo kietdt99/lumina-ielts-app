@@ -260,6 +260,35 @@ button {
 
 .layout-container {
   min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+}
+
+.layout-container::before,
+.layout-container::after {
+  content: "";
+  position: fixed;
+  z-index: -1;
+  border-radius: 999px;
+  filter: blur(12px);
+  pointer-events: none;
+  opacity: 0.72;
+}
+
+.layout-container::before {
+  top: 5rem;
+  right: 8%;
+  width: 12rem;
+  height: 12rem;
+  background: radial-gradient(circle, color-mix(in srgb, var(--primary) 18%, white) 0%, transparent 68%);
+}
+
+.layout-container::after {
+  bottom: 4rem;
+  left: calc(var(--nav-width) + 4rem);
+  width: 15rem;
+  height: 15rem;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 72%, white) 0%, transparent 70%);
 }
 
 .app-sidebar {
@@ -288,6 +317,33 @@ button {
 
 .sidebar-title {
   margin-top: 0.4rem;
+}
+
+.sidebar-subtitle {
+  margin-top: 0.35rem;
+}
+
+.theme-chip {
+  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--primary) 16%, white);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.58);
+  color: var(--accent-foreground);
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0.5rem 0.8rem;
+}
+
+.theme-chip-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--accent) 58%, white) 100%);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 10%, white);
 }
 
 .sidebar-nav {
@@ -365,6 +421,7 @@ button {
   min-height: 100vh;
   margin-left: var(--nav-width);
   padding: 2.5rem;
+  position: relative;
 }
 
 .dashboard-stack,
@@ -1170,6 +1227,18 @@ p {
 }
 
 @media (max-width: 900px) {
+  .layout-container::before {
+    right: -2rem;
+    width: 9rem;
+    height: 9rem;
+  }
+
+  .layout-container::after {
+    left: 1rem;
+    width: 11rem;
+    height: 11rem;
+  }
+
   .app-sidebar {
     position: static;
     width: 100%;
