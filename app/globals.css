@@ -873,13 +873,36 @@ button {
   border: 1px solid var(--border);
   border-radius: 999px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   font-weight: 700;
   padding: 0.7rem 1rem;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.task-chip:hover {
+  transform: translateY(-1px);
+}
+
+.task-chip-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 22%, white);
 }
 
 .task-chip.is-active {
   background: var(--primary);
   color: var(--primary-foreground);
+}
+
+.task-chip.is-active .task-chip-dot {
+  background: rgba(255, 255, 255, 0.96);
 }
 
 .prompt-list {
@@ -896,6 +919,8 @@ button {
   flex-direction: column;
   gap: 0.55rem;
   padding: 1rem;
+  position: relative;
+  overflow: hidden;
   text-align: left;
   transition:
     transform 0.2s ease,
@@ -940,6 +965,9 @@ button {
   background: color-mix(in srgb, var(--primary) 8%, white);
   min-width: 132px;
   padding: 0.95rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
 }
 
 .toolbar-actions {
@@ -988,6 +1016,14 @@ button {
   line-height: 1.7;
   outline: none;
   padding: 1rem 1.1rem;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.writing-textarea:hover {
+  transform: translateY(-1px);
 }
 
 .writing-textarea:focus {
@@ -1246,6 +1282,12 @@ button {
   border-radius: 0.9rem 0.9rem 0.35rem 0.35rem;
   background: linear-gradient(180deg, var(--chart-start) 0%, var(--chart-end) 100%);
   min-height: 28px;
+  box-shadow: 0 16px 28px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+.surface-kicker.is-live {
+  background: color-mix(in srgb, var(--primary) 24%, white);
+  border-color: color-mix(in srgb, var(--primary) 34%, white);
 }
 
 .trend-label {
