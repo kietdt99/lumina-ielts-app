@@ -982,6 +982,9 @@ button {
       color-mix(in srgb, var(--accent) 76%, white)
     );
   padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
 .score-card strong {
@@ -1000,7 +1003,17 @@ button {
 .rubric-card {
   border: 1px solid color-mix(in srgb, var(--primary) 12%, white);
   border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.56);
   padding: 1rem;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.rubric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px rgba(140, 114, 109, 0.1);
 }
 
 .rubric-score {
@@ -1024,6 +1037,12 @@ button {
 .empty-feedback {
   border-top: 1px solid rgba(15, 23, 42, 0.08);
   padding-top: 1rem;
+}
+
+.empty-feedback {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
 }
 
 .no-divider {

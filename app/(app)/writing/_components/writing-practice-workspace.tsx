@@ -322,6 +322,11 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
         <div className="panel-heading">
           <h2>{prompt.title}</h2>
           <p>{prompt.brief}</p>
+          <div className="hero-badge-row">
+            <span className="hero-badge">{prompt.taskType}</span>
+            <span className="hero-badge">{prompt.minimumWords}+ words</span>
+            <span className="hero-badge">{prompt.durationMinutes} minutes</span>
+          </div>
         </div>
 
         <div className="writing-meta-grid">
@@ -429,6 +434,7 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
 
       <aside className="glass writing-panel feedback-panel">
         <div className="panel-heading">
+          <span className="surface-kicker">Review panel</span>
           <h2 className="icon-heading">
             <RibbonIcon className="section-icon" />
             <span>Feedback Snapshot</span>
@@ -449,6 +455,10 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
         {feedback ? (
           <div className="feedback-stack">
             <div className="score-card">
+              <div className="hero-badge-row">
+                <span className="hero-badge">Practice estimate</span>
+                <span className="hero-badge">{feedback.wordCount} words</span>
+              </div>
               <span className="metric-label">Estimated band</span>
               <strong>{feedback.estimatedBand.toFixed(1)}</strong>
               <p>{feedback.coachingNote}</p>
@@ -513,6 +523,11 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
               Use the editor to write a full draft, then generate a practice
               estimate to see rubric signals and revision advice.
             </p>
+            <div className="hero-badge-row">
+              <span className="hero-badge">Band estimate</span>
+              <span className="hero-badge">Rubric snapshot</span>
+              <span className="hero-badge">Revision priorities</span>
+            </div>
           </div>
         )}
       </aside>
