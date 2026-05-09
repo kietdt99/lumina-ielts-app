@@ -1231,6 +1231,12 @@ button {
   box-shadow: 0 22px 44px rgba(140, 114, 109, 0.12);
 }
 
+.history-kicker-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
 .selectable-card {
   background: rgba(255, 255, 255, 0.66);
   cursor: pointer;
@@ -1289,7 +1295,7 @@ button {
 
 .rubric-pill {
   border-radius: 999px;
-  background: rgba(37, 99, 235, 0.08);
+  background: color-mix(in srgb, var(--accent) 48%, white);
   color: var(--accent-foreground);
   font-size: 0.85rem;
   font-weight: 600;
