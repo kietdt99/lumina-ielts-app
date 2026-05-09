@@ -310,18 +310,22 @@ export function LearnerGoalsSettings({
 
           <div className="settings-summary">
             <div className="summary-box">
+              <span className="surface-kicker">Target</span>
               <span className="metric-label">Target band</span>
               <strong>{goals.targetBand.toFixed(1)}</strong>
             </div>
             <div className="summary-box">
+              <span className="surface-kicker">Level</span>
               <span className="metric-label">Current level</span>
               <strong>{goals.currentLevel}</strong>
             </div>
             <div className="summary-box">
+              <span className="surface-kicker">Focus</span>
               <span className="metric-label">Focus skill</span>
               <strong>{goals.focusSkill}</strong>
             </div>
             <div className="summary-box">
+              <span className="surface-kicker">Rhythm</span>
               <span className="metric-label">Study frequency</span>
               <strong>{goals.studyFrequency}</strong>
             </div>

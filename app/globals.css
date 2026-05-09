@@ -759,6 +759,22 @@ button {
   border-radius: 0.95rem;
   background: rgba(255, 255, 255, 0.66);
   padding: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-pill::after,
+.meta-card::after,
+.summary-box::after {
+  content: "";
+  position: absolute;
+  inset: auto -2rem -2rem auto;
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 68%, white) 0%, transparent 72%);
+  pointer-events: none;
+  opacity: 0.72;
 }
 
 .metric-pill-header {
@@ -1082,6 +1098,10 @@ button {
 .activity-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 22px 44px rgba(140, 114, 109, 0.12);
+}
+
+.activity-card .surface-kicker {
+  margin-bottom: 0;
 }
 
 .activity-card-header {
