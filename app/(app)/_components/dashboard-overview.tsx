@@ -149,9 +149,12 @@ export function DashboardOverview({
             <div className="dashboard-activity-feed">
               {recentSessions.map((entry) => (
                 <article key={entry.id} className="activity-card">
+                  <div className="history-kicker-row">
+                    <span className="surface-kicker">Latest checkpoint</span>
+                    <span className="surface-kicker">{entry.taskType}</span>
+                  </div>
                   <div className="activity-card-header">
                     <div>
-                      <span className="prompt-type">{entry.taskType}</span>
                       <h3>{entry.promptTitle}</h3>
                     </div>
                     <strong className="activity-score">{entry.estimatedBand.toFixed(1)}</strong>
@@ -242,6 +245,7 @@ export function DashboardOverview({
                 </div>
               ) : null}
               <div className="feedback-section no-divider">
+                <span className="surface-kicker">Current focus</span>
                 <h3>Priority right now</h3>
                 <ul className="bullet-list compact-list">
                   {recommendation.actions.map((item) => (
