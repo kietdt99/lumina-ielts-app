@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { AdminIllustration } from '@/app/_components/ui/pastel-illustrations'
+import { CompassIcon, ProfileIcon, SparklesIcon } from '@/app/_components/ui/app-icons'
 
 type CreateAccountResponse =
   | {
@@ -77,17 +79,33 @@ export function AdminCreateLearnerForm() {
             Lumina generates a temporary password for each new learner account.
             Share it once, then let the learner change it on first login.
           </p>
+          <div className="hero-badge-row">
+            <span className="hero-badge">Temporary password included</span>
+            <span className="hero-badge">First login reset required</span>
+          </div>
+        </div>
+        <div className="writing-hero-visual">
+          <AdminIllustration className="hero-illustration" />
         </div>
         <div className="writing-hero-metrics">
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <ProfileIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Flow</span>
             <strong>Admin managed</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <SparklesIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Password</span>
             <strong>System generated</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <CompassIcon className="metric-icon" />
+            </div>
             <span className="metric-label">First login</span>
             <strong>Force password change</strong>
           </div>
@@ -97,8 +115,16 @@ export function AdminCreateLearnerForm() {
       <div className="settings-layout">
         <section className="glass writing-panel">
           <div className="panel-heading">
-            <h2>New learner</h2>
+            <h2 className="icon-heading">
+              <ProfileIcon className="section-icon" />
+              <span>New learner</span>
+            </h2>
             <p>Provide the learner identity and Lumina will generate the credential.</p>
+          </div>
+
+          <div className="soft-note">
+            Create one learner at a time, then send the temporary password
+            through your preferred private channel.
           </div>
 
           {errorMessage ? (
@@ -153,7 +179,10 @@ export function AdminCreateLearnerForm() {
 
         <aside className="glass writing-panel">
           <div className="panel-heading">
-            <h2>What happens next</h2>
+            <h2 className="icon-heading">
+              <SparklesIcon className="section-icon" />
+              <span>What happens next</span>
+            </h2>
           </div>
 
           <ul className="bullet-list">

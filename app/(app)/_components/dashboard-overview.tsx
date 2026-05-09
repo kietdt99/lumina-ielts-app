@@ -169,7 +169,12 @@ export function DashboardOverview({
             </div>
           ) : (
             <div className="empty-dashboard-state">
+              <p className="surface-kicker">First checkpoint</p>
               <p>No activity saved yet.</p>
+              <p>
+                The moment you finish a reviewed draft, Lumina will surface your
+                latest band estimate, prompt title, and revision focus here.
+              </p>
               <Link href="/writing" className="primary-button">
                 Start writing practice
               </Link>
