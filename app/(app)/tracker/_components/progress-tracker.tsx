@@ -364,6 +364,7 @@ export function ProgressTracker({
             <EmptyStateIllustration className="empty-state-illustration" />
           </div>
           <div className="panel-heading">
+            <p className="section-label">Tracker</p>
             <h2>No tracked writing sessions yet</h2>
             <p>
               Generate feedback in the writing workspace and your first practice
