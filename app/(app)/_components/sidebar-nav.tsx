@@ -43,6 +43,7 @@ export function SidebarNav({ items }: SidebarNavProps) {
               {iconMap[item.href] ?? <DashboardIcon className="sidebar-icon" />}
               <span>{item.label}</span>
             </span>
+            <span className="sidebar-link-accent" aria-hidden="true" />
           </Link>
         )
       })}
