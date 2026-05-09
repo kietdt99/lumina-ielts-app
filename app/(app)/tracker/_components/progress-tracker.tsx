@@ -128,6 +128,7 @@ export function ProgressTracker({
               className={`task-chip${selectedTask === task ? ' is-active' : ''}`}
               onClick={() => setSelectedTask(task)}
             >
+              <span className="task-chip-dot" aria-hidden="true" />
               {task}
             </button>
           ))}

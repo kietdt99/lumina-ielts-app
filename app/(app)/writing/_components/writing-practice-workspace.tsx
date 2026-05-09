@@ -161,6 +161,7 @@ export function WritingPracticeWorkspace({
                 className={`task-chip${selectedTask === task ? ' is-active' : ''}`}
                 onClick={() => handleTaskChange(task)}
               >
+                <span className="task-chip-dot" aria-hidden="true" />
                 {task}
               </button>
             ))}
@@ -174,6 +175,7 @@ export function WritingPracticeWorkspace({
                 className={`prompt-card${selectedPrompt.id === prompt.id ? ' is-active' : ''}`}
                 onClick={() => setSelectedPromptId(prompt.id)}
               >
+                <span className="surface-kicker">Prompt</span>
                 <span className="prompt-type">{prompt.taskType}</span>
                 <strong>{prompt.title}</strong>
                 <p>{prompt.brief}</p>
@@ -355,6 +357,9 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
 
         <div className="editor-toolbar">
           <div className="timer-box">
+            <span className={`surface-kicker${isTimerRunning ? ' is-live' : ''}`}>
+              {isTimerRunning ? 'Live session' : 'Ready'}
+            </span>
             <span className="metric-label">Session timer</span>
             <strong>{formatTime(remainingSeconds)}</strong>
           </div>
