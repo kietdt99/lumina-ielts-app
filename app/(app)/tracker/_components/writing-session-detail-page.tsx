@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { useEffect, useSyncExternalStore } from 'react'
@@ -86,17 +86,31 @@ export function WritingSessionDetailPage({
             Review the full rubric snapshot, strengths, and revision priorities
             for this saved writing session.
           </p>
+          <div className="hero-badge-row">
+            <span className="hero-badge">{entry.taskType}</span>
+            <span className="hero-badge">{entry.wordCount} words</span>
+            <span className="hero-badge">{entry.priorities.length} priorities</span>
+          </div>
         </div>
         <div className="writing-hero-metrics">
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <RibbonIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Estimated band</span>
             <strong>{entry.estimatedBand.toFixed(1)}</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <TrackerIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Task type</span>
             <strong>{entry.taskType}</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <SparklesIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Saved at</span>
             <strong>{formatDate(entry.createdAt)}</strong>
           </div>
@@ -195,3 +209,4 @@ export function WritingSessionDetailPage({
     </div>
   )
 }
+

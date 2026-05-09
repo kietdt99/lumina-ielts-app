@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { useEffect, useState, useSyncExternalStore } from 'react'
@@ -88,17 +88,31 @@ export function ProgressTracker({
             Every feedback run in the writing workspace is stored for this
             learner account and appears here as a new practice checkpoint.
           </p>
+          <div className="hero-badge-row">
+            <span className="hero-badge">{entries.length} checkpoints</span>
+            <span className="hero-badge">{selectedTask} view</span>
+            <span className="hero-badge">Band {learnerGoals.targetBand.toFixed(1)} target</span>
+          </div>
         </div>
         <div className="writing-hero-metrics">
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <TrackerIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Saved sessions</span>
             <strong>{entries.length}</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <SparklesIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Average band</span>
             <strong>{averageBand(filteredEntries).toFixed(1)}</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <RibbonIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Best band</span>
             <strong>{bestBand(filteredEntries).toFixed(1)}</strong>
           </div>
@@ -206,6 +220,12 @@ export function ProgressTracker({
                   }`}
                   onClick={() => setSelectedEntryId(entry.id)}
                 >
+                  <div className="history-kicker-row">
+                    <span className="surface-kicker">Practice checkpoint</span>
+                    {selectedEntry?.id === entry.id ? (
+                      <span className="surface-kicker">Selected</span>
+                    ) : null}
+                  </div>
                   <div className="history-header">
                     <div>
                       <span className="prompt-type">{entry.taskType}</span>
@@ -272,6 +292,10 @@ export function ProgressTracker({
             {selectedEntry ? (
               <div className="feedback-stack">
                 <div className="score-card">
+                  <div className="hero-badge-row">
+                    <span className="hero-badge">{selectedEntry.taskType}</span>
+                    <span className="hero-badge">{selectedEntry.wordCount} words</span>
+                  </div>
                   <span className="metric-label">Selected session</span>
                   <strong>{selectedEntry.estimatedBand.toFixed(1)}</strong>
                   <p>
@@ -379,3 +403,4 @@ export function ProgressTracker({
     </div>
   )
 }
+
