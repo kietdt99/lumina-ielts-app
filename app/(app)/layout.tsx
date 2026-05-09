@@ -38,6 +38,7 @@ export default async function AppLayout({
             </button>
           </form>
           <p>Version 1.0 MVP</p>
+          <p className="sidebar-footnote">Writing-first learner workspace</p>
         </div>
       </nav>
       <main className="main-content">{children}</main>

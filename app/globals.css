@@ -355,6 +355,9 @@ button {
 .sidebar-link {
   border-radius: 0.85rem;
   padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-weight: 600;
   opacity: 0.75;
   transition:
@@ -368,6 +371,19 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+.sidebar-link-accent {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 28%, white);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 8%, white);
+  opacity: 0;
+  transform: scale(0.85);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .sidebar-icon,
@@ -409,12 +425,22 @@ button {
   opacity: 1;
 }
 
+.sidebar-link.is-active .sidebar-link-accent {
+  opacity: 1;
+  transform: scale(1);
+}
+
 .sidebar-footer {
   margin-top: auto;
 }
 
 .sidebar-footer p {
   font-size: 0.875rem;
+}
+
+.sidebar-footnote {
+  margin-top: 0.35rem;
+  color: rgba(15, 23, 42, 0.6);
 }
 
 .main-content {
@@ -566,6 +592,7 @@ button {
   background: var(--primary);
   color: var(--primary-foreground);
   padding: 0.95rem 1rem;
+  box-shadow: 0 14px 28px color-mix(in srgb, var(--primary) 24%, transparent);
 }
 
 .primary-button:disabled {
@@ -577,6 +604,7 @@ button {
   background: rgba(255, 255, 255, 0.56);
   color: var(--foreground);
   padding: 0.75rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--primary) 10%, white);
 }
 
 .inline-link {
@@ -1124,6 +1152,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  align-items: flex-start;
 }
 
 .tracker-page {
