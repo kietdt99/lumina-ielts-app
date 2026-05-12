@@ -1,10 +1,11 @@
 import { signout } from '@/app/auth/actions'
 import { requireAdminSession } from '@/lib/auth/service'
 import { SidebarNav } from '@/app/(app)/_components/sidebar-nav'
+import type { NavigationItem } from '@/app/(app)/_components/sidebar-nav'
 
-const adminNavigation = [
-  { href: '/admin/accounts', label: 'Learner Accounts' },
-  { href: '/admin/accounts/new', label: 'Create Account' },
+const adminNavigation: NavigationItem[] = [
+  { href: '/admin/accounts', label: 'Learner Accounts', icon: 'accounts' },
+  { href: '/admin/accounts/new', label: 'Create Account', icon: 'create' },
 ]
 
 export default async function AdminLayout({

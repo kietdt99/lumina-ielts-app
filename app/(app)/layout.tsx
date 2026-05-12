@@ -2,12 +2,13 @@ import { signout } from '@/app/auth/actions'
 import { requireLearnerAppSession } from '@/lib/auth/service'
 import { pastelThemeLabels, readPastelThemeCookie } from '@/lib/theme/pastel-theme'
 import { SidebarNav } from './_components/sidebar-nav'
+import type { NavigationItem } from './_components/sidebar-nav'
 
-const learnerNavigation = [
-  { href: '/', label: 'Dashboard' },
-  { href: '/writing', label: 'Writing Assistant' },
-  { href: '/tracker', label: 'Score Tracker' },
-  { href: '/settings/profile', label: 'Profile Settings' },
+const learnerNavigation: NavigationItem[] = [
+  { href: '/', label: 'Dashboard', icon: 'dashboard' },
+  { href: '/writing', label: 'Writing Assistant', icon: 'writing' },
+  { href: '/tracker', label: 'Score Tracker', icon: 'tracker' },
+  { href: '/settings/profile', label: 'Profile Settings', icon: 'profile' },
 ]
 
 export default async function AppLayout({

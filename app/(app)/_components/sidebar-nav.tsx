@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import {
   DashboardIcon,
   ProfileIcon,
+  SparklesIcon,
   TrackerIcon,
   WritingIcon,
 } from '@/app/_components/ui/app-icons'
@@ -12,19 +13,24 @@ import {
 type NavigationItem = {
   href: string
   label: string
+  icon?: 'dashboard' | 'writing' | 'tracker' | 'profile' | 'accounts' | 'create'
 }
 
 type SidebarNavProps = {
   items: NavigationItem[]
 }
 
+export type { NavigationItem }
+
 export function SidebarNav({ items }: SidebarNavProps) {
   const pathname = usePathname()
-  const iconMap: Record<string, React.ReactNode> = {
-    '/': <DashboardIcon className="sidebar-icon" />,
-    '/writing': <WritingIcon className="sidebar-icon" />,
-    '/tracker': <TrackerIcon className="sidebar-icon" />,
-    '/settings/profile': <ProfileIcon className="sidebar-icon" />,
+  const iconMap: Record<NonNullable<NavigationItem['icon']>, React.ReactNode> = {
+    dashboard: <DashboardIcon className="sidebar-icon" />,
+    writing: <WritingIcon className="sidebar-icon" />,
+    tracker: <TrackerIcon className="sidebar-icon" />,
+    profile: <ProfileIcon className="sidebar-icon" />,
+    accounts: <ProfileIcon className="sidebar-icon" />,
+    create: <SparklesIcon className="sidebar-icon" />,
   }
 
   return (
@@ -40,7 +46,7 @@ export function SidebarNav({ items }: SidebarNavProps) {
             className={`sidebar-link${isActive ? ' is-active' : ''}`}
           >
             <span className="sidebar-link-content">
-              {iconMap[item.href] ?? <DashboardIcon className="sidebar-icon" />}
+              {item.icon ? iconMap[item.icon] : <DashboardIcon className="sidebar-icon" />}
               <span>{item.label}</span>
             </span>
             <span className="sidebar-link-accent" aria-hidden="true" />
