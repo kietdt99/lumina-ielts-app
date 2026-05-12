@@ -168,6 +168,11 @@ export function AdminCreateLearnerForm() {
               />
             </div>
 
+            <div className="admin-helper-strip">
+              <span className="surface-kicker">Credential handoff</span>
+              <p>Double-check the learner email before creating the account so the first-login flow reaches the right person.</p>
+            </div>
+
             <div className="settings-actions">
               <button type="submit" className="primary-button" disabled={isSubmitting}>
                 {isSubmitting ? 'Creating account...' : 'Create learner account'}
@@ -187,11 +192,23 @@ export function AdminCreateLearnerForm() {
             </h2>
           </div>
 
-          <ul className="bullet-list">
-            <li>Learner signs in with the temporary password.</li>
-            <li>Learner is redirected to the password change screen.</li>
-            <li>Learner completes onboarding before entering the workspace.</li>
-          </ul>
+          <div className="admin-next-steps">
+            <div className="summary-box">
+              <span className="surface-kicker">Step 1</span>
+              <span className="metric-label">First sign-in</span>
+              <strong>Learner uses the temporary password</strong>
+            </div>
+            <div className="summary-box">
+              <span className="surface-kicker">Step 2</span>
+              <span className="metric-label">Password refresh</span>
+              <strong>Learner is redirected to change the password</strong>
+            </div>
+            <div className="summary-box">
+              <span className="surface-kicker">Step 3</span>
+              <span className="metric-label">Workspace access</span>
+              <strong>Learner completes onboarding before practice</strong>
+            </div>
+          </div>
         </aside>
       </div>
     </div>
