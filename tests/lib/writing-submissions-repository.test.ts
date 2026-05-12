@@ -138,6 +138,8 @@ describe('writing submissions repository', () => {
           rubric: createSubmissionSuccess().historyEntry.rubric,
           strengths: ['Strong position'],
           priorities: ['Add a more specific example'],
+          sample_rewrite:
+            'Sample rewrite: A stronger paragraph would explain the main point and support it with a concrete example.',
         },
       },
     ]
@@ -154,6 +156,8 @@ describe('writing submissions repository', () => {
         taskType: 'Task 2',
         wordCount: 278,
         estimatedBand: 7.5,
+        sampleRewrite:
+          'Sample rewrite: A stronger paragraph would explain the main point and support it with a concrete example.',
       })
     )
   })

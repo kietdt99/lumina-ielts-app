@@ -526,6 +526,16 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
                 ))}
               </ul>
             </div>
+
+            {feedback.sampleRewrite ? (
+              <div className="feedback-section">
+                <h3 className="icon-heading">
+                  <QuillIcon className="section-icon" />
+                  <span>Sample rewrite</span>
+                </h3>
+                <p>{feedback.sampleRewrite}</p>
+              </div>
+            ) : null}
           </div>
         ) : (
           <div className="empty-feedback">

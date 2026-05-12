@@ -55,6 +55,8 @@ describe('writing submissions service', () => {
       expect(result.historyEntry.promptId).toBe('task2-remote-work')
       expect(result.historyEntry.estimatedBand).toBe(result.feedback.estimatedBand)
       expect(result.feedback.rubric).toHaveLength(4)
+      expect(result.feedback.sampleRewrite).toContain('Sample rewrite:')
+      expect(result.historyEntry.sampleRewrite).toBe(result.feedback.sampleRewrite)
     }
   })
 

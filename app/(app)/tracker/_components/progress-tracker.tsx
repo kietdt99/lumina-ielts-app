@@ -391,6 +391,16 @@ export function ProgressTracker({
                   </ul>
                 </div>
 
+                {selectedEntry.sampleRewrite ? (
+                  <div className="feedback-section">
+                    <h3 className="icon-heading">
+                      <SparklesIcon className="section-icon" />
+                      <span>Sample rewrite</span>
+                    </h3>
+                    <p>{selectedEntry.sampleRewrite}</p>
+                  </div>
+                ) : null}
+
                 <Link
                   href={`/tracker/${selectedEntry.id}`}
                   className="primary-button"

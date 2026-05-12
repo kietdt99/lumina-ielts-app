@@ -33,6 +33,7 @@ describe('writing feedback heuristics', () => {
     expect(result.priorities).toContain(
       'Finish with a short conclusion that confirms your opinion.'
     )
+    expect(result.sampleRewrite).toContain('Sample rewrite:')
   })
 
   it('rewards a developed draft with stronger signals', () => {
@@ -58,5 +59,6 @@ describe('writing feedback heuristics', () => {
     expect(result.priorities).not.toContain(
       'Rebuild the response around clearer paragraph boundaries.'
     )
+    expect(result.sampleRewrite).toContain('Sample rewrite:')
   })
 })

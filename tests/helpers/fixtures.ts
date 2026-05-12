@@ -56,6 +56,8 @@ export function createEvaluation(
     strengths: ['The draft has a clear structure.'],
     priorities: ['Develop the second body paragraph with more precise support.'],
     coachingNote: 'Clarify your position earlier in the introduction.',
+    sampleRewrite:
+      'Sample rewrite: One well-developed paragraph should state the main point clearly, explain why it matters, and support it with a concrete example.',
     ...overrides,
   }
 }
@@ -75,6 +77,8 @@ export function createHistoryEntry(
     rubric: createEvaluation().rubric,
     strengths: ['The draft has a clear structure.'],
     priorities: ['Develop the second body paragraph with more precise support.'],
+    sampleRewrite:
+      'Sample rewrite: One well-developed paragraph should state the main point clearly, explain why it matters, and support it with a concrete example.',
     ...overrides,
   }
 }

@@ -137,6 +137,8 @@ export function createStoredHistoryEntry(overrides: Record<string, unknown> = {}
     ],
     strengths: ['The draft has a clear structure.'],
     priorities: ['Develop the second body paragraph with more precise support.'],
+    sampleRewrite:
+      'Sample rewrite: One well-developed paragraph should state the main point clearly, explain why it matters, and support it with a concrete example.',
     ...overrides,
   }
 }
