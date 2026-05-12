@@ -1226,6 +1226,10 @@ button {
   margin-bottom: 0;
 }
 
+.dashboard-activity-pill {
+  background: color-mix(in srgb, var(--accent) 56%, white);
+}
+
 .activity-card-header {
   display: flex;
   align-items: flex-start;

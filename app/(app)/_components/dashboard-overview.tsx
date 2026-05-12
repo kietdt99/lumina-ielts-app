@@ -152,6 +152,9 @@ export function DashboardOverview({
                   <div className="history-kicker-row">
                     <span className="surface-kicker">Latest checkpoint</span>
                     <span className="surface-kicker">{entry.taskType}</span>
+                    <span className="surface-kicker dashboard-activity-pill">
+                      {entry.wordCount} words
+                    </span>
                   </div>
                   <div className="activity-card-header">
                     <div>
@@ -162,6 +165,11 @@ export function DashboardOverview({
                   <div className="history-meta">
                     <span>{formatDate(entry.createdAt)}</span>
                     <span>{entry.wordCount} words</span>
+                  </div>
+                  <div className="history-kicker-row">
+                    <span className="surface-kicker dashboard-activity-pill">
+                      Next focus
+                    </span>
                   </div>
                   <p>{entry.priorities[0] ?? 'Keep refining your structure and support.'}</p>
                   <Link href={`/tracker/${entry.id}`} className="inline-link">
@@ -206,14 +214,17 @@ export function DashboardOverview({
             </div>
             <div className="summary-grid">
               <div className="summary-box">
+                <span className="surface-kicker">Now</span>
                 <span className="metric-label">Recent average</span>
                 <strong>{recommendation.recentAverage.toFixed(1)}</strong>
               </div>
               <div className="summary-box">
+                <span className="surface-kicker">Gap</span>
                 <span className="metric-label">Target gap</span>
                 <strong>{recommendation.targetGap.toFixed(1)}</strong>
               </div>
               <div className="summary-box">
+                <span className="surface-kicker">Rhythm</span>
                 <span className="metric-label">Sessions this week</span>
                 <strong>{recommendation.sessionsThisWeek}</strong>
               </div>
