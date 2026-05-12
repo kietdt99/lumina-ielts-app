@@ -414,6 +414,10 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
         <label className="editor-label" htmlFor="writing-draft">
           Draft editor
         </label>
+        <div className="writing-helper-strip">
+          <span className="surface-kicker">Draft mode</span>
+          <p>Keep the first paragraph clear, then build two support paragraphs before you polish the ending.</p>
+        </div>
         <textarea
           id="writing-draft"
           className="writing-textarea"
@@ -471,14 +475,17 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
 
             <div className="summary-grid">
               <div className="summary-box">
+                <span className="surface-kicker">Draft</span>
                 <span className="metric-label">Words</span>
                 <strong>{feedback.wordCount}</strong>
               </div>
               <div className="summary-box">
+                <span className="surface-kicker">Structure</span>
                 <span className="metric-label">Paragraphs</span>
                 <strong>{feedback.paragraphCount}</strong>
               </div>
               <div className="summary-box">
+                <span className="surface-kicker">Flow</span>
                 <span className="metric-label">Sentences</span>
                 <strong>{feedback.sentenceCount}</strong>
               </div>
@@ -528,6 +535,10 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
               Use the editor to write a full draft, then generate a practice
               estimate to see rubric signals and revision advice.
             </p>
+            <div className="writing-helper-strip">
+              <span className="surface-kicker">Before review</span>
+              <p>Try to complete your core argument first, then check the word count before you ask for feedback.</p>
+            </div>
             <div className="hero-badge-row">
               <span className="hero-badge">Band estimate</span>
               <span className="hero-badge">Rubric snapshot</span>
