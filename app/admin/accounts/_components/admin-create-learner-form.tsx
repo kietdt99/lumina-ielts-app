@@ -129,10 +129,9 @@ export function AdminCreateLearnerForm() {
           </div>
 
           {errorMessage ? (
-            <div className="feedback-error" role="alert">
-              <strong>Unable to create learner account</strong>
+            <StatusCallout variant="error" title="Unable to create learner account.">
               <p>{errorMessage}</p>
-            </div>
+            </StatusCallout>
           ) : null}
 
           {temporaryPassword ? (

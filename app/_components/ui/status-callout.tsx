@@ -18,6 +18,11 @@ export function StatusCallout({
   children,
   actions,
 }: StatusCalloutProps) {
+  const accessibilityProps =
+    variant === 'error'
+      ? { role: 'alert' as const }
+      : { role: 'status' as const, 'aria-live': 'polite' as const }
+
   const icon =
     variant === 'success' ? (
       <RibbonIcon className="status-callout-icon" />
@@ -28,7 +33,10 @@ export function StatusCallout({
     )
 
   return (
-    <div className={`feedback-banner ${variant}-banner status-callout`}>
+    <div
+      className={`feedback-banner ${variant}-banner status-callout`}
+      {...accessibilityProps}
+    >
       <div className="status-callout-header">
         {icon}
         {title ? <strong>{title}</strong> : null}

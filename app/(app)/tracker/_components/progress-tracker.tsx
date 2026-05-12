@@ -12,6 +12,7 @@ import {
   TrackerIcon,
 } from '@/app/_components/ui/app-icons'
 import { EmptyStateIllustration } from '@/app/_components/ui/pastel-illustrations'
+import { StatusCallout } from '@/app/_components/ui/status-callout'
 import type { LearnerGoals } from '@/lib/learner/learner-goals'
 import {
   clearWritingHistory,
@@ -285,9 +286,10 @@ export function ProgressTracker({
               <p>Inspect the selected submission more closely before your next revision pass.</p>
             </div>
 
-            <div className="feedback-error tracker-recommendation-card" role="status">
-              <strong>{recommendation.headline}</strong>
-              <p>{recommendation.summary}</p>
+            <div className="tracker-recommendation-card">
+              <StatusCallout variant="info" title={recommendation.headline}>
+                <p>{recommendation.summary}</p>
+              </StatusCallout>
             </div>
 
             {selectedEntry ? (

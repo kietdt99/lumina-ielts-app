@@ -174,10 +174,9 @@ export function LearnerGoalsSettings({
           </div>
 
           {errorMessage ? (
-            <div className="feedback-error" role="alert">
-              <strong>Unable to save learner goals</strong>
+            <StatusCallout variant="error" title="Unable to save learner goals.">
               <p>{errorMessage}</p>
-            </div>
+            </StatusCallout>
           ) : null}
 
           {successMessage ? (

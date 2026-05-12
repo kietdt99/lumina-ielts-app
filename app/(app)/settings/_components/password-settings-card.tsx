@@ -108,10 +108,9 @@ export function PasswordSettingsCard({
       ) : null}
 
       {errorMessage ? (
-        <div className="feedback-error" role="alert">
-          <strong>Unable to update password</strong>
+        <StatusCallout variant="error" title="Unable to update your password.">
           <p>{errorMessage}</p>
-        </div>
+        </StatusCallout>
       ) : null}
 
       {successMessage ? (
