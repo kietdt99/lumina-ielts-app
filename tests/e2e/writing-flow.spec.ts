@@ -73,7 +73,7 @@ test.describe('writing flow', () => {
     await page.getByLabel('Draft editor').fill('A complete draft that should trigger the mocked API failure.')
     await page.getByRole('button', { name: 'Generate practice feedback' }).click()
 
-    const feedbackAlert = page.locator('.feedback-error[role="alert"]')
+    const feedbackAlert = page.locator('.status-callout[role="alert"]')
 
     await expect(feedbackAlert).toContainText('Practice review failed')
     await expect(feedbackAlert).toContainText(

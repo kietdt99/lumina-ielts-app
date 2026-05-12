@@ -8,6 +8,7 @@ import {
   SparklesIcon,
   TimerIcon,
 } from '@/app/_components/ui/app-icons'
+import { StatusCallout } from '@/app/_components/ui/status-callout'
 import {
   getDraftMetrics,
   type WritingEvaluation,
@@ -451,10 +452,9 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
         </div>
 
         {submissionError ? (
-          <div className="feedback-error" role="alert">
-            <strong>Practice review failed</strong>
+          <StatusCallout variant="error" title="Practice review failed.">
             <p>{submissionError}</p>
-          </div>
+          </StatusCallout>
         ) : null}
 
         {feedback ? (

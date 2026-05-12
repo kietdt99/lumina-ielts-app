@@ -125,10 +125,9 @@ export function AdminAccountsManager({
       </div>
 
       {errorMessage ? (
-        <div className="feedback-error" role="alert">
-          <strong>Unable to manage learner accounts</strong>
+        <StatusCallout variant="error" title="Unable to manage learner accounts.">
           <p>{errorMessage}</p>
-        </div>
+        </StatusCallout>
       ) : null}
 
       {revealedCredential ? (
