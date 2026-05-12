@@ -8,6 +8,7 @@ import {
   SparklesIcon,
   TargetIcon,
 } from '@/app/_components/ui/app-icons'
+import { StatusCallout } from '@/app/_components/ui/status-callout'
 import {
   defaultLearnerGoals,
   learnerGoalCurrentLevelOptions,
@@ -180,7 +181,9 @@ export function LearnerGoalsSettings({
           ) : null}
 
           {successMessage ? (
-            <div className="feedback-banner success-banner">{successMessage}</div>
+            <StatusCallout variant="success" title="Learner goals updated.">
+              <p>{successMessage}</p>
+            </StatusCallout>
           ) : null}
 
           <div className="settings-grid">

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { isSupabaseConfigured } from '@/lib/supabase/config'
 import { LoginIllustration } from '@/app/_components/ui/pastel-illustrations'
+import { StatusCallout } from '@/app/_components/ui/status-callout'
 
 type LoginResponse =
   | {
@@ -103,30 +104,36 @@ export function LoginForm({ demoCredentials }: LoginFormProps) {
         </div>
 
         {!isSupabaseConfigured() && demoCredentials ? (
-          <div className="feedback-banner info-banner">
-            <strong>Demo mode is active.</strong>
+          <StatusCallout
+            variant="info"
+            title="Demo mode is active."
+            actions={
+              <div className="demo-credentials">
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => autofillDemoAccount('admin')}
+                >
+                  Use demo admin
+                </button>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => autofillDemoAccount('learner')}
+                >
+                  Use demo learner
+                </button>
+              </div>
+            }
+          >
             <p>Use the seeded accounts below or create a learner account from the admin area.</p>
-            <div className="demo-credentials">
-              <button
-                type="button"
-                className="secondary-button"
-                onClick={() => autofillDemoAccount('admin')}
-              >
-                Use demo admin
-              </button>
-              <button
-                type="button"
-                className="secondary-button"
-                onClick={() => autofillDemoAccount('learner')}
-              >
-                Use demo learner
-              </button>
-            </div>
-          </div>
+          </StatusCallout>
         ) : null}
 
         {errorMessage ? (
-          <div className="feedback-banner error-banner">{errorMessage}</div>
+          <StatusCallout variant="error" title="Unable to sign in right now.">
+            <p>{errorMessage}</p>
+          </StatusCallout>
         ) : null}
 
         <form className="auth-form" onSubmit={handleSubmit}>
