@@ -21,6 +21,10 @@ export default async function AdminLayout({
           <p className="sidebar-eyebrow">Admin workspace</p>
           <h2 className="sidebar-title">Lumina IELTS</h2>
           <p className="sidebar-subtitle">{session.fullName}</p>
+          <div className="theme-chip">
+            <span className="theme-chip-dot" />
+            <span>Account Operations</span>
+          </div>
         </div>
         <SidebarNav items={adminNavigation} />
         <div className="sidebar-footer">
@@ -30,6 +34,7 @@ export default async function AdminLayout({
             </button>
           </form>
           <p>Admin account management</p>
+          <p className="sidebar-footnote">Provision learners and reset credentials</p>
         </div>
       </nav>
       <main className="main-content">{children}</main>

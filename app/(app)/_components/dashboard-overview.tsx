@@ -262,6 +262,10 @@ export function DashboardOverview({
                 writing feedback cycle and Lumina will suggest your next revision
                 focus here.
               </p>
+              <div className="hero-badge-row">
+                <span className="hero-badge">First review</span>
+                <span className="hero-badge">Dashboard insight</span>
+              </div>
               <ul className="bullet-list compact-list">
                 {recommendation.actions.map((item) => (
                   <li key={item}>{item}</li>
