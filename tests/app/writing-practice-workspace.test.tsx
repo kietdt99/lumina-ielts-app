@@ -21,8 +21,11 @@ describe('WritingPracticeWorkspace', () => {
 
     render(<WritingPracticeWorkspace prompts={writingPrompts} />)
 
-    const editor = screen.getByLabelText('Draft editor')
-    await user.type(editor, 'Task 2 draft content')
+    fireEvent.change(screen.getByLabelText('Draft editor'), {
+      target: {
+        value: 'Task 2 draft content',
+      },
+    })
 
     expect(
       window.localStorage.getItem('lumina-writing-draft:task2-remote-work')
@@ -30,8 +33,11 @@ describe('WritingPracticeWorkspace', () => {
 
     await user.click(screen.getByRole('button', { name: 'Task 1' }))
 
-    const taskOneEditor = screen.getByLabelText('Draft editor')
-    await user.type(taskOneEditor, 'Task 1 draft content')
+    fireEvent.change(screen.getByLabelText('Draft editor'), {
+      target: {
+        value: 'Task 1 draft content',
+      },
+    })
 
     expect(
       window.localStorage.getItem('lumina-writing-draft:task1-cycle-diagram')
