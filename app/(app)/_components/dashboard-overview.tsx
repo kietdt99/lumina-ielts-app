@@ -181,11 +181,15 @@ export function DashboardOverview({
           ) : (
             <div className="empty-dashboard-state">
               <p className="surface-kicker">First checkpoint</p>
-              <p>No activity saved yet.</p>
+              <h3>No activity saved yet.</h3>
               <p>
                 The moment you finish a reviewed draft, Lumina will surface your
                 latest band estimate, prompt title, and revision focus here.
               </p>
+              <div className="empty-state-helper-strip">
+                <span className="surface-kicker">Suggested start</span>
+                <p>Open one writing prompt, finish a first draft, and let Lumina save your first checkpoint automatically.</p>
+              </div>
               <Link href="/writing" className="primary-button">
                 Start writing practice
               </Link>
@@ -267,12 +271,17 @@ export function DashboardOverview({
             </div>
           ) : (
             <div className="empty-dashboard-state">
+              <p className="surface-kicker">Build momentum</p>
               <p>
                 Aim for Band {learnerGoals.targetBand.toFixed(1)} with a{' '}
                 {learnerGoals.studyFrequency.toLowerCase()} rhythm. Complete one
                 writing feedback cycle and Lumina will suggest your next revision
                 focus here.
               </p>
+              <div className="empty-state-helper-strip">
+                <span className="surface-kicker">First recommendation</span>
+                <p>Once you review a draft, this panel will turn your latest result into a concrete next-step plan.</p>
+              </div>
               <div className="hero-badge-row">
                 <span className="hero-badge">First review</span>
                 <span className="hero-badge">Dashboard insight</span>

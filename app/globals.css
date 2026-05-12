@@ -1283,6 +1283,21 @@ button {
   align-items: flex-start;
 }
 
+.empty-state-helper-strip {
+  border: 1px solid color-mix(in srgb, var(--primary) 12%, white);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.58);
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.95rem 1rem;
+}
+
+.empty-state-helper-strip .surface-kicker {
+  align-self: flex-start;
+  margin-bottom: 0;
+}
+
 .tracker-page {
   display: flex;
   flex-direction: column;
