@@ -663,6 +663,26 @@ button {
   gap: 0.75rem;
 }
 
+.auth-helper-strip {
+  border: 1px solid color-mix(in srgb, var(--primary) 12%, white);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.56);
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.95rem 1rem;
+}
+
+.auth-helper-strip .surface-kicker {
+  margin-bottom: 0;
+  align-self: flex-start;
+}
+
+.auth-support-copy {
+  color: rgba(15, 23, 42, 0.62);
+  font-size: 0.9rem;
+}
+
 .auth-form {
   display: flex;
   flex-direction: column;
