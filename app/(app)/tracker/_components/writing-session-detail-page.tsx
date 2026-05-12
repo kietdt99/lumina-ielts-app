@@ -90,6 +90,7 @@ export function WritingSessionDetailPage({
             <span className="hero-badge">{entry.taskType}</span>
             <span className="hero-badge">{entry.wordCount} words</span>
             <span className="hero-badge">{entry.priorities.length} priorities</span>
+            <span className="hero-badge">Band {entry.estimatedBand.toFixed(1)}</span>
           </div>
         </div>
         <div className="writing-hero-metrics">
@@ -143,6 +144,15 @@ export function WritingSessionDetailPage({
               <span className="metric-label">Priorities</span>
               <strong>{entry.priorities.length}</strong>
             </div>
+          </div>
+
+          <div className="history-kicker-row">
+            <span className="surface-kicker tracker-history-pill">
+              Saved {formatDate(entry.createdAt)}
+            </span>
+            <span className="surface-kicker tracker-history-pill tracker-history-pill-accent">
+              {entry.taskType} response
+            </span>
           </div>
 
           <div className="rubric-list">

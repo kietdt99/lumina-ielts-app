@@ -224,6 +224,12 @@ export function ProgressTracker({
                 >
                   <div className="history-kicker-row">
                     <span className="surface-kicker">Practice checkpoint</span>
+                    <span className="surface-kicker tracker-history-pill">
+                      {entry.taskType}
+                    </span>
+                    <span className="surface-kicker tracker-history-pill tracker-history-pill-accent">
+                      {entry.wordCount} words
+                    </span>
                     {selectedEntry?.id === entry.id ? (
                       <span className="surface-kicker">Selected</span>
                     ) : null}
@@ -309,14 +315,17 @@ export function ProgressTracker({
 
                 <div className="summary-grid">
                   <div className="summary-box">
+                    <span className="surface-kicker">Draft</span>
                     <span className="metric-label">Words</span>
                     <strong>{selectedEntry.wordCount}</strong>
                   </div>
                   <div className="summary-box">
+                    <span className="surface-kicker">Rubric</span>
                     <span className="metric-label">Rubric rows</span>
                     <strong>{selectedEntry.rubric.length}</strong>
                   </div>
                   <div className="summary-box">
+                    <span className="surface-kicker">Focus</span>
                     <span className="metric-label">Focus count</span>
                     <strong>{selectedEntry.priorities.length}</strong>
                   </div>
