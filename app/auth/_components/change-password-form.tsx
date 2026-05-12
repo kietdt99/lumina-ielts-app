@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { LoginIllustration } from '@/app/_components/ui/pastel-illustrations'
+import { StatusCallout } from '@/app/_components/ui/status-callout'
 
 type ChangePasswordResponse =
   | {
@@ -131,11 +132,15 @@ export function ChangePasswordForm({
         </div>
 
         {errorMessage ? (
-          <div className="feedback-banner error-banner">{errorMessage}</div>
+          <StatusCallout variant="error" title="Unable to update your password">
+            <p>{errorMessage}</p>
+          </StatusCallout>
         ) : null}
 
         {successMessage ? (
-          <div className="feedback-banner success-banner">{successMessage}</div>
+          <StatusCallout variant="success" title="Password updated successfully.">
+            <p>{successMessage}</p>
+          </StatusCallout>
         ) : null}
 
         <form className="auth-form" onSubmit={handleSubmit}>

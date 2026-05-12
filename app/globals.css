@@ -721,6 +721,36 @@ button {
   box-shadow: 0 14px 28px rgba(15, 23, 42, 0.08);
 }
 
+.status-callout {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.status-callout-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.status-callout-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.status-callout-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.status-callout-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
 .error-banner {
   background: var(--error);
 }

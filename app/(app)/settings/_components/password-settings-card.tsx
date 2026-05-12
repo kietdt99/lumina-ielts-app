@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ProfileIcon } from '@/app/_components/ui/app-icons'
+import { StatusCallout } from '@/app/_components/ui/status-callout'
 
 type PasswordSettingsCardProps = {
   mustChangePassword: boolean
@@ -98,10 +99,12 @@ export function PasswordSettingsCard({
       </div>
 
       {mustChangePassword ? (
-        <div className="feedback-banner info-banner">
-          Your account is still marked for a password update. Change it now to
-          clear the reminder banner.
-        </div>
+        <StatusCallout variant="info" title="Password update still required.">
+          <p>
+            Your account is still marked for a password update. Change it now to
+            clear the reminder banner.
+          </p>
+        </StatusCallout>
       ) : null}
 
       {errorMessage ? (
@@ -112,7 +115,9 @@ export function PasswordSettingsCard({
       ) : null}
 
       {successMessage ? (
-        <div className="feedback-banner success-banner">{successMessage}</div>
+        <StatusCallout variant="success" title="Password updated successfully.">
+          <p>{successMessage}</p>
+        </StatusCallout>
       ) : null}
 
       <form className="auth-form" onSubmit={handleSubmit}>

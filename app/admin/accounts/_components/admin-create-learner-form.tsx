@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { AdminIllustration } from '@/app/_components/ui/pastel-illustrations'
 import { CompassIcon, ProfileIcon, SparklesIcon } from '@/app/_components/ui/app-icons'
+import { StatusCallout } from '@/app/_components/ui/status-callout'
 
 type CreateAccountResponse =
   | {
@@ -135,9 +136,11 @@ export function AdminCreateLearnerForm() {
           ) : null}
 
           {temporaryPassword ? (
-            <div className="feedback-banner success-banner">
-              Temporary password: <strong>{temporaryPassword}</strong>
-            </div>
+            <StatusCallout variant="success" title="Learner account created.">
+              <p>
+                Temporary password: <strong>{temporaryPassword}</strong>
+              </p>
+            </StatusCallout>
           ) : null}
 
           <form className="auth-form" onSubmit={handleSubmit}>

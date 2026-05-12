@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { AdminIllustration } from '@/app/_components/ui/pastel-illustrations'
 import { ProfileIcon, SparklesIcon, TargetIcon } from '@/app/_components/ui/app-icons'
+import { StatusCallout } from '@/app/_components/ui/status-callout'
 import type { ManagedLearnerAccount } from '@/lib/auth/types'
 
 type ResetPasswordResponse =
@@ -131,9 +132,12 @@ export function AdminAccountsManager({
       ) : null}
 
       {revealedCredential ? (
-        <div className="feedback-banner success-banner">
-          Temporary password for this learner: <strong>{revealedCredential.temporaryPassword}</strong>
-        </div>
+        <StatusCallout variant="success" title="Temporary password generated.">
+          <p>
+            Temporary password for this learner:{' '}
+            <strong>{revealedCredential.temporaryPassword}</strong>
+          </p>
+        </StatusCallout>
       ) : null}
 
       {accounts.length ? (
