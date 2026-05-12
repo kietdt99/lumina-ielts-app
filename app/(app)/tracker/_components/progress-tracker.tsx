@@ -121,18 +121,34 @@ export function ProgressTracker({
       </section>
 
       <section className="tracker-toolbar">
-        <div className="task-switcher" role="tablist" aria-label="Filter writing sessions">
-          {(['All', 'Task 1', 'Task 2'] as const).map((task) => (
-            <button
-              key={task}
-              type="button"
-              className={`task-chip${selectedTask === task ? ' is-active' : ''}`}
-              onClick={() => setSelectedTask(task)}
-            >
-              <span className="task-chip-dot" aria-hidden="true" />
-              {task}
-            </button>
-          ))}
+        <div className="tracker-toolbar-copy">
+          <div className="task-switcher" role="tablist" aria-label="Filter writing sessions">
+            {(['All', 'Task 1', 'Task 2'] as const).map((task) => (
+              <button
+                key={task}
+                type="button"
+                className={`task-chip${selectedTask === task ? ' is-active' : ''}`}
+                onClick={() => setSelectedTask(task)}
+              >
+                <span className="task-chip-dot" aria-hidden="true" />
+                {task}
+              </button>
+            ))}
+          </div>
+          <div className="tracker-toolbar-summary">
+            <span className="surface-kicker">Current view</span>
+            <p>
+              {filteredEntries.length
+                ? `${selectedTask} is showing ${filteredEntries.length} checkpoint${filteredEntries.length === 1 ? '' : 's'} with an average band of ${averageBand(filteredEntries).toFixed(1)}.`
+                : `No ${selectedTask === 'All' ? '' : `${selectedTask} `}checkpoints match this filter yet.`}
+            </p>
+            <div className="hero-badge-row">
+              <span className="hero-badge">Best {bestBand(filteredEntries).toFixed(1)}</span>
+              <span className="hero-badge">
+                {selectedEntry ? `${selectedEntry.taskType} selected` : 'Choose a checkpoint'}
+              </span>
+            </div>
+          </div>
         </div>
 
         {entries.length ? (
