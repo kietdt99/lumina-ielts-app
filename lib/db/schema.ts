@@ -22,6 +22,8 @@ export type WritingPromptRow = {
   id: string
   task_type: 'Task 1' | 'Task 2'
   title: string
+  topic: string
+  difficulty: 'Guided' | 'Balanced' | 'Stretch'
   duration_minutes: number
   minimum_words: number
   brief: string

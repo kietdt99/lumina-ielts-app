@@ -48,6 +48,31 @@ describe('WritingPracticeWorkspace', () => {
     expect(screen.getByLabelText('Draft editor')).toHaveValue('Task 2 draft content')
   })
 
+  it('filters prompts by search text and topic within the selected task', async () => {
+    const user = userEvent.setup()
+
+    render(<WritingPracticeWorkspace prompts={writingPrompts} />)
+
+    await user.type(screen.getByLabelText('Find a prompt'), 'education')
+
+    expect(
+      screen.getByRole('button', { name: /AI tools in school education/i })
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /Remote work and employee productivity/i })
+    ).not.toBeInTheDocument()
+
+    await user.clear(screen.getByLabelText('Find a prompt'))
+    await user.selectOptions(screen.getByLabelText('Topic focus'), 'Work and society')
+
+    expect(
+      screen.getByRole('button', { name: /Remote work and employee productivity/i })
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: /AI tools in school education/i })
+    ).not.toBeInTheDocument()
+  })
+
   it('generates feedback and saves a practice result to local history', async () => {
     const submission = createSubmissionSuccess({
       feedback: createEvaluation({
