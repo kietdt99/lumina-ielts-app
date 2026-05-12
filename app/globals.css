@@ -1227,6 +1227,12 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
+  align-items: center;
+}
+
+.settings-actions > .primary-button,
+.settings-actions > .secondary-button {
+  min-height: 2.75rem;
 }
 
 .settings-summary {

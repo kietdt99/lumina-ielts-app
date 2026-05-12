@@ -129,14 +129,17 @@ export function WritingSessionDetailPage({
 
           <div className="summary-grid">
             <div className="summary-box">
+              <span className="surface-kicker">Draft</span>
               <span className="metric-label">Words</span>
               <strong>{entry.wordCount}</strong>
             </div>
             <div className="summary-box">
+              <span className="surface-kicker">Wins</span>
               <span className="metric-label">Strengths</span>
               <strong>{entry.strengths.length}</strong>
             </div>
             <div className="summary-box">
+              <span className="surface-kicker">Next</span>
               <span className="metric-label">Priorities</span>
               <strong>{entry.priorities.length}</strong>
             </div>
