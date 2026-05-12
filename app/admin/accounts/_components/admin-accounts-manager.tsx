@@ -143,6 +143,32 @@ export function AdminAccountsManager({
         <div className="history-list">
         {accounts.map((account) => (
           <article key={account.id} className="glass history-card">
+            <div className="history-kicker-row">
+              <span className="surface-kicker">Learner account</span>
+              <span
+                className={`surface-kicker account-status-pill${
+                  account.onboardingCompleted
+                    ? ' account-status-pill-success'
+                    : ' account-status-pill-info'
+                }`}
+              >
+                {account.onboardingCompleted
+                  ? 'Onboarding complete'
+                  : 'Onboarding pending'}
+              </span>
+              <span
+                className={`surface-kicker account-status-pill${
+                  account.mustChangePassword
+                    ? ' account-status-pill-warning'
+                    : ' account-status-pill-success'
+                }`}
+              >
+                {account.mustChangePassword
+                  ? 'Password update required'
+                  : 'Password current'}
+              </span>
+            </div>
+
             <div className="history-header">
               <div>
                 <h2>{account.fullName}</h2>
@@ -150,7 +176,11 @@ export function AdminAccountsManager({
               </div>
               <div className="history-score">
                 <strong>{account.onboardingCompleted ? 'Ready' : 'Onboarding'}</strong>
-                <p>{account.mustChangePassword ? 'Password update required' : 'Password current'}</p>
+                <p>
+                  {account.mustChangePassword
+                    ? 'Learner should change the temporary password next.'
+                    : 'Credential is already refreshed for ongoing practice.'}
+                </p>
               </div>
             </div>
 
