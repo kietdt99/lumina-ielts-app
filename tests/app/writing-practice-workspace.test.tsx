@@ -80,6 +80,9 @@ describe('WritingPracticeWorkspace', () => {
       expect(screen.getByText('Estimated band')).toBeInTheDocument()
     })
 
+    expect(screen.getByText('Sample rewrite')).toBeInTheDocument()
+    expect(screen.getByText(/Sample rewrite:/)).toBeInTheDocument()
+
     expect(globalThis.fetch).toHaveBeenCalledWith('/api/writing/submissions', {
       method: 'POST',
       headers: {

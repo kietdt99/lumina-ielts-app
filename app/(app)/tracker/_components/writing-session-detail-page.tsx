@@ -209,6 +209,16 @@ export function WritingSessionDetailPage({
             </ul>
           </div>
 
+          {entry.sampleRewrite ? (
+            <div className="feedback-section">
+              <h3 className="icon-heading">
+                <SparklesIcon className="section-icon" />
+                <span>Sample rewrite</span>
+              </h3>
+              <p>{entry.sampleRewrite}</p>
+            </div>
+          ) : null}
+
           <div className="settings-actions">
             <Link href="/tracker" className="secondary-button">
               Back to tracker

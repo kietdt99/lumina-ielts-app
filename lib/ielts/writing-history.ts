@@ -14,6 +14,7 @@ export type WritingHistoryEntry = {
   rubric: WritingEvaluation['rubric']
   strengths: string[]
   priorities: string[]
+  sampleRewrite: string | null
 }
 
 const storageKeyPrefix = 'lumina-writing-history'
@@ -152,5 +153,6 @@ export function createWritingHistoryEntry(args: {
     rubric: feedback.rubric,
     strengths: feedback.strengths,
     priorities: feedback.priorities,
+    sampleRewrite: feedback.sampleRewrite,
   } satisfies WritingHistoryEntry
 }
