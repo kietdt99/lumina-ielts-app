@@ -50,6 +50,32 @@ test.describe('writing flow', () => {
     ).toBeVisible()
   })
 
+  test('filters the prompt library by search and topic', async ({
+    page,
+    gotoAndAssertOk,
+    loginAsDemoLearner,
+  }) => {
+    await loginAsDemoLearner()
+    await gotoAndAssertOk('/writing')
+
+    await page.locator('#prompt-search').fill('education')
+    await expect(
+      page.getByRole('button', { name: /AI tools in school education/i })
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /Remote work and employee productivity/i })
+    ).toHaveCount(0)
+
+    await page.locator('#prompt-search').fill('')
+    await page.locator('#prompt-topic-filter').selectOption('Work and society')
+    await expect(
+      page.getByRole('button', { name: /Remote work and employee productivity/i })
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /AI tools in school education/i })
+    ).toHaveCount(0)
+  })
+
   test('shows a visible error state when the submissions API fails', async ({
     page,
     gotoAndAssertOk,

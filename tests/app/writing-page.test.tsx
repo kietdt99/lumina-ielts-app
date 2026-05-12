@@ -16,6 +16,8 @@ describe('WritingPage', () => {
           id: 'task2-public-transport',
           taskType: 'Task 2',
           title: 'Public transport investment',
+          topic: 'Transport policy',
+          difficulty: 'Balanced',
           durationMinutes: 40,
           minimumWords: 250,
           brief:
@@ -33,5 +35,7 @@ describe('WritingPage', () => {
       screen.getByRole('heading', { level: 2, name: 'Public transport investment' })
     ).toBeInTheDocument()
     expect(screen.getAllByText('Task 2')).not.toHaveLength(0)
+    expect(screen.getAllByText('Transport policy')).not.toHaveLength(0)
+    expect(screen.getAllByText('Balanced')).not.toHaveLength(0)
   })
 })

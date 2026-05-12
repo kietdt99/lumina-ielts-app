@@ -1,6 +1,6 @@
 'use client'
 
-import { useDeferredValue, useEffect, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import {
   ChecklistIcon,
   QuillIcon,
@@ -82,6 +82,10 @@ function loadDraftState(prompt: WritingPrompt): DraftState {
   }
 }
 
+function normalizeSearchValue(value: string) {
+  return value.trim().toLowerCase()
+}
+
 export function WritingPracticeWorkspace({
   prompts,
 }: WritingPracticeWorkspaceProps) {
@@ -90,7 +94,31 @@ export function WritingPracticeWorkspace({
     prompts[0]?.taskType ??
     defaultTaskType
   const [selectedTask, setSelectedTask] = useState<'Task 1' | 'Task 2'>(initialTask)
+  const [searchValue, setSearchValue] = useState('')
+  const [selectedTopic, setSelectedTopic] = useState('All topics')
   const filteredPrompts = prompts.filter((prompt) => prompt.taskType === selectedTask)
+  const taskTopics = useMemo(
+    () => [
+      'All topics',
+      ...new Set(filteredPrompts.map((prompt) => prompt.topic)),
+    ],
+    [filteredPrompts]
+  )
+  const discoveryPrompts = useMemo(() => {
+    const normalizedSearchValue = normalizeSearchValue(searchValue)
+
+    return filteredPrompts.filter((prompt) => {
+      const matchesTopic =
+        selectedTopic === 'All topics' || prompt.topic === selectedTopic
+      const matchesSearch =
+        !normalizedSearchValue ||
+        normalizeSearchValue(
+          `${prompt.title} ${prompt.brief} ${prompt.topic} ${prompt.difficulty}`
+        ).includes(normalizedSearchValue)
+
+      return matchesTopic && matchesSearch
+    })
+  }, [filteredPrompts, searchValue, selectedTopic])
   const [selectedPromptId, setSelectedPromptId] = useState(
     filteredPrompts.find((prompt) => prompt.id === defaultPromptId)?.id ??
       filteredPrompts[0]?.id ??
@@ -98,12 +126,25 @@ export function WritingPracticeWorkspace({
       ''
   )
   const selectedPrompt =
-    filteredPrompts.find((prompt) => prompt.id === selectedPromptId) ?? filteredPrompts[0]
+    discoveryPrompts.find((prompt) => prompt.id === selectedPromptId) ??
+    filteredPrompts.find((prompt) => prompt.id === selectedPromptId) ??
+    discoveryPrompts[0] ??
+    filteredPrompts[0]
 
   function handleTaskChange(task: 'Task 1' | 'Task 2') {
     const nextPrompts = prompts.filter((prompt) => prompt.taskType === task)
     setSelectedTask(task)
+    setSearchValue('')
+    setSelectedTopic('All topics')
     setSelectedPromptId(nextPrompts[0].id)
+  }
+
+  function handleTopicChange(topic: string) {
+    setSelectedTopic(topic)
+  }
+
+  function handlePromptSearchChange(value: string) {
+    setSearchValue(value)
   }
 
   return (
@@ -118,6 +159,8 @@ export function WritingPracticeWorkspace({
           </p>
           <div className="hero-badge-row">
             <span className="hero-badge">{selectedPrompt.taskType}</span>
+            <span className="hero-badge">{selectedPrompt.topic}</span>
+            <span className="hero-badge">{selectedPrompt.difficulty}</span>
             <span className="hero-badge">{selectedPrompt.durationMinutes} minute focus</span>
             <span className="hero-badge">{selectedPrompt.minimumWords}+ words</span>
           </div>
@@ -142,7 +185,7 @@ export function WritingPracticeWorkspace({
               <SparklesIcon className="metric-icon" />
             </div>
             <span className="metric-label">Focus</span>
-            <strong>{selectedPrompt.title}</strong>
+            <strong>{selectedPrompt.topic}</strong>
           </div>
         </div>
       </section>
@@ -168,8 +211,45 @@ export function WritingPracticeWorkspace({
             ))}
           </div>
 
+          <div className="prompt-discovery-tools">
+            <div className="field-group">
+              <label htmlFor="prompt-search">Find a prompt</label>
+              <input
+                id="prompt-search"
+                className="text-input"
+                type="search"
+                value={searchValue}
+                onChange={(event) => handlePromptSearchChange(event.target.value)}
+                placeholder="Search by topic, title, or difficulty"
+              />
+            </div>
+            <div className="field-group">
+              <label htmlFor="prompt-topic-filter">Topic focus</label>
+              <select
+                id="prompt-topic-filter"
+                className="text-input"
+                value={selectedTopic}
+                onChange={(event) => handleTopicChange(event.target.value)}
+              >
+                {taskTopics.map((topic) => (
+                  <option key={topic} value={topic}>
+                    {topic}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="writing-helper-strip">
+              <span className="surface-kicker">Prompt discovery</span>
+              <p>
+                {discoveryPrompts.length
+                  ? `${discoveryPrompts.length} prompt${discoveryPrompts.length === 1 ? '' : 's'} match the current filters.`
+                  : 'No prompts match this filter yet. Try a broader topic or clear the search.'}
+              </p>
+            </div>
+          </div>
+
           <div className="prompt-list">
-            {filteredPrompts.map((prompt) => (
+            {discoveryPrompts.map((prompt) => (
               <button
                 key={prompt.id}
                 type="button"
@@ -179,6 +259,12 @@ export function WritingPracticeWorkspace({
                 <span className="surface-kicker">Prompt</span>
                 <span className="prompt-type">{prompt.taskType}</span>
                 <strong>{prompt.title}</strong>
+                <div className="history-kicker-row">
+                  <span className="surface-kicker">{prompt.topic}</span>
+                  <span className="surface-kicker tracker-history-pill">
+                    {prompt.difficulty}
+                  </span>
+                </div>
                 <p>{prompt.brief}</p>
               </button>
             ))}
@@ -327,6 +413,8 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
           <p>{prompt.brief}</p>
           <div className="hero-badge-row">
             <span className="hero-badge">{prompt.taskType}</span>
+            <span className="hero-badge">{prompt.topic}</span>
+            <span className="hero-badge">{prompt.difficulty}</span>
             <span className="hero-badge">{prompt.minimumWords}+ words</span>
             <span className="hero-badge">{prompt.durationMinutes} minutes</span>
           </div>

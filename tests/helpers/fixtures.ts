@@ -12,6 +12,8 @@ export function createPrompt(
     id: 'task2-remote-work',
     taskType: 'Task 2',
     title: 'Remote work and employee productivity',
+    topic: 'Work and society',
+    difficulty: 'Balanced',
     durationMinutes: 40,
     minimumWords: 250,
     brief:

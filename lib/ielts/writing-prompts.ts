@@ -2,6 +2,8 @@ export type WritingPrompt = {
   id: string
   taskType: 'Task 1' | 'Task 2'
   title: string
+  topic: string
+  difficulty: 'Guided' | 'Balanced' | 'Stretch'
   durationMinutes: number
   minimumWords: number
   brief: string
@@ -14,6 +16,8 @@ export const writingPrompts: WritingPrompt[] = [
     id: 'task2-remote-work',
     taskType: 'Task 2',
     title: 'Remote work and employee productivity',
+    topic: 'Work and society',
+    difficulty: 'Balanced',
     durationMinutes: 40,
     minimumWords: 250,
     brief:
@@ -33,6 +37,8 @@ export const writingPrompts: WritingPrompt[] = [
     id: 'task2-ai-education',
     taskType: 'Task 2',
     title: 'AI tools in school education',
+    topic: 'Education and technology',
+    difficulty: 'Stretch',
     durationMinutes: 40,
     minimumWords: 250,
     brief:
@@ -52,6 +58,8 @@ export const writingPrompts: WritingPrompt[] = [
     id: 'task1-cycle-diagram',
     taskType: 'Task 1',
     title: 'Water recycling process',
+    topic: 'Process diagram',
+    difficulty: 'Guided',
     durationMinutes: 20,
     minimumWords: 150,
     brief:

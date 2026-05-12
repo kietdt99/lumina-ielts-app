@@ -13,6 +13,8 @@ function normalizePromptRow(row: WritingPromptRow): WritingPrompt {
     id: row.id,
     taskType: row.task_type,
     title: row.title,
+    topic: row.topic,
+    difficulty: row.difficulty,
     durationMinutes: row.duration_minutes,
     minimumWords: row.minimum_words,
     brief: row.brief,
@@ -35,7 +37,7 @@ export async function listWritingPrompts(): Promise<WritingPromptRepositoryResul
   const { data, error } = await supabase
     .from('writing_prompts')
     .select(
-      'id, task_type, title, duration_minutes, minimum_words, brief, instructions, planning_checklist, is_active, source, created_at'
+      'id, task_type, title, topic, difficulty, duration_minutes, minimum_words, brief, instructions, planning_checklist, is_active, source, created_at'
     )
     .eq('is_active', true)
     .order('created_at', { ascending: true })
