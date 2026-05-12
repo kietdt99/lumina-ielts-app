@@ -407,9 +407,18 @@ export function ProgressTracker({
               history cards will appear here automatically.
             </p>
           </div>
-          <Link href="/writing" className="primary-button">
-            Open writing workspace
-          </Link>
+          <div className="empty-state-helper-strip">
+            <span className="surface-kicker">Quick win</span>
+            <p>Complete a single reviewed draft and this tracker will immediately unlock trend cards, history, and detail views.</p>
+          </div>
+          <div className="settings-actions">
+            <Link href="/writing" className="primary-button">
+              Open writing workspace
+            </Link>
+            <Link href="/settings/profile" className="secondary-button">
+              Review learner goals
+            </Link>
+          </div>
         </section>
       )}
     </div>
