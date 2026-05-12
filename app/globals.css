@@ -1339,6 +1339,21 @@ button {
   gap: 0.9rem;
 }
 
+.settings-helper-strip {
+  border: 1px solid color-mix(in srgb, var(--primary) 12%, white);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.56);
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.95rem 1rem;
+}
+
+.settings-helper-strip .surface-kicker {
+  align-self: flex-start;
+  margin-bottom: 0;
+}
+
 .admin-next-steps {
   display: grid;
   gap: 0.9rem;

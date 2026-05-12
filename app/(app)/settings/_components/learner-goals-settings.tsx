@@ -295,6 +295,11 @@ export function LearnerGoalsSettings({
               Restore recommended goals
             </button>
           </div>
+
+          <div className="settings-helper-strip">
+            <span className="surface-kicker">Before you save</span>
+            <p>Choose the goal set you can realistically follow for the next few weeks so Lumina can keep your guidance steady.</p>
+          </div>
         </section>
 
         <aside className="glass writing-panel">
@@ -331,6 +336,14 @@ export function LearnerGoalsSettings({
               <span className="metric-label">Study frequency</span>
               <strong>{goals.studyFrequency}</strong>
             </div>
+          </div>
+
+          <div className="settings-helper-strip">
+            <span className="surface-kicker">Why this matters</span>
+            <p>
+              Lumina uses this snapshot to shape dashboard insights, writing priorities,
+              and the pace of your next recommended practice cycle.
+            </p>
           </div>
         </aside>
       </div>
