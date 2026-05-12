@@ -163,6 +163,11 @@ export function LoginForm({ demoCredentials }: LoginFormProps) {
             />
           </div>
 
+          <div className="auth-helper-strip">
+            <span className="surface-kicker">Credential check</span>
+            <p>Use the learner email exactly as it was shared by the admin.</p>
+          </div>
+
           <button type="submit" className="primary-button" disabled={isSubmitting}>
             {isSubmitting ? 'Signing in...' : 'Sign In'}
           </button>

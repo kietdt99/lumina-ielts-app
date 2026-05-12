@@ -184,6 +184,11 @@ export function ChangePasswordForm({
             />
           </div>
 
+          <div className="auth-helper-strip">
+            <span className="surface-kicker">Security tip</span>
+            <p>Mix a memorable phrase with numbers or symbols so the password stays strong and easy to recall.</p>
+          </div>
+
           <button type="submit" className="primary-button" disabled={isSubmitting}>
             {isSubmitting ? 'Updating password...' : 'Update password'}
           </button>
@@ -199,6 +204,9 @@ export function ChangePasswordForm({
             >
               {isSkipping ? 'Continuing...' : 'Skip once and continue'}
             </button>
+            <p className="auth-support-copy">
+              You can always change it later from profile settings.
+            </p>
           </div>
         ) : null}
       </div>
