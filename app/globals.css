@@ -1372,6 +1372,15 @@ button {
   gap: 0.55rem;
 }
 
+.tracker-history-pill {
+  background: color-mix(in srgb, var(--accent) 58%, white);
+}
+
+.tracker-history-pill-accent {
+  border-color: color-mix(in srgb, var(--primary) 22%, white);
+  color: color-mix(in srgb, var(--primary) 82%, #6d483d);
+}
+
 .selectable-card {
   background: rgba(255, 255, 255, 0.66);
   cursor: pointer;
