@@ -1437,6 +1437,26 @@ button {
   padding: 0.45rem 0.7rem;
 }
 
+.account-status-pill {
+  border-color: color-mix(in srgb, var(--primary) 14%, white);
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.account-status-pill-success {
+  border-color: color-mix(in srgb, var(--success) 24%, white);
+  color: color-mix(in srgb, var(--success) 74%, #244b39);
+}
+
+.account-status-pill-info {
+  border-color: color-mix(in srgb, var(--info) 24%, white);
+  color: color-mix(in srgb, var(--info) 74%, #31406d);
+}
+
+.account-status-pill-warning {
+  border-color: color-mix(in srgb, var(--primary) 24%, white);
+  color: color-mix(in srgb, var(--primary) 82%, #6d483d);
+}
+
 .history-columns {
   display: grid;
   gap: 1rem;
