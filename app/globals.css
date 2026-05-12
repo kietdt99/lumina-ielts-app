@@ -1402,6 +1402,28 @@ button {
   justify-content: space-between;
 }
 
+.tracker-toolbar-copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.tracker-toolbar-summary {
+  border: 1px solid color-mix(in srgb, var(--primary) 12%, white);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.58);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.95rem 1rem;
+}
+
+.tracker-toolbar-summary .surface-kicker {
+  align-self: flex-start;
+  margin-bottom: 0;
+}
+
 .tracker-layout {
   display: grid;
   gap: 1.5rem;
