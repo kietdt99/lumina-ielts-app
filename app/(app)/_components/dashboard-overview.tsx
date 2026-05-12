@@ -78,6 +78,24 @@ export function DashboardOverview({
             <span className="hero-badge">{learnerGoals.focusSkill} focus</span>
             <span className="hero-badge">{learnerGoals.studyFrequency}</span>
           </div>
+          <div className="dashboard-helper-strip">
+            <span className="surface-kicker">Today&apos;s direction</span>
+            <p>
+              {entries.length
+                ? `You have ${entries.length} saved writing session${entries.length === 1 ? '' : 's'} and your latest checkpoint is guiding the next revision loop.`
+                : `Set the tone with one reviewed draft today, then let Lumina turn it into your first dashboard checkpoint.`}
+            </p>
+            <div className="dashboard-helper-metrics">
+              <div className="dashboard-helper-chip">
+                <span className="metric-label">Latest checkpoint</span>
+                <strong>{latestSession ? latestSession.estimatedBand.toFixed(1) : 'Not yet'}</strong>
+              </div>
+              <div className="dashboard-helper-chip">
+                <span className="metric-label">Current focus</span>
+                <strong>{recommendation.recurringPriority ?? learnerGoals.focusSkill}</strong>
+              </div>
+            </div>
+          </div>
         </div>
         <form action={signout}>
           <button type="submit" className="secondary-button">
