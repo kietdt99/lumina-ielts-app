@@ -8,6 +8,7 @@ const learnerNavigation: NavigationItem[] = [
   { href: '/', label: 'Dashboard', icon: 'dashboard' },
   { href: '/writing', label: 'Writing Assistant', icon: 'writing' },
   { href: '/tracker', label: 'Score Tracker', icon: 'tracker' },
+  { href: '/study-plan', label: 'Study Plan', icon: 'plan' },
   { href: '/settings/profile', label: 'Profile Settings', icon: 'profile' },
 ]
 
