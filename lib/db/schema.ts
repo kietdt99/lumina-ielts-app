@@ -71,6 +71,11 @@ export type WritingFeedbackRow = {
   priorities: string[]
   coaching_note: string
   sample_rewrite: string | null
+  revision_plan: Array<{
+    label: string
+    action: string
+    successCriteria: string
+  }>
   provider: 'heuristic' | 'openai'
   created_at: string
 }

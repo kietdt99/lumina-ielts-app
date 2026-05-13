@@ -615,6 +615,22 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
               </ul>
             </div>
 
+            <div className="feedback-section">
+              <h3 className="icon-heading">
+                <ChecklistIcon className="section-icon" />
+                <span>Revision plan</span>
+              </h3>
+              <div className="revision-plan-list">
+                {feedback.revisionPlan.map((step) => (
+                  <article key={step.label} className="revision-step-card">
+                    <span className="surface-kicker">{step.label}</span>
+                    <p>{step.action}</p>
+                    <strong>{step.successCriteria}</strong>
+                  </article>
+                ))}
+              </div>
+            </div>
+
             {feedback.sampleRewrite ? (
               <div className="feedback-section">
                 <h3 className="icon-heading">

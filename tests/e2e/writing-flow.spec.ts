@@ -35,6 +35,8 @@ test.describe('writing flow', () => {
       page.getByRole('heading', { name: 'Feedback Snapshot' })
     ).toBeVisible()
     await expect(page.getByText('Estimated band')).toBeVisible()
+    await expect(page.getByText('Revision plan')).toBeVisible()
+    await expect(page.getByText('Structure pass')).toBeVisible()
     await expect(page.getByText(/Practice result saved at/)).toBeVisible()
 
     await page.getByRole('link', { name: 'Score Tracker' }).click()
@@ -180,6 +182,7 @@ test.describe('writing flow', () => {
     ).toBeVisible()
     await expect(page.getByText('Rubric breakdown')).toBeVisible()
     await expect(page.getByText('Clarify the thesis in the introduction.')).toBeVisible()
+    await expect(page.getByText('Revision plan')).toBeVisible()
   })
 
   test('restores account-backed writing history after the learner signs in again', async ({

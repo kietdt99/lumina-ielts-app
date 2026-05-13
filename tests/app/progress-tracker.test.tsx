@@ -97,6 +97,12 @@ describe('ProgressTracker', () => {
         'Refine the final paragraph with a clearer judgement.'
       )
     ).toBeInTheDocument()
+    expect(
+      within(detailPanel as HTMLElement).getByText('Revision plan')
+    ).toBeInTheDocument()
+    expect(
+      within(detailPanel as HTMLElement).getByText('Structure pass')
+    ).toBeInTheDocument()
 
     await user.click(
       screen.getByRole('button', { name: /Water recycling process/i })

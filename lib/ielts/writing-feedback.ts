@@ -6,6 +6,12 @@ export type WritingRubricRow = {
   summary: string
 }
 
+export type WritingRevisionStep = {
+  label: string
+  action: string
+  successCriteria: string
+}
+
 export type WritingEvaluation = {
   estimatedBand: number
   wordCount: number
@@ -16,6 +22,7 @@ export type WritingEvaluation = {
   priorities: string[]
   coachingNote: string
   sampleRewrite: string | null
+  revisionPlan: WritingRevisionStep[]
 }
 
 type DraftMetrics = {
@@ -175,6 +182,53 @@ function buildSampleRewrite(
   ].join(' ')
 }
 
+function buildRevisionPlan(
+  prompt: WritingPrompt,
+  metrics: DraftMetrics,
+  priorities: string[]
+): WritingRevisionStep[] {
+  const firstPriority =
+    priorities[0] ?? 'Make one paragraph more specific and easier to follow.'
+  const secondPriority =
+    priorities[1] ??
+    (prompt.taskType === 'Task 2'
+      ? 'Check that every body paragraph supports the main position.'
+      : 'Check that the overview and detail paragraphs are clearly separated.')
+  const languagePriority =
+    priorities.find((priority) =>
+      /transition|paraphrasing|sentences|grammar|vocabulary/i.test(priority)
+    ) ?? 'Replace repeated wording with more precise IELTS-ready language.'
+
+  return [
+    {
+      label: 'Structure pass',
+      action:
+        metrics.paragraphCount < (prompt.taskType === 'Task 2' ? 4 : 3)
+          ? firstPriority
+          : secondPriority,
+      successCriteria:
+        prompt.taskType === 'Task 2'
+          ? 'The draft has an introduction, two focused body paragraphs, and a short conclusion.'
+          : 'The response has a clear overview and grouped supporting details.',
+    },
+    {
+      label: 'Development pass',
+      action:
+        metrics.wordCount < prompt.minimumWords
+          ? `Expand the weakest paragraph until the response reaches at least ${prompt.minimumWords} words.`
+          : firstPriority,
+      successCriteria:
+        'Each main point includes a clear explanation and at least one concrete supporting detail.',
+    },
+    {
+      label: 'Language pass',
+      action: languagePriority,
+      successCriteria:
+        'The final draft uses clearer linking, fewer repeated words, and controlled sentence variety.',
+    },
+  ]
+}
+
 export function evaluateWriting(prompt: WritingPrompt, draft: string): WritingEvaluation {
   const metrics = getDraftMetrics(draft)
   const taskResponse = buildTaskResponseScore(prompt, metrics)
@@ -261,6 +315,7 @@ export function evaluateWriting(prompt: WritingPrompt, draft: string): WritingEv
       ? 'For Task 2, the fastest score gains usually come from clearer position statements and better developed body paragraphs.'
       : 'For Task 1, the fastest score gains usually come from a sharper overview and more controlled process or trend language.'
   const sampleRewrite = buildSampleRewrite(prompt, metrics, priorities)
+  const revisionPlan = buildRevisionPlan(prompt, metrics, priorities)
 
   return {
     estimatedBand,
@@ -272,5 +327,6 @@ export function evaluateWriting(prompt: WritingPrompt, draft: string): WritingEv
     priorities,
     coachingNote,
     sampleRewrite,
+    revisionPlan,
   }
 }

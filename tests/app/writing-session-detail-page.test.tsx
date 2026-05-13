@@ -56,6 +56,8 @@ describe('WritingSessionDetailPage', () => {
     expect(screen.getByText('Rubric breakdown')).toBeInTheDocument()
     expect(screen.getByText('Clarify the thesis in the introduction.')).toBeInTheDocument()
     expect(screen.getByText('Sample rewrite')).toBeInTheDocument()
+    expect(screen.getByText('Revision plan')).toBeInTheDocument()
+    expect(screen.getByText('Structure pass')).toBeInTheDocument()
     expect(
       screen.getByRole('link', { name: 'Open writing workspace' })
     ).toHaveAttribute('href', '/writing')
