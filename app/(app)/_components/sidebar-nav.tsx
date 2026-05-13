@@ -19,6 +19,7 @@ type NavigationItem = {
   icon?:
     | 'dashboard'
     | 'writing'
+    | 'ideas'
     | 'tracker'
     | 'plan'
     | 'review'
@@ -39,6 +40,7 @@ export function SidebarNav({ items }: SidebarNavProps) {
   const iconMap: Record<NonNullable<NavigationItem['icon']>, React.ReactNode> = {
     dashboard: <DashboardIcon className="sidebar-icon" />,
     writing: <WritingIcon className="sidebar-icon" />,
+    ideas: <SparklesIcon className="sidebar-icon" />,
     tracker: <TrackerIcon className="sidebar-icon" />,
     plan: <CompassIcon className="sidebar-icon" />,
     review: <ChecklistIcon className="sidebar-icon" />,

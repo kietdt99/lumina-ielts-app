@@ -1492,6 +1492,70 @@ button {
   font-size: 0.88rem;
 }
 
+.idea-bank-page {
+  gap: 1.5rem;
+}
+
+.idea-bank-toolbar {
+  gap: 1rem;
+}
+
+.idea-bank-controls {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(240px, 0.7fr) minmax(280px, 1fr);
+  align-items: end;
+}
+
+.idea-bank-search {
+  width: 100%;
+}
+
+.idea-bank-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.idea-bank-card {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.5)),
+    color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.idea-bank-section {
+  border: 1px solid color-mix(in srgb, var(--primary) 10%, white);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.54);
+  padding: 0.9rem;
+}
+
+.idea-bank-two-column {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.idea-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.idea-chip {
+  border: 1px solid color-mix(in srgb, var(--primary) 12%, white);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  color: color-mix(in srgb, var(--foreground) 88%, var(--primary));
+  font-size: 0.86rem;
+  font-weight: 700;
+  padding: 0.5rem 0.7rem;
+}
+
+.idea-chip-accent {
+  background: color-mix(in srgb, var(--accent) 44%, white);
+}
+
 .settings-shell {
   display: flex;
   flex-direction: column;
@@ -1843,6 +1907,8 @@ p {
 
 @media (max-width: 760px) {
   .writing-hero,
+  .idea-bank-controls,
+  .idea-bank-two-column,
   .writing-guidance,
   .writing-meta-grid,
   .summary-grid,

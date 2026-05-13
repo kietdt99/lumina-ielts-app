@@ -39,6 +39,11 @@ test.describe('app shell', () => {
       page.getByRole('heading', { name: 'Train like a real IELTS session' })
     ).toBeVisible()
 
+    await gotoAndAssertOk('/idea-bank')
+    await expect(
+      page.getByRole('heading', { name: 'Build answers faster with topic-ready ideas' })
+    ).toBeVisible()
+
     await gotoAndAssertOk('/tracker')
     await expect(
       page.getByRole('heading', { name: 'See how your writing practice is evolving' })
@@ -81,6 +86,12 @@ test.describe('app shell', () => {
     await expect(page).toHaveURL(/\/writing$/)
     await expect(
       page.getByRole('heading', { name: 'Train like a real IELTS session' })
+    ).toBeVisible()
+
+    await page.getByRole('link', { name: 'Idea Bank' }).click()
+    await expect(page).toHaveURL(/\/idea-bank$/)
+    await expect(
+      page.getByRole('heading', { name: 'Build answers faster with topic-ready ideas' })
     ).toBeVisible()
 
     await page.getByRole('link', { name: 'Score Tracker' }).click()
