@@ -1386,6 +1386,51 @@ button {
   background: rgba(255, 255, 255, 0.62);
 }
 
+.review-queue-page {
+  gap: 1.5rem;
+}
+
+.review-queue-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.review-queue-card {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.48)),
+    color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.review-queue-card.priority-high {
+  border-color: color-mix(in srgb, var(--primary) 34%, white);
+}
+
+.review-queue-card.priority-medium {
+  border-color: color-mix(in srgb, var(--accent) 58%, white);
+}
+
+.review-queue-success {
+  border: 1px solid color-mix(in srgb, var(--primary) 12%, white);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.58);
+  padding: 0.9rem;
+}
+
+.review-queue-success strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.review-queue-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  color: rgba(15, 23, 42, 0.62);
+  font-size: 0.9rem;
+}
+
 .settings-shell {
   display: flex;
   flex-direction: column;

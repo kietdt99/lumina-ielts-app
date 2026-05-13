@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
+  ChecklistIcon,
   CompassIcon,
   DashboardIcon,
   ProfileIcon,
@@ -14,7 +15,15 @@ import {
 type NavigationItem = {
   href: string
   label: string
-  icon?: 'dashboard' | 'writing' | 'tracker' | 'plan' | 'profile' | 'accounts' | 'create'
+  icon?:
+    | 'dashboard'
+    | 'writing'
+    | 'tracker'
+    | 'plan'
+    | 'review'
+    | 'profile'
+    | 'accounts'
+    | 'create'
 }
 
 type SidebarNavProps = {
@@ -30,6 +39,7 @@ export function SidebarNav({ items }: SidebarNavProps) {
     writing: <WritingIcon className="sidebar-icon" />,
     tracker: <TrackerIcon className="sidebar-icon" />,
     plan: <CompassIcon className="sidebar-icon" />,
+    review: <ChecklistIcon className="sidebar-icon" />,
     profile: <ProfileIcon className="sidebar-icon" />,
     accounts: <ProfileIcon className="sidebar-icon" />,
     create: <SparklesIcon className="sidebar-icon" />,
