@@ -44,6 +44,11 @@ test.describe('app shell', () => {
       page.getByRole('heading', { name: 'Build answers faster with topic-ready ideas' })
     ).toBeVisible()
 
+    await gotoAndAssertOk('/outline-builder')
+    await expect(
+      page.getByRole('heading', { name: 'Plan the answer before the timer starts' })
+    ).toBeVisible()
+
     await gotoAndAssertOk('/tracker')
     await expect(
       page.getByRole('heading', { name: 'See how your writing practice is evolving' })
@@ -92,6 +97,12 @@ test.describe('app shell', () => {
     await expect(page).toHaveURL(/\/idea-bank$/)
     await expect(
       page.getByRole('heading', { name: 'Build answers faster with topic-ready ideas' })
+    ).toBeVisible()
+
+    await page.getByRole('link', { name: 'Outline Builder' }).click()
+    await expect(page).toHaveURL(/\/outline-builder$/)
+    await expect(
+      page.getByRole('heading', { name: 'Plan the answer before the timer starts' })
     ).toBeVisible()
 
     await page.getByRole('link', { name: 'Score Tracker' }).click()
