@@ -7,6 +7,7 @@ import {
   CompassIcon,
   DashboardIcon,
   ProfileIcon,
+  RibbonIcon,
   SparklesIcon,
   TrackerIcon,
   WritingIcon,
@@ -21,6 +22,7 @@ type NavigationItem = {
     | 'tracker'
     | 'plan'
     | 'review'
+    | 'journal'
     | 'profile'
     | 'accounts'
     | 'create'
@@ -40,6 +42,7 @@ export function SidebarNav({ items }: SidebarNavProps) {
     tracker: <TrackerIcon className="sidebar-icon" />,
     plan: <CompassIcon className="sidebar-icon" />,
     review: <ChecklistIcon className="sidebar-icon" />,
+    journal: <RibbonIcon className="sidebar-icon" />,
     profile: <ProfileIcon className="sidebar-icon" />,
     accounts: <ProfileIcon className="sidebar-icon" />,
     create: <SparklesIcon className="sidebar-icon" />,
