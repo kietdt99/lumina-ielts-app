@@ -1346,6 +1346,20 @@ button {
   gap: 1.5rem;
 }
 
+.study-plan-page {
+  gap: 1.5rem;
+}
+
+.study-plan-session-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.study-plan-session-card {
+  background: rgba(255, 255, 255, 0.62);
+}
+
 .settings-shell {
   display: flex;
   flex-direction: column;
