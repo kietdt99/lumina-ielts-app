@@ -15,6 +15,7 @@ export type WritingHistoryEntry = {
   strengths: string[]
   priorities: string[]
   sampleRewrite: string | null
+  revisionPlan: WritingEvaluation['revisionPlan']
 }
 
 const storageKeyPrefix = 'lumina-writing-history'
@@ -33,6 +34,14 @@ function sortByNewest(entries: WritingHistoryEntry[]) {
     (left, right) =>
       new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime()
   )
+}
+
+function normalizeHistoryEntry(entry: WritingHistoryEntry): WritingHistoryEntry {
+  return {
+    ...entry,
+    sampleRewrite: entry.sampleRewrite ?? null,
+    revisionPlan: Array.isArray(entry.revisionPlan) ? entry.revisionPlan : [],
+  }
 }
 
 function areEntriesEqual(
@@ -68,7 +77,7 @@ export function getWritingHistorySnapshot() {
 
   try {
     const parsedValue = JSON.parse(rawValue) as WritingHistoryEntry[]
-    cachedSnapshot = sortByNewest(parsedValue)
+    cachedSnapshot = sortByNewest(parsedValue.map(normalizeHistoryEntry))
     return cachedSnapshot
   } catch {
     cachedSnapshot = getServerWritingHistorySnapshot()
@@ -154,5 +163,6 @@ export function createWritingHistoryEntry(args: {
     strengths: feedback.strengths,
     priorities: feedback.priorities,
     sampleRewrite: feedback.sampleRewrite,
+    revisionPlan: feedback.revisionPlan,
   } satisfies WritingHistoryEntry
 }

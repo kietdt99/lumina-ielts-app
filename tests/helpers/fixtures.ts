@@ -60,6 +60,23 @@ export function createEvaluation(
     coachingNote: 'Clarify your position earlier in the introduction.',
     sampleRewrite:
       'Sample rewrite: One well-developed paragraph should state the main point clearly, explain why it matters, and support it with a concrete example.',
+    revisionPlan: [
+      {
+        label: 'Structure pass',
+        action: 'Clarify the topic sentence before adding more support.',
+        successCriteria: 'The paragraph has one clear main idea.',
+      },
+      {
+        label: 'Development pass',
+        action: 'Add a concrete example to the weakest body paragraph.',
+        successCriteria: 'The example directly supports the main point.',
+      },
+      {
+        label: 'Language pass',
+        action: 'Replace repeated wording with more precise vocabulary.',
+        successCriteria: 'The final draft avoids obvious repetition.',
+      },
+    ],
     ...overrides,
   }
 }
@@ -81,6 +98,7 @@ export function createHistoryEntry(
     priorities: ['Develop the second body paragraph with more precise support.'],
     sampleRewrite:
       'Sample rewrite: One well-developed paragraph should state the main point clearly, explain why it matters, and support it with a concrete example.',
+    revisionPlan: createEvaluation().revisionPlan,
     ...overrides,
   }
 }

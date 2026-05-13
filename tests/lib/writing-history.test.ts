@@ -72,6 +72,22 @@ describe('writing history store', () => {
     expect(getWritingHistorySnapshot()).toBe(thirdSnapshot)
   })
 
+  it('normalizes older local history entries that do not have revision plan data', () => {
+    const legacyShape: Partial<ReturnType<typeof createHistoryEntry>> = createHistoryEntry({
+      id: 'legacy-entry',
+    })
+    delete legacyShape.revisionPlan
+    delete legacyShape.sampleRewrite
+
+    window.localStorage.setItem('lumina-writing-history', JSON.stringify([legacyShape]))
+
+    const [entry] = getWritingHistorySnapshot()
+
+    expect(entry?.id).toBe('legacy-entry')
+    expect(entry?.sampleRewrite).toBeNull()
+    expect(entry?.revisionPlan).toEqual([])
+  })
+
   it('notifies subscribers when history changes', () => {
     const onStoreChange = vi.fn()
     const unsubscribe = subscribeToWritingHistory(onStoreChange)

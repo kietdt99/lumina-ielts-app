@@ -56,7 +56,9 @@ describe('writing submissions service', () => {
       expect(result.historyEntry.estimatedBand).toBe(result.feedback.estimatedBand)
       expect(result.feedback.rubric).toHaveLength(4)
       expect(result.feedback.sampleRewrite).toContain('Sample rewrite:')
+      expect(result.feedback.revisionPlan).toHaveLength(3)
       expect(result.historyEntry.sampleRewrite).toBe(result.feedback.sampleRewrite)
+      expect(result.historyEntry.revisionPlan).toEqual(result.feedback.revisionPlan)
     }
   })
 

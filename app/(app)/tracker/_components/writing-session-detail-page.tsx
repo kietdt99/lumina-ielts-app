@@ -209,6 +209,24 @@ export function WritingSessionDetailPage({
             </ul>
           </div>
 
+          {entry.revisionPlan.length ? (
+            <div className="feedback-section">
+              <h3 className="icon-heading">
+                <ChecklistIcon className="section-icon" />
+                <span>Revision plan</span>
+              </h3>
+              <div className="revision-plan-list">
+                {entry.revisionPlan.map((step) => (
+                  <article key={step.label} className="revision-step-card">
+                    <span className="surface-kicker">{step.label}</span>
+                    <p>{step.action}</p>
+                    <strong>{step.successCriteria}</strong>
+                  </article>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
           {entry.sampleRewrite ? (
             <div className="feedback-section">
               <h3 className="icon-heading">

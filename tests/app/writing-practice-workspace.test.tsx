@@ -113,6 +113,8 @@ describe('WritingPracticeWorkspace', () => {
 
     expect(screen.getByText('Sample rewrite')).toBeInTheDocument()
     expect(screen.getByText(/Sample rewrite:/)).toBeInTheDocument()
+    expect(screen.getByText('Revision plan')).toBeInTheDocument()
+    expect(screen.getByText('Structure pass')).toBeInTheDocument()
 
     expect(globalThis.fetch).toHaveBeenCalledWith('/api/writing/submissions', {
       method: 'POST',
