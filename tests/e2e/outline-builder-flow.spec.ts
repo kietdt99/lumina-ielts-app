@@ -40,10 +40,22 @@ test.describe('outline builder flow', () => {
       page.getByRole('heading', { name: 'Detail group 1', exact: true })
     ).toBeVisible()
 
-    await page.getByRole('link', { name: 'Open writing workspace' }).click()
-    await expect(page).toHaveURL(/\/writing$/)
+    await page
+      .getByRole('link', { name: 'Start writing with this outline' })
+      .last()
+      .click()
+    await expect(page).toHaveURL(
+      /\/writing\?promptId=task1-cycle-diagram&outline=1$/
+    )
     await expect(
       page.getByRole('heading', { name: 'Train like a real IELTS session' })
+    ).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: 'Water recycling process' })
+    ).toBeVisible()
+    await expect(page.getByText('Outline loaded').first()).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: 'Overview', exact: true })
     ).toBeVisible()
   })
 })

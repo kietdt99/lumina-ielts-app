@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import {
   ChecklistIcon,
@@ -14,12 +15,19 @@ import {
   type WritingEvaluation,
 } from '@/lib/ielts/writing-feedback'
 import { readSessionHintFromDocument } from '@/lib/auth/session-hint'
+import { ideaBankEntries } from '@/lib/ielts/idea-bank'
+import {
+  createWritingOutline,
+  type WritingOutline,
+} from '@/lib/ielts/outline-builder'
 import { saveWritingHistoryEntry } from '@/lib/ielts/writing-history'
 import type { WritingSubmissionResponse } from '@/lib/ielts/writing-submissions'
 import type { WritingPrompt } from '@/lib/ielts/writing-prompts'
 
 type WritingPracticeWorkspaceProps = {
   prompts: WritingPrompt[]
+  initialPromptId?: string
+  showOutline?: boolean
 }
 
 type DraftState = {
@@ -86,10 +94,18 @@ function normalizeSearchValue(value: string) {
   return value.trim().toLowerCase()
 }
 
+function promptForId(prompts: WritingPrompt[], promptId?: string) {
+  return prompts.find((prompt) => prompt.id === promptId) ?? null
+}
+
 export function WritingPracticeWorkspace({
+  initialPromptId,
   prompts,
+  showOutline = false,
 }: WritingPracticeWorkspaceProps) {
+  const handoffPrompt = promptForId(prompts, initialPromptId)
   const initialTask =
+    handoffPrompt?.taskType ??
     prompts.find((prompt) => prompt.taskType === defaultTaskType)?.taskType ??
     prompts[0]?.taskType ??
     defaultTaskType
@@ -120,7 +136,8 @@ export function WritingPracticeWorkspace({
     })
   }, [filteredPrompts, searchValue, selectedTopic])
   const [selectedPromptId, setSelectedPromptId] = useState(
-    filteredPrompts.find((prompt) => prompt.id === defaultPromptId)?.id ??
+    handoffPrompt?.id ??
+      filteredPrompts.find((prompt) => prompt.id === defaultPromptId)?.id ??
       filteredPrompts[0]?.id ??
       prompts[0]?.id ??
       ''
@@ -129,14 +146,18 @@ export function WritingPracticeWorkspace({
     discoveryPrompts.find((prompt) => prompt.id === selectedPromptId) ??
     filteredPrompts.find((prompt) => prompt.id === selectedPromptId) ??
     discoveryPrompts[0] ??
-    filteredPrompts[0]
+    filteredPrompts[0] ??
+    (prompts[0] as WritingPrompt)
+  const activeOutline = showOutline
+    ? createWritingOutline(selectedPrompt, ideaBankEntries)
+    : null
 
   function handleTaskChange(task: 'Task 1' | 'Task 2') {
     const nextPrompts = prompts.filter((prompt) => prompt.taskType === task)
     setSelectedTask(task)
     setSearchValue('')
     setSelectedTopic('All topics')
-    setSelectedPromptId(nextPrompts[0].id)
+    setSelectedPromptId(nextPrompts[0]?.id ?? prompts[0]?.id ?? '')
   }
 
   function handleTopicChange(topic: string) {
@@ -163,6 +184,7 @@ export function WritingPracticeWorkspace({
             <span className="hero-badge">{selectedPrompt.difficulty}</span>
             <span className="hero-badge">{selectedPrompt.durationMinutes} minute focus</span>
             <span className="hero-badge">{selectedPrompt.minimumWords}+ words</span>
+            {activeOutline ? <span className="hero-badge">Outline loaded</span> : null}
           </div>
         </div>
         <div className="writing-hero-metrics">
@@ -271,13 +293,77 @@ export function WritingPracticeWorkspace({
           </div>
         </aside>
 
-        <PromptWorkspacePanel key={selectedPrompt.id} prompt={selectedPrompt} />
+        <PromptWorkspacePanel
+          key={selectedPrompt.id}
+          outline={activeOutline}
+          prompt={selectedPrompt}
+        />
       </div>
     </div>
   )
 }
 
-function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
+function LoadedOutlinePanel({ outline }: { outline: WritingOutline }) {
+  return (
+    <section className="writing-outline-panel" aria-label="Loaded writing outline">
+      <div className="dashboard-section-header writing-outline-header">
+        <div className="panel-heading">
+          <span className="surface-kicker">Outline loaded</span>
+          <h3 className="icon-heading">
+            <ChecklistIcon className="section-icon" />
+            <span>{outline.headline}</span>
+          </h3>
+          <p>{outline.summary}</p>
+        </div>
+        <Link href="/outline-builder" className="inline-link">
+          Edit outline
+        </Link>
+      </div>
+
+      <div className="writing-outline-blocks">
+        {outline.blocks.map((block) => (
+          <article key={block.id} className="writing-outline-mini-card">
+            <span className="surface-kicker">Outline block</span>
+            <h4>{block.label}</h4>
+            <strong>{block.purpose}</strong>
+            <p>{block.sentenceFrame}</p>
+          </article>
+        ))}
+      </div>
+
+      <div className="writing-outline-support">
+        <div>
+          <span className="metric-label">Vocabulary cues</span>
+          <div className="idea-chip-list">
+            {outline.vocabulary.map((item) => (
+              <span key={item} className="idea-chip">
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <span className="metric-label">Collocation cues</span>
+          <div className="idea-chip-list">
+            {outline.collocations.map((item) => (
+              <span key={item} className="idea-chip">
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function PromptWorkspacePanel({
+  outline,
+  prompt,
+}: {
+  outline?: WritingOutline | null
+  prompt: WritingPrompt
+}) {
   const initialDraftState = loadDraftState(prompt)
   const [draft, setDraft] = useState(initialDraftState.draft)
   const [remainingSeconds, setRemainingSeconds] = useState(
@@ -498,6 +584,8 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
             </ul>
           </div>
         </div>
+
+        {outline ? <LoadedOutlinePanel outline={outline} /> : null}
 
         <label className="editor-label" htmlFor="writing-draft">
           Draft editor

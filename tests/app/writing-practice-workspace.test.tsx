@@ -73,6 +73,25 @@ describe('WritingPracticeWorkspace', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('loads a selected prompt and outline from the outline handoff', () => {
+    render(
+      <WritingPracticeWorkspace
+        initialPromptId="task2-ai-education"
+        prompts={writingPrompts}
+        showOutline
+      />
+    )
+
+    expect(
+      screen.getAllByText('AI tools in school education').length
+    ).toBeGreaterThan(0)
+    expect(screen.getAllByText('Outline loaded').length).toBeGreaterThan(0)
+    expect(screen.getByLabelText('Loaded writing outline')).toBeInTheDocument()
+    expect(screen.getAllByText('Body paragraph 1').length).toBeGreaterThan(0)
+    expect(screen.getByText('personalized learning')).toBeInTheDocument()
+    expect(screen.getByLabelText('Draft editor')).toBeInTheDocument()
+  })
+
   it('generates feedback and saves a practice result to local history', async () => {
     const submission = createSubmissionSuccess({
       feedback: createEvaluation({
