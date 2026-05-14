@@ -39,6 +39,11 @@ test.describe('app shell', () => {
       page.getByRole('heading', { name: 'Train like a real IELTS session' })
     ).toBeVisible()
 
+    await gotoAndAssertOk('/practice-sprint')
+    await expect(
+      page.getByRole('heading', { name: 'Start a focused IELTS writing sprint' })
+    ).toBeVisible()
+
     await gotoAndAssertOk('/prompt-explorer')
     await expect(
       page.getByRole('heading', {
@@ -129,6 +134,12 @@ test.describe('app shell', () => {
     await expect(page).toHaveURL(/\/writing$/)
     await expect(
       page.getByRole('heading', { name: 'Train like a real IELTS session' })
+    ).toBeVisible()
+
+    await page.getByRole('link', { name: 'Practice Sprint', exact: true }).click()
+    await expect(page).toHaveURL(/\/practice-sprint$/)
+    await expect(
+      page.getByRole('heading', { name: 'Start a focused IELTS writing sprint' })
     ).toBeVisible()
 
     await page.getByRole('link', { name: 'Prompt Explorer', exact: true }).click()
