@@ -1,4 +1,11 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { WritingPracticeWorkspace } from '@/app/(app)/writing/_components/writing-practice-workspace'
@@ -90,6 +97,43 @@ describe('WritingPracticeWorkspace', () => {
     expect(screen.getAllByText('Body paragraph 1').length).toBeGreaterThan(0)
     expect(screen.getByText('personalized learning')).toBeInTheDocument()
     expect(screen.getByLabelText('Draft editor')).toBeInTheDocument()
+  })
+
+  it('updates the pre-submit readiness checklist as the learner drafts', async () => {
+    render(<WritingPracticeWorkspace prompts={writingPrompts} />)
+
+    const readinessPanel = screen.getByLabelText('Writing readiness checks')
+
+    expect(within(readinessPanel).getByText('Pre-submit readiness check')).toBeInTheDocument()
+    expect(within(readinessPanel).getByText('0%')).toBeInTheDocument()
+    expect(within(readinessPanel).getByText('Word target')).toBeInTheDocument()
+    expect(within(readinessPanel).getAllByText('Missing').length).toBeGreaterThan(0)
+
+    fireEvent.change(screen.getByLabelText('Draft editor'), {
+      target: {
+        value: [
+          'Remote work can improve productivity because employees protect focused time and avoid tiring commutes.',
+          '',
+          'Moreover, flexible schedules help people work during their most productive hours with fewer interruptions.',
+          '',
+          'However, office work remains useful because new employees often need direct mentoring and informal feedback.',
+          '',
+          'In conclusion, remote work succeeds when autonomy is balanced with clear expectations and team communication.',
+        ].join('\n'),
+      },
+    })
+
+    await waitFor(() => {
+      expect(
+        within(readinessPanel).getByText(/of 250\+ recommended words\./)
+      ).not.toHaveTextContent('0 of')
+    })
+
+    expect(within(readinessPanel).getByText('Position signal')).toBeInTheDocument()
+    expect(within(readinessPanel).getAllByText('Ready').length).toBeGreaterThan(0)
+    expect(
+      within(readinessPanel).getByText(/readiness checks? still need attention/)
+    ).toBeInTheDocument()
   })
 
   it('generates feedback and saves a practice result to local history', async () => {
