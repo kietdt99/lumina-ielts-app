@@ -25,7 +25,7 @@ export type WritingEvaluation = {
   revisionPlan: WritingRevisionStep[]
 }
 
-type DraftMetrics = {
+export type DraftMetrics = {
   wordCount: number
   paragraphCount: number
   sentenceCount: number

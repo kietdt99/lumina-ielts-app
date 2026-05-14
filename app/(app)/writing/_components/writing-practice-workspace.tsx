@@ -14,6 +14,11 @@ import {
   getDraftMetrics,
   type WritingEvaluation,
 } from '@/lib/ielts/writing-feedback'
+import {
+  createWritingReadinessCheck,
+  type WritingReadinessCheck,
+  type WritingReadinessStatus,
+} from '@/lib/ielts/writing-readiness'
 import { readSessionHintFromDocument } from '@/lib/auth/session-hint'
 import { ideaBankEntries } from '@/lib/ielts/idea-bank'
 import {
@@ -357,6 +362,73 @@ function LoadedOutlinePanel({ outline }: { outline: WritingOutline }) {
   )
 }
 
+function readinessStatusLabel(status: WritingReadinessStatus) {
+  if (status === 'ready') {
+    return 'Ready'
+  }
+
+  return status === 'needs-work' ? 'Needs work' : 'Missing'
+}
+
+function ReadinessCheckPanel({
+  readiness,
+}: {
+  readiness: WritingReadinessCheck
+}) {
+  return (
+    <section className="writing-readiness-panel" aria-label="Writing readiness checks">
+      <div className="dashboard-section-header writing-readiness-header">
+        <div className="panel-heading">
+          <span className="surface-kicker">Pre-submit readiness check</span>
+          <h3 className="icon-heading">
+            <ChecklistIcon className="section-icon" />
+            <span>{readiness.headline}</span>
+          </h3>
+          <p>{readiness.summary}</p>
+        </div>
+        <div className="readiness-score-card">
+          <span className="metric-label">Readiness</span>
+          <strong>{readiness.readinessScore}%</strong>
+        </div>
+      </div>
+
+      <div className="readiness-metric-row">
+        <span className="hero-badge">{readiness.metrics.wordCount} words</span>
+        <span className="hero-badge">{readiness.metrics.paragraphCount} paragraphs</span>
+        <span className="hero-badge">{readiness.metrics.sentenceCount} sentences</span>
+        <span className="hero-badge">{readiness.metrics.transitionCount} transitions</span>
+      </div>
+
+      <div className="readiness-check-grid">
+        {readiness.items.map((item) => (
+          <article
+            key={item.id}
+            className={`readiness-check-card is-${item.status}`}
+          >
+            <div className="history-kicker-row">
+              <span className="surface-kicker">{item.criterion}</span>
+              <span className="surface-kicker tracker-history-pill">
+                {readinessStatusLabel(item.status)}
+              </span>
+            </div>
+            <h4>{item.label}</h4>
+            <p>{item.detail}</p>
+            <strong>{item.action}</strong>
+          </article>
+        ))}
+      </div>
+
+      <div className="writing-helper-strip">
+        <span className="surface-kicker">How to use this</span>
+        <p>
+          Fix the missing checks first, then use the feedback generator for a
+          stronger revision loop.
+        </p>
+      </div>
+    </section>
+  )
+}
+
 function PromptWorkspacePanel({
   outline,
   prompt,
@@ -376,6 +448,7 @@ function PromptWorkspacePanel({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const deferredDraft = useDeferredValue(draft)
   const draftMetrics = getDraftMetrics(deferredDraft)
+  const readinessCheck = createWritingReadinessCheck(prompt, deferredDraft)
 
   useEffect(() => {
     const storageKey = getStorageKey(prompt.id)
@@ -601,6 +674,8 @@ function PromptWorkspacePanel({
           onChange={(event) => handleDraftChange(event.target.value)}
           placeholder="Write your IELTS response here. Your draft is autosaved locally for the selected prompt."
         />
+
+        <ReadinessCheckPanel readiness={readinessCheck} />
 
         <div className="editor-footer">
           <p>

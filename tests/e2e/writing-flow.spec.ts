@@ -17,8 +17,11 @@ test.describe('writing flow', () => {
     const selectedPromptTitle = (
       await page.locator('.editor-panel .panel-heading h2').textContent()
     )?.trim()
+    const readinessPanel = page.getByLabel('Writing readiness checks')
 
     expect(selectedPromptTitle).toBeTruthy()
+    await expect(readinessPanel.getByText('Pre-submit readiness check')).toBeVisible()
+    await expect(readinessPanel.locator('.readiness-score-card')).toContainText('0%')
 
     await page.getByLabel('Draft editor').fill(
       [
@@ -28,6 +31,10 @@ test.describe('writing flow', () => {
         'Overall, remote work is effective when it is supported by structure and accountability.',
       ].join('\n\n')
     )
+
+    await expect(readinessPanel.getByText('Position signal')).toBeVisible()
+    await expect(readinessPanel.getByText(/of 250\+ recommended words/)).toBeVisible()
+    await expect(readinessPanel.getByText('Ready').first()).toBeVisible()
 
     await page.getByRole('button', { name: 'Generate practice feedback' }).click()
 

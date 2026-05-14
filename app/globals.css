@@ -1192,6 +1192,93 @@ button {
   padding: 0.9rem;
 }
 
+.writing-readiness-panel {
+  border: 1px solid color-mix(in srgb, var(--primary) 14%, white);
+  border-radius: 1.2rem;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.52)),
+    color-mix(in srgb, var(--primary) 8%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.writing-readiness-header {
+  align-items: flex-start;
+}
+
+.readiness-score-card {
+  border: 1px solid color-mix(in srgb, var(--primary) 14%, white);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--accent) 26%, white);
+  min-width: 126px;
+  padding: 0.9rem 1rem;
+  text-align: center;
+}
+
+.readiness-score-card strong {
+  color: var(--primary);
+  display: block;
+  font-size: 2rem;
+  line-height: 1;
+  margin-top: 0.35rem;
+}
+
+.readiness-metric-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.readiness-check-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.readiness-check-card {
+  border: 1px solid color-mix(in srgb, var(--primary) 11%, white);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.58);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.9rem;
+}
+
+.readiness-check-card.is-ready {
+  border-color: color-mix(in srgb, #59a66f 36%, white);
+  background: color-mix(in srgb, #dff4e5 52%, white);
+}
+
+.readiness-check-card.is-needs-work {
+  border-color: color-mix(in srgb, var(--primary) 24%, white);
+  background: color-mix(in srgb, var(--accent) 34%, white);
+}
+
+.readiness-check-card.is-missing {
+  border-color: color-mix(in srgb, #c56f64 28%, white);
+  background: color-mix(in srgb, #ffe3dd 42%, white);
+}
+
+.readiness-check-card h4 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.readiness-check-card p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.readiness-check-card strong {
+  color: var(--accent-foreground);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 .bullet-list {
   display: flex;
   flex-direction: column;
