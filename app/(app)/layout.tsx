@@ -7,6 +7,7 @@ import type { NavigationItem } from './_components/sidebar-nav'
 const learnerNavigation: NavigationItem[] = [
   { href: '/', label: 'Dashboard', icon: 'dashboard' },
   { href: '/writing', label: 'Writing Assistant', icon: 'writing' },
+  { href: '/readiness-lab', label: 'Readiness Lab', icon: 'review' },
   { href: '/practice-sprint', label: 'Practice Sprint', icon: 'plan' },
   { href: '/prompt-explorer', label: 'Prompt Explorer', icon: 'writing' },
   { href: '/rubric-guide', label: 'Rubric Guide', icon: 'review' },
