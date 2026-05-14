@@ -629,6 +629,9 @@ function PromptWorkspacePanel({
             This practice estimate runs locally and is designed to guide your
             next revision pass.
           </p>
+          <Link href="/rubric-guide" className="inline-link">
+            Open rubric guide
+          </Link>
         </div>
 
         {submissionError ? (
