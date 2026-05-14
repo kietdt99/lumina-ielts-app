@@ -1854,6 +1854,65 @@ button {
   background: color-mix(in srgb, var(--accent) 44%, white);
 }
 
+.vocabulary-builder-page {
+  gap: 1.5rem;
+}
+
+.vocabulary-builder-toolbar,
+.vocabulary-builder-practice-panel {
+  gap: 1rem;
+}
+
+.vocabulary-builder-controls {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns:
+    minmax(220px, 0.7fr)
+    minmax(190px, 0.55fr)
+    minmax(220px, 0.7fr)
+    minmax(280px, 1fr);
+  align-items: end;
+}
+
+.vocabulary-builder-search {
+  width: 100%;
+}
+
+.vocabulary-builder-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+}
+
+.vocabulary-builder-card {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.5)),
+    color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.vocabulary-builder-section {
+  border: 1px solid color-mix(in srgb, var(--primary) 10%, white);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.56);
+  padding: 0.9rem;
+}
+
+.vocabulary-builder-example {
+  border-left: 4px solid color-mix(in srgb, var(--primary) 58%, white);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.64);
+  color: color-mix(in srgb, var(--foreground) 88%, var(--primary));
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.65;
+  margin: 0;
+  padding: 1rem;
+}
+
+.vocabulary-builder-practice {
+  background: color-mix(in srgb, var(--accent) 18%, white);
+}
+
 .model-fragments-page {
   gap: 1.5rem;
 }
@@ -2435,6 +2494,7 @@ p {
   .model-fragments-controls,
   .model-fragment-two-column,
   .prompt-explorer-controls,
+  .vocabulary-builder-controls,
   .revision-library-controls,
   .outline-builder-picker,
   .outline-support-grid,
