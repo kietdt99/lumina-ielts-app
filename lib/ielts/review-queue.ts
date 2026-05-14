@@ -1,5 +1,9 @@
 import type { WritingHistoryEntry } from './writing-history'
 import type { WritingRevisionStep } from './writing-feedback'
+import {
+  findRevisionChecklistItems,
+  type RevisionChecklistItem,
+} from './revision-checklist'
 
 export type ReviewQueuePriority = 'High' | 'Medium' | 'Low'
 
@@ -15,6 +19,7 @@ export type ReviewQueueItem = {
   successCriteria: string
   priority: ReviewQueuePriority
   sourceType: 'revision-plan' | 'priority'
+  checklist: RevisionChecklistItem[]
 }
 
 export type ReviewQueue = {
@@ -103,6 +108,10 @@ export function createReviewQueue(
         successCriteria: step.successCriteria,
         priority: priorityFor(entryIndex, actionIndex),
         sourceType: hasRevisionPlan ? 'revision-plan' : 'priority',
+        checklist: findRevisionChecklistItems({
+          taskType: entry.taskType,
+          text: `${step.label} ${step.action} ${step.successCriteria}`,
+        }),
       })
     }
 

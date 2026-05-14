@@ -55,6 +55,12 @@ describe('review queue', () => {
         label: 'Thesis pass',
         priority: 'High',
         action: 'Make the position clearer in the introduction.',
+        checklist: expect.arrayContaining([
+          expect.objectContaining({
+            id: 'task2-direct-position',
+            title: 'Make the position unmistakable',
+          }),
+        ]),
       })
     )
   })
@@ -63,6 +69,7 @@ describe('review queue', () => {
     const queue = createReviewQueue([
       createHistoryEntry({
         id: 'legacy-entry',
+        taskType: 'Task 1',
         revisionPlan: [],
         priorities: ['Group the overview and supporting details more clearly.'],
       }),
@@ -76,6 +83,11 @@ describe('review queue', () => {
         label: 'Priority 1',
         action: 'Group the overview and supporting details more clearly.',
         priority: 'High',
+        checklist: expect.arrayContaining([
+          expect.objectContaining({
+            id: 'task1-overview-sentence',
+          }),
+        ]),
       })
     )
   })

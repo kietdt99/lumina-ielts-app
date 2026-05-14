@@ -43,6 +43,9 @@ test.describe('review queue flow', () => {
     await expect(firstCard).toContainText('High priority')
     await expect(firstCard).toContainText('Make the introduction answer the question more directly.')
     await expect(firstCard).toContainText('The introduction has one clear position sentence.')
+    await expect(firstCard).toContainText('Revision checklist')
+    await expect(firstCard).toContainText('Make the position unmistakable')
+    await expect(firstCard).toContainText('A reader can underline your position')
 
     await page.getByRole('link', { name: 'Open full detail' }).first().click()
     await expect(page).toHaveURL(/\/tracker\/entry-review-1$/)

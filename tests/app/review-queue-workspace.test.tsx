@@ -55,6 +55,8 @@ describe('ReviewQueueWorkspace', () => {
     expect(
       screen.getAllByText('Clarify the topic sentence before adding more support.').length
     ).toBeGreaterThan(0)
+    expect(screen.getAllByText('Revision checklist').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Give each paragraph one job').length).toBeGreaterThan(0)
     expect(screen.getAllByRole('link', { name: 'Open full detail' })[0]).toHaveAttribute(
       'href',
       '/tracker/entry-server'
