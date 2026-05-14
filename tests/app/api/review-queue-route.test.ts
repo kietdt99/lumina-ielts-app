@@ -44,7 +44,11 @@ describe('review queue route', () => {
       queue: {
         totalItems: number
         sourceSessions: number
-        items: Array<{ entryId: string; priority: string }>
+        items: Array<{
+          entryId: string
+          priority: string
+          checklist: Array<{ id: string; title: string }>
+        }>
       }
       storageMode: string
     }
@@ -57,6 +61,11 @@ describe('review queue route', () => {
       expect.objectContaining({
         entryId: 'entry-1',
         priority: 'High',
+        checklist: expect.arrayContaining([
+          expect.objectContaining({
+            title: 'Give each paragraph one job',
+          }),
+        ]),
       })
     )
     expect(payload.storageMode).toBe('browser')

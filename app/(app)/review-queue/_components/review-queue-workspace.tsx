@@ -65,6 +65,24 @@ function ReviewQueueCard({ item }: { item: ReviewQueueItem }) {
         <span className="metric-label">Success criteria</span>
         <strong>{item.successCriteria}</strong>
       </div>
+      <div className="review-checklist-panel">
+        <span className="metric-label">Revision checklist</span>
+        <div className="review-checklist-list">
+          {item.checklist.map((checklistItem) => (
+            <article key={checklistItem.id} className="review-checklist-item">
+              <div className="history-kicker-row">
+                <span className="surface-kicker">{checklistItem.criterion}</span>
+                <span className="surface-kicker tracker-history-pill">
+                  {checklistItem.priorityLevel}
+                </span>
+              </div>
+              <strong>{checklistItem.title}</strong>
+              <p>{checklistItem.instruction}</p>
+              <span>{checklistItem.successSignal}</span>
+            </article>
+          ))}
+        </div>
+      </div>
       <div className="review-queue-card-footer">
         <span>{formatDate(item.createdAt)}</span>
         <Link href={`/tracker/${item.entryId}`} className="inline-link">
