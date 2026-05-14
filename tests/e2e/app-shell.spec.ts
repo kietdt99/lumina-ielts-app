@@ -74,6 +74,13 @@ test.describe('app shell', () => {
       page.getByRole('heading', { name: /Start your first review loop|\d+ review actions ready/ })
     ).toBeVisible()
 
+    await gotoAndAssertOk('/mistake-library')
+    await expect(
+      page.getByRole('heading', {
+        name: 'Learn the mistakes before they steal band points',
+      })
+    ).toBeVisible()
+
     await gotoAndAssertOk('/mistake-journal')
     await expect(
       page.getByRole('heading', { name: /Build your mistake journal|\d+ mistake patterns found/ })
@@ -145,7 +152,15 @@ test.describe('app shell', () => {
       page.getByRole('heading', { name: /Start your first review loop|\d+ review actions ready/ })
     ).toBeVisible()
 
-    await page.getByRole('link', { name: 'Mistake Journal' }).click()
+    await page.getByRole('link', { name: 'Mistake Library', exact: true }).click()
+    await expect(page).toHaveURL(/\/mistake-library$/)
+    await expect(
+      page.getByRole('heading', {
+        name: 'Learn the mistakes before they steal band points',
+      })
+    ).toBeVisible()
+
+    await page.getByRole('link', { name: 'Mistake Journal', exact: true }).click()
     await expect(page).toHaveURL(/\/mistake-journal$/)
     await expect(
       page.getByRole('heading', { name: /Build your mistake journal|\d+ mistake patterns found/ })

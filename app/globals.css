@@ -1816,6 +1816,56 @@ button {
   background: color-mix(in srgb, var(--accent) 18%, white);
 }
 
+.mistake-library-page {
+  gap: 1.5rem;
+}
+
+.mistake-library-toolbar,
+.mistake-library-practice-panel {
+  gap: 1rem;
+}
+
+.mistake-library-controls {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(240px, 0.75fr) minmax(280px, 1fr);
+  align-items: end;
+}
+
+.mistake-library-search {
+  width: 100%;
+}
+
+.mistake-library-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+}
+
+.mistake-library-card {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.5)),
+    color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.mistake-library-analysis,
+.mistake-library-section {
+  border: 1px solid color-mix(in srgb, var(--primary) 10%, white);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.56);
+  padding: 0.9rem;
+}
+
+.mistake-library-two-column {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mistake-library-drill {
+  background: color-mix(in srgb, var(--accent) 18%, white);
+}
+
 .rubric-guide-page {
   gap: 1.5rem;
 }
@@ -2284,6 +2334,8 @@ p {
   .writing-hero,
   .idea-bank-controls,
   .idea-bank-two-column,
+  .mistake-library-controls,
+  .mistake-library-two-column,
   .model-fragments-controls,
   .model-fragment-two-column,
   .outline-builder-picker,
