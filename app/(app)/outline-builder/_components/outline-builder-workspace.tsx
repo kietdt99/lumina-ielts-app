@@ -52,6 +52,10 @@ function OutlineBlockCard({ block }: { block: WritingOutlineBlock }) {
   )
 }
 
+function writingHandoffHref(promptId: string) {
+  return `/writing?promptId=${encodeURIComponent(promptId)}&outline=1`
+}
+
 export function OutlineBuilderWorkspace({
   prompts,
   ideaBankEntries,
@@ -188,8 +192,8 @@ export function OutlineBuilderWorkspace({
             <span>Draft Next</span>
           </h2>
           <p>{outline.nextDraftPrompt}</p>
-          <Link href="/writing" className="inline-link">
-            Open writing workspace
+          <Link href={writingHandoffHref(outline.promptId)} className="inline-link">
+            Start writing with this outline
           </Link>
         </article>
       </section>
@@ -261,6 +265,24 @@ export function OutlineBuilderWorkspace({
             ))}
           </ul>
         </article>
+      </section>
+
+      <section className="glass writing-panel outline-handoff-panel">
+        <div className="dashboard-section-header">
+          <div className="panel-heading">
+            <h2 className="icon-heading">
+              <WritingIcon className="section-icon" />
+              <span>Ready to draft?</span>
+            </h2>
+            <p>
+              Open the writing workspace with this prompt selected and the outline
+              loaded beside the editor.
+            </p>
+          </div>
+          <Link href={writingHandoffHref(outline.promptId)} className="primary-button">
+            Start writing with this outline
+          </Link>
+        </div>
       </section>
     </div>
   )

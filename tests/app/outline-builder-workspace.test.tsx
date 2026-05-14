@@ -23,10 +23,9 @@ describe('OutlineBuilderWorkspace', () => {
     expect(screen.getAllByText('Work and society').length).toBeGreaterThan(0)
     expect(screen.getByText('Outline Blocks')).toBeInTheDocument()
     expect(screen.getAllByText('Body paragraph 1').length).toBeGreaterThan(0)
-    expect(screen.getByRole('link', { name: 'Open writing workspace' })).toHaveAttribute(
-      'href',
-      '/writing'
-    )
+    expect(
+      screen.getAllByRole('link', { name: 'Start writing with this outline' })[0]
+    ).toHaveAttribute('href', '/writing?promptId=task2-remote-work&outline=1')
   })
 
   it('switches between Task 2 and Task 1 outline structures', async () => {
@@ -67,5 +66,8 @@ describe('OutlineBuilderWorkspace', () => {
     expect(screen.getAllByText('AI tools in school education').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Education and technology').length).toBeGreaterThan(0)
     expect(screen.getByText('personalized learning')).toBeInTheDocument()
+    expect(
+      screen.getAllByRole('link', { name: 'Start writing with this outline' })[0]
+    ).toHaveAttribute('href', '/writing?promptId=task2-ai-education&outline=1')
   })
 })
