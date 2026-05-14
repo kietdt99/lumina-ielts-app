@@ -1069,6 +1069,51 @@ button {
   text-transform: uppercase;
 }
 
+.prompt-explorer-page {
+  gap: 1.5rem;
+}
+
+.prompt-explorer-toolbar,
+.prompt-explorer-practice-panel {
+  gap: 1rem;
+}
+
+.prompt-explorer-controls {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(180px, 0.45fr) minmax(240px, 0.65fr) minmax(280px, 1fr);
+  align-items: end;
+}
+
+.prompt-explorer-search {
+  width: 100%;
+}
+
+.prompt-explorer-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+}
+
+.prompt-explorer-card {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.5)),
+    color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.prompt-explorer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.prompt-explorer-section {
+  border: 1px solid color-mix(in srgb, var(--primary) 10%, white);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.56);
+  padding: 0.9rem;
+}
+
 .writing-meta-grid,
 .summary-grid {
   display: grid;
@@ -2389,6 +2434,7 @@ p {
   .mistake-library-two-column,
   .model-fragments-controls,
   .model-fragment-two-column,
+  .prompt-explorer-controls,
   .revision-library-controls,
   .outline-builder-picker,
   .outline-support-grid,
