@@ -20,6 +20,12 @@ export type RevisionChecklistItem = {
   keywords: string[]
 }
 
+export type RevisionChecklistTaskFilter = 'All' | WritingPrompt['taskType']
+
+export type RevisionChecklistCriterionFilter = 'All' | RevisionChecklistCriterion
+
+export type RevisionChecklistPriorityFilter = 'All' | RevisionChecklistPriority
+
 export type RevisionChecklistSummary = {
   totalItems: number
   taskOneItems: number
@@ -38,6 +44,20 @@ const priorityRank: Record<RevisionChecklistPriority, number> = {
   Medium: 2,
   Low: 1,
 }
+
+export const revisionChecklistCriteria: RevisionChecklistCriterion[] = [
+  'Task Achievement',
+  'Task Response',
+  'Coherence and Cohesion',
+  'Lexical Resource',
+  'Grammatical Range and Accuracy',
+]
+
+export const revisionChecklistPriorities: RevisionChecklistPriority[] = [
+  'High',
+  'Medium',
+  'Low',
+]
 
 export const revisionChecklistItems: RevisionChecklistItem[] = [
   {
@@ -151,7 +171,7 @@ export const revisionChecklistItems: RevisionChecklistItem[] = [
 ]
 
 function normalizeText(value: string) {
-  return value.toLowerCase()
+  return value.trim().toLowerCase()
 }
 
 function keywordScore(item: RevisionChecklistItem, text: string) {
@@ -213,4 +233,66 @@ export function summarizeRevisionChecklist(
     taskTwoItems: items.filter((item) => item.taskTypes.includes('Task 2')).length,
     highPriorityItems: items.filter((item) => item.priorityLevel === 'High').length,
   }
+}
+
+function searchableText(item: RevisionChecklistItem) {
+  return [
+    item.id,
+    item.criterion,
+    item.title,
+    item.instruction,
+    item.successSignal,
+    item.priorityLevel,
+    ...item.keywords,
+  ].join(' ')
+}
+
+export function filterRevisionChecklistItems({
+  items = revisionChecklistItems,
+  query = '',
+  taskType = 'All',
+  criterion = 'All',
+  priorityLevel = 'All',
+}: {
+  items?: RevisionChecklistItem[]
+  query?: string
+  taskType?: RevisionChecklistTaskFilter
+  criterion?: RevisionChecklistCriterionFilter
+  priorityLevel?: RevisionChecklistPriorityFilter
+}) {
+  const normalizedQuery = normalizeText(query)
+
+  return items.filter((item) => {
+    const matchesTask = taskType === 'All' || item.taskTypes.includes(taskType)
+    const matchesCriterion = criterion === 'All' || item.criterion === criterion
+    const matchesPriority =
+      priorityLevel === 'All' || item.priorityLevel === priorityLevel
+    const matchesQuery =
+      !normalizedQuery ||
+      normalizeText(searchableText(item)).includes(normalizedQuery)
+
+    return matchesTask && matchesCriterion && matchesPriority && matchesQuery
+  })
+}
+
+export function parseRevisionChecklistTaskFilter(
+  value: string | null
+): RevisionChecklistTaskFilter {
+  return value === 'Task 1' || value === 'Task 2' ? value : 'All'
+}
+
+export function parseRevisionChecklistCriterionFilter(
+  value: string | null
+): RevisionChecklistCriterionFilter {
+  return revisionChecklistCriteria.includes(value as RevisionChecklistCriterion)
+    ? (value as RevisionChecklistCriterion)
+    : 'All'
+}
+
+export function parseRevisionChecklistPriorityFilter(
+  value: string | null
+): RevisionChecklistPriorityFilter {
+  return revisionChecklistPriorities.includes(value as RevisionChecklistPriority)
+    ? (value as RevisionChecklistPriority)
+    : 'All'
 }

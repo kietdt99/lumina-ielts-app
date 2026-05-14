@@ -1633,6 +1633,57 @@ button {
   font-size: 0.9rem;
 }
 
+.revision-library-page {
+  gap: 1.5rem;
+}
+
+.revision-library-toolbar,
+.revision-library-practice-panel {
+  gap: 1rem;
+}
+
+.revision-library-controls {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(230px, 0.7fr) minmax(180px, 0.45fr) minmax(280px, 1fr);
+  align-items: end;
+}
+
+.revision-library-search {
+  width: 100%;
+}
+
+.revision-library-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+}
+
+.revision-library-card {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.5)),
+    color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.revision-library-card.priority-high {
+  border-color: color-mix(in srgb, var(--danger) 18%, white);
+}
+
+.revision-library-card.priority-medium {
+  border-color: color-mix(in srgb, var(--primary) 18%, white);
+}
+
+.revision-library-section {
+  border: 1px solid color-mix(in srgb, var(--primary) 10%, white);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.56);
+  padding: 0.9rem;
+}
+
+.revision-library-success {
+  background: color-mix(in srgb, var(--accent) 18%, white);
+}
+
 .mistake-journal-page {
   gap: 1.5rem;
 }
@@ -2338,6 +2389,7 @@ p {
   .mistake-library-two-column,
   .model-fragments-controls,
   .model-fragment-two-column,
+  .revision-library-controls,
   .outline-builder-picker,
   .outline-support-grid,
   .writing-guidance,

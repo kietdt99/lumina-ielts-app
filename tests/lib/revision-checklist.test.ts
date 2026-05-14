@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import {
+  filterRevisionChecklistItems,
   findRevisionChecklistItems,
+  parseRevisionChecklistCriterionFilter,
+  parseRevisionChecklistPriorityFilter,
+  parseRevisionChecklistTaskFilter,
   summarizeRevisionChecklist,
 } from '@/lib/ielts/revision-checklist'
 
@@ -58,5 +62,22 @@ describe('revision checklist', () => {
       taskTwoItems: 7,
       highPriorityItems: 4,
     })
+  })
+
+  it('filters checklist items by task, criterion, priority, and search', () => {
+    const items = filterRevisionChecklistItems({
+      taskType: 'Task 2',
+      criterion: 'Task Response',
+      priorityLevel: 'High',
+      query: 'thesis',
+    })
+
+    expect(items.map((item) => item.id)).toEqual(['task2-direct-position'])
+  })
+
+  it('falls back to broad filters for unsupported query params', () => {
+    expect(parseRevisionChecklistTaskFilter('Speaking')).toBe('All')
+    expect(parseRevisionChecklistCriterionFilter('Fluency')).toBe('All')
+    expect(parseRevisionChecklistPriorityFilter('Urgent')).toBe('All')
   })
 })

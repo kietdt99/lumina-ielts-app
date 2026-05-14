@@ -74,6 +74,13 @@ test.describe('app shell', () => {
       page.getByRole('heading', { name: /Start your first review loop|\d+ review actions ready/ })
     ).toBeVisible()
 
+    await gotoAndAssertOk('/revision-checklist')
+    await expect(
+      page.getByRole('heading', {
+        name: 'Turn feedback into a focused rewrite checklist',
+      })
+    ).toBeVisible()
+
     await gotoAndAssertOk('/mistake-library')
     await expect(
       page.getByRole('heading', {
@@ -150,6 +157,14 @@ test.describe('app shell', () => {
     await expect(page).toHaveURL(/\/review-queue$/)
     await expect(
       page.getByRole('heading', { name: /Start your first review loop|\d+ review actions ready/ })
+    ).toBeVisible()
+
+    await page.getByRole('link', { name: 'Revision Checklist', exact: true }).click()
+    await expect(page).toHaveURL(/\/revision-checklist$/)
+    await expect(
+      page.getByRole('heading', {
+        name: 'Turn feedback into a focused rewrite checklist',
+      })
     ).toBeVisible()
 
     await page.getByRole('link', { name: 'Mistake Library', exact: true }).click()
