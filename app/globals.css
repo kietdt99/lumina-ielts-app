@@ -1758,6 +1758,64 @@ button {
   background: color-mix(in srgb, var(--accent) 44%, white);
 }
 
+.model-fragments-page {
+  gap: 1.5rem;
+}
+
+.model-fragments-toolbar,
+.model-fragments-practice-panel {
+  gap: 1rem;
+}
+
+.model-fragments-controls {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(220px, 0.65fr) minmax(280px, 1fr);
+  align-items: end;
+}
+
+.model-fragments-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+}
+
+.model-fragment-card {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.5)),
+    color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.model-fragment-quote {
+  border-left: 4px solid color-mix(in srgb, var(--primary) 64%, white);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.6);
+  color: color-mix(in srgb, var(--foreground) 88%, var(--primary));
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.65;
+  margin: 0;
+  padding: 1rem;
+}
+
+.model-fragment-analysis,
+.model-fragment-section {
+  border: 1px solid color-mix(in srgb, var(--primary) 10%, white);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.54);
+  padding: 0.9rem;
+}
+
+.model-fragment-two-column {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.model-fragment-warning {
+  background: color-mix(in srgb, var(--accent) 18%, white);
+}
+
 .rubric-guide-page {
   gap: 1.5rem;
 }
@@ -2226,6 +2284,8 @@ p {
   .writing-hero,
   .idea-bank-controls,
   .idea-bank-two-column,
+  .model-fragments-controls,
+  .model-fragment-two-column,
   .outline-builder-picker,
   .outline-support-grid,
   .writing-guidance,
