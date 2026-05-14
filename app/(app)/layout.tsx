@@ -18,6 +18,7 @@ const learnerNavigation: NavigationItem[] = [
   { href: '/tracker', label: 'Score Tracker', icon: 'tracker' },
   { href: '/study-plan', label: 'Study Plan', icon: 'plan' },
   { href: '/review-queue', label: 'Review Queue', icon: 'review' },
+  { href: '/revision-studio', label: 'Revision Studio', icon: 'review' },
   { href: '/revision-checklist', label: 'Revision Checklist', icon: 'review' },
   { href: '/mistake-library', label: 'Mistake Library', icon: 'journal' },
   { href: '/mistake-journal', label: 'Mistake Journal', icon: 'journal' },

@@ -1825,6 +1825,125 @@ button {
   font-size: 0.9rem;
 }
 
+.revision-studio-page {
+  gap: 1.5rem;
+}
+
+.revision-studio-layout {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: minmax(260px, 0.42fr) minmax(0, 1fr);
+  align-items: start;
+}
+
+.revision-studio-session-list {
+  position: sticky;
+  top: 1.25rem;
+}
+
+.revision-studio-session-list-inner {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.revision-studio-session-card {
+  border: 1px solid color-mix(in srgb, var(--primary) 12%, white);
+  border-radius: 1rem;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.5)),
+    color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--foreground);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.9rem;
+  text-align: left;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.revision-studio-session-card:hover,
+.revision-studio-session-card.is-active {
+  border-color: color-mix(in srgb, var(--primary) 42%, white);
+  box-shadow: 0 18px 36px rgba(140, 114, 109, 0.12);
+  transform: translateY(-2px);
+}
+
+.revision-studio-session-card strong {
+  font-size: 0.98rem;
+  line-height: 1.35;
+}
+
+.revision-studio-session-card span:last-child {
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.revision-studio-editor {
+  gap: 1.1rem;
+}
+
+.revision-studio-focus-grid,
+.revision-studio-comparison,
+.revision-studio-metric-row {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.revision-studio-metric-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.revision-studio-focus-card,
+.revision-studio-excerpt {
+  border: 1px solid color-mix(in srgb, var(--primary) 10%, white);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.56);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.95rem;
+}
+
+.revision-studio-focus-card strong,
+.revision-studio-excerpt strong {
+  color: var(--accent-foreground);
+}
+
+.revision-studio-excerpt p {
+  color: var(--muted);
+}
+
+.revision-studio-checklist-hint {
+  align-items: flex-start;
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, white);
+  border-radius: 0.85rem;
+  background: color-mix(in srgb, var(--accent) 18%, white);
+  color: var(--accent-foreground);
+  display: flex;
+  gap: 0.55rem;
+  padding: 0.75rem;
+}
+
+.revision-studio-checklist-hint .section-icon {
+  margin-top: 0.12rem;
+}
+
+.revision-studio-checklist-hint span {
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.revision-studio-textarea {
+  min-height: 300px;
+}
+
 .revision-library-page {
   gap: 1.5rem;
 }
@@ -2627,9 +2746,14 @@ p {
 @media (max-width: 1200px) {
   .writing-layout,
   .readiness-lab-layout,
+  .revision-studio-layout,
   .tracker-layout,
   .settings-layout {
     grid-template-columns: 1fr;
+  }
+
+  .revision-studio-session-list {
+    position: static;
   }
 }
 
@@ -2647,6 +2771,9 @@ p {
   .readiness-lab-summary-grid,
   .vocabulary-builder-controls,
   .revision-library-controls,
+  .revision-studio-comparison,
+  .revision-studio-focus-grid,
+  .revision-studio-metric-row,
   .outline-builder-picker,
   .outline-support-grid,
   .writing-guidance,

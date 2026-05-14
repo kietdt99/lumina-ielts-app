@@ -98,6 +98,11 @@ test.describe('app shell', () => {
       page.getByRole('heading', { name: /Start your first review loop|\d+ review actions ready/ })
     ).toBeVisible()
 
+    await gotoAndAssertOk('/revision-studio')
+    await expect(
+      page.getByRole('heading', { name: /Start your first revision studio|\d+ saved drafts? (is|are) ready for rewrite/ })
+    ).toBeVisible()
+
     await gotoAndAssertOk('/revision-checklist')
     await expect(
       page.getByRole('heading', {
@@ -209,6 +214,12 @@ test.describe('app shell', () => {
     await expect(page).toHaveURL(/\/review-queue$/)
     await expect(
       page.getByRole('heading', { name: /Start your first review loop|\d+ review actions ready/ })
+    ).toBeVisible()
+
+    await page.getByRole('link', { name: 'Revision Studio' }).click()
+    await expect(page).toHaveURL(/\/revision-studio$/)
+    await expect(
+      page.getByRole('heading', { name: /Start your first revision studio|\d+ saved drafts? (is|are) ready for rewrite/ })
     ).toBeVisible()
 
     await page.getByRole('link', { name: 'Revision Checklist', exact: true }).click()
