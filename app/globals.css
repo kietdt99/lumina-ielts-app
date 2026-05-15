@@ -1611,6 +1611,48 @@ button {
   min-height: 140px;
 }
 
+.speaking-practice-controls {
+  align-items: end;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(150px, 0.35fr) minmax(180px, 0.45fr) minmax(220px, 0.6fr) minmax(260px, 1fr) auto;
+}
+
+.speaking-practice-search {
+  width: 100%;
+}
+
+.speaking-prompt-card {
+  border: 1px solid color-mix(in srgb, var(--primary) 10%, white);
+  border-radius: 1rem;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.5)),
+    color-mix(in srgb, var(--primary) 9%, transparent);
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem;
+}
+
+.speaking-timer-grid,
+.speaking-cue-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.speaking-timer-grid .summary-box {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.speaking-cue-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.speaking-transcript-textarea {
+  min-height: 260px;
+}
+
 .writing-meta-grid,
 .summary-grid {
   display: grid;
@@ -3281,6 +3323,8 @@ p {
   .listening-practice-controls,
   .reading-practice-controls,
   .reading-score-grid,
+  .speaking-practice-controls,
+  .speaking-timer-grid,
   .prompt-explorer-controls,
   .practice-sprint-controls,
   .readiness-lab-controls,
