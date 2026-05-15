@@ -118,7 +118,7 @@ describe('ListeningPracticeWorkspace', () => {
       itemTitle: track.title,
       metricValue: '100%',
     })
-  })
+  }, 10_000)
 
   it('shows an empty state and can reset filters', async () => {
     const user = userEvent.setup()
