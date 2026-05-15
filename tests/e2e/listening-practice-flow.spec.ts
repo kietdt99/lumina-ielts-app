@@ -40,10 +40,17 @@ test.describe('listening practice flow', () => {
 
     await page.getByRole('button', { name: 'Score listening answers' }).click()
 
-    await expect(page.getByText('Listening score report')).toBeVisible()
-    await expect(page.getByText('Strong control')).toBeVisible()
-    await expect(page.getByText('100%')).toBeVisible()
+    const scoreReport = page.locator('.reading-score-card').filter({
+      hasText: 'Listening score report',
+    })
+
+    await expect(scoreReport.getByText('Listening score report')).toBeVisible()
+    await expect(
+      scoreReport.getByRole('heading', { name: 'Strong control' })
+    ).toBeVisible()
+    await expect(scoreReport.getByText('100%')).toBeVisible()
     await expect(page.getByText('Correct answer: Beside the gift shop')).toBeVisible()
+    await expect(page.getByText('Recent Listening attempts')).toBeVisible()
 
     const listResponse = await page.request.get(
       '/api/listening-practice?section=Part%202&difficulty=Balanced&topic=Culture%20and%20community&query=museum'

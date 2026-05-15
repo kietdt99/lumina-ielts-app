@@ -97,18 +97,27 @@ describe('ListeningPracticeWorkspace', () => {
     await waitFor(() => {
       expect(screen.getByText('Listening score report')).toBeInTheDocument()
     })
-    expect(screen.getByText('Strong control')).toBeInTheDocument()
-    expect(screen.getByText('100%')).toBeInTheDocument()
+    expect(screen.getAllByText('Strong control')).not.toHaveLength(0)
+    expect(screen.getAllByText('100%')).not.toHaveLength(0)
     expect(screen.getByText('Correct answer: thirty')).toBeInTheDocument()
+    expect(screen.getByText('Recent Listening attempts')).toBeInTheDocument()
 
     const storedState = JSON.parse(
       window.localStorage.getItem('lumina-listening-practice') ?? '{}'
     ) as Record<string, { answers: Record<string, string>; notes: string }>
+    const storedAttempts = JSON.parse(
+      window.localStorage.getItem('lumina-practice-attempt-history') ?? '[]'
+    ) as Array<{ skill: string; itemTitle: string; metricValue: string }>
 
     expect(storedState[track.id].answers[track.questions[0].id]).toBe(
       track.questions[0].correctAnswer
     )
     expect(storedState[track.id].notes).toContain('membership residents')
+    expect(storedAttempts[0]).toMatchObject({
+      skill: 'Listening',
+      itemTitle: track.title,
+      metricValue: '100%',
+    })
   })
 
   it('shows an empty state and can reset filters', async () => {

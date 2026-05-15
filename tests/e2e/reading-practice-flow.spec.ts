@@ -33,10 +33,17 @@ test.describe('reading practice flow', () => {
 
     await page.getByRole('button', { name: 'Score reading answers' }).click()
 
-    await expect(page.getByText('Reading score report')).toBeVisible()
-    await expect(page.getByText('Strong control')).toBeVisible()
-    await expect(page.getByText('100%')).toBeVisible()
+    const scoreReport = page.locator('.reading-score-card').filter({
+      hasText: 'Reading score report',
+    })
+
+    await expect(scoreReport.getByText('Reading score report')).toBeVisible()
+    await expect(
+      scoreReport.getByRole('heading', { name: 'Strong control' })
+    ).toBeVisible()
+    await expect(scoreReport.getByText('100%')).toBeVisible()
     await expect(page.getByText('Correct answer: sea breezes')).toBeVisible()
+    await expect(page.getByText('Recent Reading attempts')).toBeVisible()
 
     const listResponse = await page.request.get(
       '/api/reading-practice?difficulty=Balanced&topic=Environment%20and%20climate&query=cooling'

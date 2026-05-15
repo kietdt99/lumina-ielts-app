@@ -1,6 +1,7 @@
 'use client'
 
-import { useDeferredValue, useEffect, useState } from 'react'
+import { useDeferredValue, useEffect, useState, useSyncExternalStore } from 'react'
+import { PracticeAttemptHistoryPanel } from '@/app/(app)/_components/practice-attempt-history-panel'
 import {
   ChecklistIcon,
   CompassIcon,
@@ -18,6 +19,13 @@ import {
   type SpeakingPracticePrompt,
   type SpeakingPracticeScore,
 } from '@/lib/ielts/speaking-practice'
+import {
+  createSpeakingPracticeAttemptHistoryEntry,
+  getPracticeAttemptHistorySnapshot,
+  getServerPracticeAttemptHistorySnapshot,
+  savePracticeAttemptHistoryEntry,
+  subscribeToPracticeAttemptHistory,
+} from '@/lib/ielts/practice-attempt-history'
 
 type SpeakingPracticeWorkspaceProps = {
   prompts: SpeakingPracticePrompt[]
@@ -149,6 +157,11 @@ export function SpeakingPracticeWorkspace({
   const completedCueCount = selectedState?.completedCuePointIds.length ?? 0
   const transcriptWordCount =
     selectedState?.transcript.match(/\b[\w'-]+\b/g)?.length ?? 0
+  const recentSpeakingAttempts = useSyncExternalStore(
+    subscribeToPracticeAttemptHistory,
+    getPracticeAttemptHistorySnapshot,
+    getServerPracticeAttemptHistorySnapshot
+  ).filter((attempt) => attempt.skill === 'Speaking')
 
   useEffect(() => {
     writeStoredState(practiceState)
@@ -268,6 +281,9 @@ export function SpeakingPracticeWorkspace({
       }
 
       setScore(payload.score)
+      savePracticeAttemptHistoryEntry(
+        createSpeakingPracticeAttemptHistoryEntry(payload.score)
+      )
     } catch (error) {
       setScoreError(
         error instanceof Error
@@ -324,6 +340,11 @@ export function SpeakingPracticeWorkspace({
           </div>
         </div>
       </section>
+
+      <PracticeAttemptHistoryPanel
+        attempts={recentSpeakingAttempts}
+        skill="Speaking"
+      />
 
       <section className="glass writing-panel reading-practice-toolbar">
         <div className="dashboard-section-header">

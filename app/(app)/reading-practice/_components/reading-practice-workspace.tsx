@@ -1,6 +1,7 @@
 'use client'
 
-import { useDeferredValue, useEffect, useState } from 'react'
+import { useDeferredValue, useEffect, useState, useSyncExternalStore } from 'react'
+import { PracticeAttemptHistoryPanel } from '@/app/(app)/_components/practice-attempt-history-panel'
 import {
   ChecklistIcon,
   CompassIcon,
@@ -18,6 +19,13 @@ import {
   type ReadingPracticeDifficultyFilter,
   type ReadingPracticeScore,
 } from '@/lib/ielts/reading-practice'
+import {
+  createReadingPracticeAttemptHistoryEntry,
+  getPracticeAttemptHistorySnapshot,
+  getServerPracticeAttemptHistorySnapshot,
+  savePracticeAttemptHistoryEntry,
+  subscribeToPracticeAttemptHistory,
+} from '@/lib/ielts/practice-attempt-history'
 
 type ReadingPracticeWorkspaceProps = {
   passages: PublicReadingPracticePassage[]
@@ -123,6 +131,11 @@ export function ReadingPracticeWorkspace({
     ? answers[selectedPassage.id] ?? emptyAnswersForPassage(selectedPassage)
     : {}
   const answeredCount = Object.values(selectedAnswers).filter(Boolean).length
+  const recentReadingAttempts = useSyncExternalStore(
+    subscribeToPracticeAttemptHistory,
+    getPracticeAttemptHistorySnapshot,
+    getServerPracticeAttemptHistorySnapshot
+  ).filter((attempt) => attempt.skill === 'Reading')
 
   useEffect(() => {
     writeStoredAnswers(answers)
@@ -194,6 +207,9 @@ export function ReadingPracticeWorkspace({
       }
 
       setScore(payload.score)
+      savePracticeAttemptHistoryEntry(
+        createReadingPracticeAttemptHistoryEntry(payload.score)
+      )
     } catch (error) {
       setScoreError(
         error instanceof Error
@@ -246,6 +262,11 @@ export function ReadingPracticeWorkspace({
           </div>
         </div>
       </section>
+
+      <PracticeAttemptHistoryPanel
+        attempts={recentReadingAttempts}
+        skill="Reading"
+      />
 
       <section className="glass writing-panel reading-practice-toolbar">
         <div className="dashboard-section-header">
