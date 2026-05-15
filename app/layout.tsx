@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { readAppLanguageCookie } from '@/lib/i18n/app-language'
 import { readPastelThemeCookie } from '@/lib/theme/pastel-theme'
 import './globals.css'
 
@@ -12,10 +13,13 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const theme = await readPastelThemeCookie()
+  const [language, theme] = await Promise.all([
+    readAppLanguageCookie(),
+    readPastelThemeCookie(),
+  ])
 
   return (
-    <html lang="en" data-theme={theme}>
+    <html lang={language} data-language={language} data-theme={theme}>
       <body>{children}</body>
     </html>
   )

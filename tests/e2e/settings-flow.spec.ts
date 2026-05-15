@@ -10,6 +10,10 @@ test.describe('learner goals settings flow', () => {
 
     await gotoAndAssertOk('/settings')
 
+    await expect(page.getByLabel('Display name')).toHaveValue('Demo Learner')
+    await page.getByRole('button', { name: 'Save profile' }).click()
+    await expect(page.getByText('Profile updated.')).toBeVisible()
+
     await page.getByLabel('Target band').selectOption('8')
     await page.getByLabel('Current level').selectOption('Band 5.0-5.5')
     await page.getByLabel('Focus skill').selectOption('Reading')
@@ -21,7 +25,7 @@ test.describe('learner goals settings flow', () => {
     ).toBeVisible()
 
     await page.getByRole('link', { name: 'Dashboard' }).click()
-    await expect(page).toHaveURL(/\/$/)
+    await expect(page).toHaveURL(/\/dashboard$/)
     await expect(page.getByRole('heading', { name: 'Target Band' })).toBeVisible()
     await expect(page.getByText('8.0', { exact: true })).toBeVisible()
     await expect(page.getByText(/Focus skill: Reading/)).toBeVisible()

@@ -16,14 +16,14 @@ describe('pastel theme helpers', () => {
     expect(resolvePastelTheme('mint')).toBe('mint')
   })
 
-  it('picks a different theme when a current theme exists', () => {
+  it('keeps peach as the stable app theme', () => {
     vi.spyOn(Math, 'random').mockReturnValue(0)
 
-    expect(pickNextPastelTheme('peach')).not.toBe('peach')
+    expect(pickNextPastelTheme()).toBe(defaultPastelTheme)
   })
 
   it('always returns a valid theme name', () => {
-    const selectedTheme = pickNextPastelTheme('mint')
+    const selectedTheme = pickNextPastelTheme()
 
     expect(pastelThemes).toContain(selectedTheme)
   })

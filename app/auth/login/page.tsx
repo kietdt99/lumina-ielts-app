@@ -1,16 +1,21 @@
-import { LoginForm } from '../_components/login-form'
 import {
-  getDemoCredentials,
+  getVisibleDemoCredentials,
   redirectAuthenticatedUserFromAuth,
 } from '@/lib/auth/service'
-import { isSupabaseConfigured } from '@/lib/supabase/config'
+import { WelcomeExperience } from '@/app/_components/welcome-experience'
+import { readAppLanguageCookie } from '@/lib/i18n/app-language'
 
 export default async function LoginPage() {
-  await redirectAuthenticatedUserFromAuth()
+  const [, language] = await Promise.all([
+    redirectAuthenticatedUserFromAuth(),
+    readAppLanguageCookie(),
+  ])
 
   return (
-    <LoginForm
-      demoCredentials={isSupabaseConfigured() ? undefined : getDemoCredentials()}
+    <WelcomeExperience
+      demoCredentials={getVisibleDemoCredentials()}
+      initialLoginOpen
+      initialLanguage={language}
     />
   )
 }

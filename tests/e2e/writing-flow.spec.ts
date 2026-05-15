@@ -139,7 +139,7 @@ test.describe('writing flow', () => {
       }),
     ])
 
-    await gotoAndAssertOk('/')
+    await gotoAndAssertOk('/dashboard')
     await expect(page.getByText('You have completed 2 tracked writing sessions.')).toBeVisible()
     await expect(
       page.getByRole('heading', {
@@ -217,11 +217,15 @@ test.describe('writing flow', () => {
     await expect(page.getByText(/Practice result saved at/)).toBeVisible()
 
     await page.getByRole('button', { name: 'Sign Out' }).first().click()
-    await expect(page).toHaveURL(/\/auth\/login$/)
-
-    await page.getByRole('button', { name: 'Use demo learner' }).click()
-    await page.getByRole('button', { name: 'Sign In' }).click()
     await expect(page).toHaveURL(/\/$/)
+
+    await page.getByRole('button', { name: 'Log In' }).click()
+    const loginDialog = page.getByRole('dialog', {
+      name: 'Log in to Lumina IELTS',
+    })
+    await loginDialog.getByRole('button', { name: 'Use demo learner' }).click()
+    await loginDialog.getByRole('button', { name: 'Log In' }).click()
+    await expect(page).toHaveURL(/\/dashboard$/)
 
     await gotoAndAssertOk('/tracker')
     await expect(

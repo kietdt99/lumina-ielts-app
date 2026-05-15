@@ -16,6 +16,7 @@ import type {
 } from './types'
 
 type DemoAccount = {
+  avatarUrl: string | null
   id: string
   email: string
   fullName: string
@@ -67,6 +68,7 @@ function createAccount(args: {
   const createdAt = new Date().toISOString()
 
   return {
+    avatarUrl: null,
     id: args.id ?? randomUUID(),
     email: args.email.trim().toLowerCase(),
     fullName: args.fullName.trim(),
@@ -139,6 +141,37 @@ export function getDemoCredentials() {
 
 export function getDemoAccountById(accountId: string) {
   return getDemoStore().accounts.get(accountId) ?? null
+}
+
+export function updateDemoLearnerProfile(args: {
+  accountId: string
+  avatarUrl: string | null
+  displayName: string
+}) {
+  const account = getDemoAccountById(args.accountId)
+
+  if (!account || account.role !== 'learner') {
+    return {
+      ok: false as const,
+      error: 'Learner account not found.',
+    }
+  }
+
+  const nextAccount = {
+    ...account,
+    avatarUrl: args.avatarUrl,
+    fullName: args.displayName,
+  }
+
+  getDemoStore().accounts.set(account.id, nextAccount)
+
+  return {
+    ok: true as const,
+    profile: {
+      avatarUrl: nextAccount.avatarUrl,
+      displayName: nextAccount.fullName,
+    },
+  }
 }
 
 export function authenticateDemoAccount(email: string, password: string) {

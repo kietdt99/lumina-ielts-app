@@ -12,13 +12,14 @@ export async function updateSession(request: NextRequest) {
 
   const config = getSupabaseConfig()
   const isAuthRoute = request.nextUrl.pathname.startsWith('/auth')
+  const isPublicRoute = request.nextUrl.pathname === '/' || isAuthRoute
 
   if (!config) {
     const hasDemoSession = request.cookies.has(appSessionCookieName)
 
-    if (!hasDemoSession && !isAuthRoute) {
+    if (!hasDemoSession && !isPublicRoute) {
       const url = request.nextUrl.clone()
-      url.pathname = '/auth/login'
+      url.pathname = '/'
       return NextResponse.redirect(url)
     }
 
@@ -56,9 +57,9 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user && !isAuthRoute) {
+  if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone()
-    url.pathname = '/auth/login'
+    url.pathname = '/'
     const redirectResponse = NextResponse.redirect(url)
 
     const cookies = supabaseResponse.cookies.getAll()

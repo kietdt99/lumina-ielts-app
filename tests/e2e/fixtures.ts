@@ -82,9 +82,13 @@ export const test = base.extend<E2EFixtures>({
   loginAsDemoLearner: async ({ page }, runFixture) => {
     await runFixture(async () => {
       await page.goto('/auth/login', { waitUntil: 'domcontentloaded' })
-      await page.getByRole('button', { name: 'Use demo learner' }).click()
-      await page.getByRole('button', { name: 'Sign In' }).click()
-      await expect(page).toHaveURL(/\/$/)
+      const loginDialog = page.getByRole('dialog', {
+        name: 'Log in to Lumina IELTS',
+      })
+
+      await loginDialog.getByRole('button', { name: 'Use demo learner' }).click()
+      await loginDialog.getByRole('button', { name: 'Log In' }).click()
+      await expect(page).toHaveURL(/\/dashboard$/)
       await expect(
         page.getByRole('heading', { name: 'Welcome back, Demo Learner' })
       ).toBeVisible()
@@ -93,8 +97,12 @@ export const test = base.extend<E2EFixtures>({
   loginAsDemoAdmin: async ({ page }, runFixture) => {
     await runFixture(async () => {
       await page.goto('/auth/login', { waitUntil: 'domcontentloaded' })
-      await page.getByRole('button', { name: 'Use demo admin' }).click()
-      await page.getByRole('button', { name: 'Sign In' }).click()
+      const loginDialog = page.getByRole('dialog', {
+        name: 'Log in to Lumina IELTS',
+      })
+
+      await loginDialog.getByRole('button', { name: 'Use demo admin' }).click()
+      await loginDialog.getByRole('button', { name: 'Log In' }).click()
       await expect(page).toHaveURL(/\/admin\/accounts$/)
     })
   },

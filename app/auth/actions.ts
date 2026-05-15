@@ -5,5 +5,5 @@ import { logoutUser } from '@/lib/auth/service'
 
 export async function signout() {
   await logoutUser()
-  redirect('/auth/login')
+  redirect('/')
 }

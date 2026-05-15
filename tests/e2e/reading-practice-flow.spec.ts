@@ -45,7 +45,7 @@ test.describe('reading practice flow', () => {
     await expect(page.getByText('Correct answer: sea breezes')).toBeVisible()
     await expect(page.getByText('Recent Reading attempts')).toBeVisible()
 
-    await gotoAndAssertOk('/')
+    await gotoAndAssertOk('/dashboard')
     await expect(page.getByText('Recent Skill Attempts')).toBeVisible()
     await expect(page.getByText('Urban cooling corridors')).toBeVisible()
 
