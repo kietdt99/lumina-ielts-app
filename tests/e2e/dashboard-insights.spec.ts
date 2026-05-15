@@ -42,7 +42,7 @@ test.describe('dashboard insights', () => {
       }),
     ])
 
-    await gotoAndAssertOk('/')
+    await gotoAndAssertOk('/dashboard')
 
     await expect(page.getByText('Four-Skill Practice Mix')).toBeVisible()
     await expect(page.getByText('Speaking Practice').first()).toBeVisible()

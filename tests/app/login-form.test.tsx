@@ -58,7 +58,7 @@ describe('LoginForm', () => {
       Response.json({
         ok: true,
         redirectTo: '/auth/change-password',
-        theme: 'sky',
+        theme: 'peach',
       })
     )
 
@@ -79,7 +79,7 @@ describe('LoginForm', () => {
 
     await user.type(screen.getByLabelText('Email address'), 'learner@example.com')
     await user.type(screen.getByLabelText('Password'), 'TempPassword!123')
-    await user.click(screen.getByRole('button', { name: 'Sign In' }))
+    await user.click(screen.getByRole('button', { name: 'Log In' }))
 
     await waitFor(() => {
       expect(globalThis.fetch).toHaveBeenCalledWith('/api/auth/login', {
@@ -96,6 +96,6 @@ describe('LoginForm', () => {
 
     expect(routerState.push).toHaveBeenCalledWith('/auth/change-password')
     expect(routerState.refresh).toHaveBeenCalledTimes(1)
-    expect(document.documentElement.dataset.theme).toBe('sky')
+    expect(document.documentElement.dataset.theme).toBe('peach')
   })
 })

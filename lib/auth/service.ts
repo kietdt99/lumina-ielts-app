@@ -11,6 +11,7 @@ import {
   resetDemoLearnerPassword,
   saveDemoLearnerGoals,
   updateDemoAccountPassword,
+  updateDemoLearnerProfile,
 } from './demo-store'
 import {
   clearAppSessionCookies,
@@ -32,6 +33,7 @@ import {
   type LearnerGoals,
 } from '@/lib/learner/learner-goals'
 import { saveLearnerGoals } from '@/lib/learner/learner-goals-repository'
+import type { LearnerProfile } from '@/lib/profile/learner-profile'
 import {
   getSupabaseConfig,
   getSupabaseServiceRoleConfig,
@@ -53,6 +55,14 @@ type SupabaseSecurityRow = {
 
 type SupabaseGoalsRow = {
   completed_onboarding: boolean | null
+}
+
+function resolveUserMetadataText(
+  metadata: Record<string, unknown>,
+  key: string
+) {
+  const value = metadata[key]
+  return typeof value === 'string' && value.trim() ? value : null
 }
 
 function createDirectSupabaseClient() {
@@ -149,6 +159,7 @@ async function buildSupabaseSession() {
   ])
 
   return {
+    avatarUrl: resolveUserMetadataText(user.user_metadata, 'avatar_url'),
     userId: user.id,
     email: profile?.email ?? user.email ?? '',
     fullName: profile?.full_name ?? user.user_metadata.full_name ?? 'Lumina user',
@@ -172,6 +183,22 @@ async function writeSessionFromResolvedSession(session: AppSession) {
   return assignNextPastelTheme()
 }
 
+export function isDemoModeEnabled() {
+  const explicitValue = process.env.LUMINA_ENABLE_DEMO_MODE
+
+  if (explicitValue) {
+    return explicitValue === 'true'
+  }
+
+  return process.env.NODE_ENV !== 'production'
+}
+
+export function getVisibleDemoCredentials() {
+  return isDemoModeEnabled() && !isSupabaseConfigured()
+    ? getDemoCredentials()
+    : undefined
+}
+
 export async function getAppSession() {
   if (isSupabaseConfigured()) {
     return buildSupabaseSession()
@@ -191,6 +218,7 @@ export async function getAppSession() {
   }
 
   return {
+    avatarUrl: account.avatarUrl,
     userId: account.id,
     email: account.email,
     fullName: account.fullName,
@@ -215,14 +243,14 @@ export function resolvePostLoginPath(session: AppSession) {
     return '/onboarding'
   }
 
-  return '/'
+  return '/dashboard'
 }
 
 export async function requireAppSession() {
   const session = await getAppSession()
 
   if (!session) {
-    redirect('/auth/login')
+    redirect('/')
   }
 
   return session
@@ -252,7 +280,7 @@ export async function requireAdminSession() {
   const session = await requireAppSession()
 
   if (session.role !== 'admin') {
-    redirect('/')
+    redirect('/dashboard')
   }
 
   return session
@@ -318,6 +346,7 @@ export async function loginUser(args: {
   }
 
   const session = {
+    avatarUrl: account.avatarUrl,
     userId: account.id,
     email: account.email,
     fullName: account.fullName,
@@ -356,7 +385,7 @@ export async function skipForcedPasswordChange() {
 
   return {
     ok: true as const,
-    redirectTo: session.onboardingCompleted ? '/' : '/onboarding',
+    redirectTo: session.onboardingCompleted ? '/dashboard' : '/onboarding',
   }
 }
 
@@ -396,7 +425,7 @@ export async function changePassword(args: {
         session.role === 'admin'
           ? '/admin/accounts'
           : session.onboardingCompleted
-            ? '/'
+            ? '/dashboard'
             : '/onboarding',
     }
   }
@@ -447,7 +476,7 @@ export async function changePassword(args: {
       session.role === 'admin'
         ? '/admin/accounts'
         : session.onboardingCompleted
-          ? '/'
+          ? '/dashboard'
           : '/onboarding',
   }
 }
@@ -506,6 +535,52 @@ export async function getCurrentLearnerGoals() {
   }
 
   return null
+}
+
+export async function updateLearnerProfile(profile: LearnerProfile) {
+  const session = await requireLearnerAppSession()
+
+  if (session.mode === 'demo') {
+    return updateDemoLearnerProfile({
+      accountId: session.userId,
+      avatarUrl: profile.avatarUrl,
+      displayName: profile.displayName,
+    })
+  }
+
+  const supabase = await createClient()
+  const { error: profileError } = await supabase.from('profiles').upsert({
+    id: session.userId,
+    email: session.email,
+    full_name: profile.displayName,
+    role: 'learner',
+  })
+
+  if (profileError) {
+    return {
+      ok: false as const,
+      error: profileError.message,
+    }
+  }
+
+  const { error: metadataError } = await supabase.auth.updateUser({
+    data: {
+      avatar_url: profile.avatarUrl,
+      full_name: profile.displayName,
+    },
+  })
+
+  if (metadataError) {
+    return {
+      ok: false as const,
+      error: metadataError.message,
+    }
+  }
+
+  return {
+    ok: true as const,
+    profile,
+  }
 }
 
 export async function listManagedLearnerAccounts() {

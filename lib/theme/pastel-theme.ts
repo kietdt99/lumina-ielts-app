@@ -35,12 +35,8 @@ export function resolvePastelTheme(value: string | null | undefined) {
   return isPastelTheme(value) ? value : defaultPastelTheme
 }
 
-export function pickNextPastelTheme(currentTheme?: string | null) {
-  const availableThemes = pastelThemes.filter((theme) => theme !== currentTheme)
-  const themePool = availableThemes.length > 0 ? availableThemes : pastelThemes
-  const selectedIndex = Math.floor(Math.random() * themePool.length)
-
-  return themePool[selectedIndex] ?? defaultPastelTheme
+export function pickNextPastelTheme() {
+  return defaultPastelTheme
 }
 
 export async function readPastelThemeCookie() {
@@ -48,11 +44,9 @@ export async function readPastelThemeCookie() {
   return resolvePastelTheme(cookieStore.get(appThemeCookieName)?.value)
 }
 
-export async function assignNextPastelTheme(currentTheme?: string | null) {
+export async function assignNextPastelTheme() {
   const cookieStore = await cookies()
-  const resolvedCurrentTheme =
-    currentTheme ?? cookieStore.get(appThemeCookieName)?.value ?? null
-  const nextTheme = pickNextPastelTheme(resolvedCurrentTheme)
+  const nextTheme = pickNextPastelTheme()
 
   cookieStore.set(appThemeCookieName, nextTheme, {
     httpOnly: false,

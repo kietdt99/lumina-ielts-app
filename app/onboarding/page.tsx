@@ -11,7 +11,7 @@ export default async function OnboardingPage() {
   }
 
   if (session.onboardingCompleted) {
-    redirect('/')
+    redirect('/dashboard')
   }
 
   const { goals } = await getLearnerGoals()

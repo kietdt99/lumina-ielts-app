@@ -24,11 +24,15 @@ test.describe('admin-managed auth flow', () => {
     expect(temporaryPassword).toBeTruthy()
 
     await page.getByRole('button', { name: 'Sign Out' }).first().click()
-    await expect(page).toHaveURL(/\/auth\/login$/)
+    await expect(page).toHaveURL(/\/$/)
 
-    await page.getByLabel('Email address').fill(learnerEmail)
-    await page.getByLabel('Password').fill(temporaryPassword!)
-    await page.getByRole('button', { name: 'Sign In' }).click()
+    await page.getByRole('button', { name: 'Log In' }).click()
+    const loginDialog = page.getByRole('dialog', {
+      name: 'Log in to Lumina IELTS',
+    })
+    await loginDialog.getByLabel('Email address').fill(learnerEmail)
+    await loginDialog.getByLabel('Password').fill(temporaryPassword!)
+    await loginDialog.getByRole('button', { name: 'Log In' }).click()
 
     await expect(page).toHaveURL(/\/auth\/change-password$/)
     await page.getByLabel('New password', { exact: true }).fill('LearnerReset!2026')
@@ -38,7 +42,7 @@ test.describe('admin-managed auth flow', () => {
     await expect(page).toHaveURL(/\/onboarding$/)
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page).toHaveURL(/\/$/)
+    await expect(page).toHaveURL(/\/dashboard$/)
     await expect(page.getByRole('heading', { name: `Welcome back, ${learnerName}` })).toBeVisible()
   })
 })

@@ -3,6 +3,7 @@ export type AppRole = 'admin' | 'learner'
 export type AppSessionMode = 'demo' | 'supabase'
 
 export type AppSession = {
+  avatarUrl: string | null
   userId: string
   email: string
   fullName: string

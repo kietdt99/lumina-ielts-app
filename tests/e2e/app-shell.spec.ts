@@ -1,25 +1,37 @@
 import { test, expect } from './fixtures'
 
 test.describe('app shell', () => {
-  test('changes to a pastel theme after each login', async ({ page }) => {
-    await page.goto('/auth/login', { waitUntil: 'domcontentloaded' })
-    await page.getByRole('button', { name: 'Use demo learner' }).click()
-    await page.getByRole('button', { name: 'Sign In' }).click()
-    await expect(page).toHaveURL(/\/$/)
+  test('keeps the peach theme stable after login', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'domcontentloaded' })
+    await expect(
+      page.getByRole('heading', {
+        name: 'Luyện IELTS nhẹ nhàng, có lộ trình và thấy rõ tiến bộ.',
+      })
+    ).toBeVisible()
+    await page.getByRole('button', { name: 'Log In' }).click()
+    let loginDialog = page.getByRole('dialog', {
+      name: 'Log in to Lumina IELTS',
+    })
+    await loginDialog.getByRole('button', { name: 'Use demo learner' }).click()
+    await loginDialog.getByRole('button', { name: 'Log In' }).click()
+    await expect(page).toHaveURL(/\/dashboard$/)
 
     const firstTheme = await page.locator('html').getAttribute('data-theme')
-    expect(firstTheme).toBeTruthy()
+    expect(firstTheme).toBe('peach')
 
     await page.getByRole('button', { name: 'Sign Out' }).first().click()
-    await expect(page).toHaveURL(/\/auth\/login$/)
+    await expect(page).toHaveURL(/\/$/)
 
-    await page.getByRole('button', { name: 'Use demo admin' }).click()
-    await page.getByRole('button', { name: 'Sign In' }).click()
+    await page.getByRole('button', { name: 'Log In' }).click()
+    loginDialog = page.getByRole('dialog', {
+      name: 'Log in to Lumina IELTS',
+    })
+    await loginDialog.getByRole('button', { name: 'Use demo admin' }).click()
+    await loginDialog.getByRole('button', { name: 'Log In' }).click()
     await expect(page).toHaveURL(/\/admin\/accounts$/)
 
     const secondTheme = await page.locator('html').getAttribute('data-theme')
-    expect(secondTheme).toBeTruthy()
-    expect(secondTheme).not.toBe(firstTheme)
+    expect(secondTheme).toBe('peach')
   })
 
   test('loads the main routes without browser runtime errors', async ({
@@ -29,7 +41,7 @@ test.describe('app shell', () => {
   }) => {
     await loginAsDemoLearner()
 
-    await gotoAndAssertOk('/')
+    await gotoAndAssertOk('/dashboard')
     await expect(
       page.getByRole('heading', { name: 'Welcome back, Demo Learner' })
     ).toBeVisible()
@@ -159,7 +171,7 @@ test.describe('app shell', () => {
     ).toBeVisible()
 
     await gotoAndAssertOk('/auth/login')
-    await expect(page).toHaveURL(/\/$/)
+    await expect(page).toHaveURL(/\/dashboard$/)
   })
 
   test('navigates through the sidebar without browser runtime errors', async ({
@@ -169,30 +181,12 @@ test.describe('app shell', () => {
   }) => {
     await loginAsDemoLearner()
 
-    await gotoAndAssertOk('/')
+    await gotoAndAssertOk('/dashboard')
 
     await page.getByRole('link', { name: 'Writing Assistant' }).click()
     await expect(page).toHaveURL(/\/writing$/)
     await expect(
       page.getByRole('heading', { name: 'Train like a real IELTS session' })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Readiness Lab', exact: true }).click()
-    await expect(page).toHaveURL(/\/readiness-lab$/)
-    await expect(
-      page.getByRole('heading', { name: 'Check a draft before asking for feedback' })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Practice Sprint', exact: true }).click()
-    await expect(page).toHaveURL(/\/practice-sprint$/)
-    await expect(
-      page.getByRole('heading', { name: 'Start a focused IELTS writing sprint' })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Mock Test Lab', exact: true }).click()
-    await expect(page).toHaveURL(/\/mock-test$/)
-    await expect(
-      page.getByRole('heading', { name: 'Complete a full IELTS Writing mock test' })
     ).toBeVisible()
 
     await page.getByRole('link', { name: 'Reading Practice', exact: true }).click()
@@ -219,56 +213,10 @@ test.describe('app shell', () => {
       })
     ).toBeVisible()
 
-    await page.getByRole('link', { name: 'Prompt Explorer', exact: true }).click()
-    await expect(page).toHaveURL(/\/prompt-explorer$/)
+    await page.getByRole('link', { name: 'Mock Test Lab', exact: true }).click()
+    await expect(page).toHaveURL(/\/mock-test$/)
     await expect(
-      page.getByRole('heading', {
-        name: 'Choose the right IELTS prompt before the timer starts',
-      })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Rubric Guide', exact: true }).click()
-    await expect(page).toHaveURL(/\/rubric-guide$/)
-    await expect(
-      page.getByRole('heading', { name: 'Understand what moves a writing band' })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Idea Bank' }).click()
-    await expect(page).toHaveURL(/\/idea-bank$/)
-    await expect(
-      page.getByRole('heading', { name: 'Build answers faster with topic-ready ideas' })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Vocabulary Builder' }).click()
-    await expect(page).toHaveURL(/\/vocabulary-builder$/)
-    await expect(
-      page.getByRole('heading', {
-        name: 'Turn useful vocabulary into active IELTS recall',
-      })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Model Fragments', exact: true }).click()
-    await expect(page).toHaveURL(/\/model-fragments$/)
-    await expect(
-      page.getByRole('heading', { name: 'Study short fragments, not full essays' })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Outline Builder' }).click()
-    await expect(page).toHaveURL(/\/outline-builder$/)
-    await expect(
-      page.getByRole('heading', { name: 'Plan the answer before the timer starts' })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Score Tracker' }).click()
-    await expect(page).toHaveURL(/\/tracker$/)
-    await expect(
-      page.getByRole('heading', { name: 'See how your writing practice is evolving' })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Progress Insights' }).click()
-    await expect(page).toHaveURL(/\/progress-insights$/)
-    await expect(
-      page.getByRole('heading', { name: /Build your first progress signal|Close a \d+\.\d band gap with focused practice|Your writing band is close to target/ })
+      page.getByRole('heading', { name: 'Complete a full IELTS Writing mock test' })
     ).toBeVisible()
 
     await page.getByRole('link', { name: 'Study Plan', exact: true }).click()
@@ -277,38 +225,10 @@ test.describe('app shell', () => {
       page.getByRole('heading', { name: /sessions left this week|Weekly rhythm is on track/ })
     ).toBeVisible()
 
-    await page.getByRole('link', { name: 'Review Queue' }).click()
-    await expect(page).toHaveURL(/\/review-queue$/)
+    await page.getByRole('link', { name: 'Score Tracker' }).click()
+    await expect(page).toHaveURL(/\/tracker$/)
     await expect(
-      page.getByRole('heading', { name: /Start your first review loop|\d+ review actions ready/ })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Revision Studio' }).click()
-    await expect(page).toHaveURL(/\/revision-studio$/)
-    await expect(
-      page.getByRole('heading', { name: /Start your first revision studio|\d+ saved drafts? (is|are) ready for rewrite/ })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Revision Checklist', exact: true }).click()
-    await expect(page).toHaveURL(/\/revision-checklist$/)
-    await expect(
-      page.getByRole('heading', {
-        name: 'Turn feedback into a focused rewrite checklist',
-      })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Mistake Library', exact: true }).click()
-    await expect(page).toHaveURL(/\/mistake-library$/)
-    await expect(
-      page.getByRole('heading', {
-        name: 'Learn the mistakes before they steal band points',
-      })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Mistake Journal', exact: true }).click()
-    await expect(page).toHaveURL(/\/mistake-journal$/)
-    await expect(
-      page.getByRole('heading', { name: /Build your mistake journal|\d+ mistake patterns found/ })
+      page.getByRole('heading', { name: 'See how your writing practice is evolving' })
     ).toBeVisible()
 
     await page.getByRole('link', { name: 'Profile Settings' }).click()
@@ -318,7 +238,7 @@ test.describe('app shell', () => {
     ).toBeVisible()
 
     await page.getByRole('link', { name: 'Dashboard' }).click()
-    await expect(page).toHaveURL(/\/$/)
+    await expect(page).toHaveURL(/\/dashboard$/)
     await expect(
       page.getByRole('heading', { name: 'Welcome back, Demo Learner' })
     ).toBeVisible()

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useSyncExternalStore } from 'react'
 import { signout } from '@/app/auth/actions'
 import { PracticeAttemptHistoryPanel } from '@/app/(app)/_components/practice-attempt-history-panel'
+import { UserAvatar } from '@/app/_components/ui/user-avatar'
 import {
   CompassIcon,
   SparklesIcon,
@@ -41,12 +42,14 @@ function formatDate(value: string) {
 }
 
 type DashboardOverviewProps = {
+  learnerAvatarUrl?: string | null
   learnerGoals: LearnerGoals
   learnerName: string
   initialEntries?: WritingHistoryEntry[]
 }
 
 export function DashboardOverview({
+  learnerAvatarUrl = null,
   learnerGoals,
   learnerName,
   initialEntries = [],
@@ -114,11 +117,14 @@ export function DashboardOverview({
             </div>
           </div>
         </div>
-        <form action={signout}>
-          <button type="submit" className="secondary-button">
-            Sign Out
-          </button>
-        </form>
+        <div className="dashboard-user-actions">
+          <UserAvatar avatarUrl={learnerAvatarUrl} name={learnerName} />
+          <form action={signout}>
+            <button type="submit" className="secondary-button">
+              Sign Out
+            </button>
+          </form>
+        </div>
       </div>
 
       <div className="dashboard-grid dashboard-metrics">

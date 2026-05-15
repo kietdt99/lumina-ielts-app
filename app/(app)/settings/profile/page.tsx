@@ -1,5 +1,6 @@
 import { LearnerGoalsSettings } from '../_components/learner-goals-settings'
 import { PasswordSettingsCard } from '../_components/password-settings-card'
+import { ProfileIdentitySettings } from '../_components/profile-identity-settings'
 import {
   CompassIcon,
   ProfileIcon,
@@ -55,6 +56,11 @@ export default async function ProfileSettingsPage() {
         </div>
       </section>
 
+      <ProfileIdentitySettings
+        avatarUrl={session.avatarUrl}
+        displayName={session.fullName}
+        email={session.email}
+      />
       <LearnerGoalsSettings initialGoals={goals} />
       <PasswordSettingsCard mustChangePassword={session.mustChangePassword} />
     </>

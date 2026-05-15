@@ -5,6 +5,9 @@
   --card: rgba(255, 255, 255, 0.8);
   --card-foreground: #5f4b4b;
   --border: #f2d7cd;
+  --danger: #d96c7a;
+  --muted: rgba(15, 23, 42, 0.66);
+  --muted-foreground: rgba(15, 23, 42, 0.64);
   --primary: #e58f7c;
   --primary-foreground: #fffaf7;
   --accent: rgba(255, 229, 219, 0.9);
@@ -15,6 +18,7 @@
   --shadow: 0 24px 48px rgba(156, 126, 120, 0.16);
   --radius: 1rem;
   --nav-width: 270px;
+  --surface: rgba(255, 255, 255, 0.64);
   --surface-highlight: rgba(255, 255, 255, 0.58);
   --hero-glow: rgba(229, 143, 124, 0.2);
   --hero-glow-secondary: rgba(255, 214, 201, 0.4);
@@ -228,6 +232,50 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes welcomeFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes welcomePulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes welcomeRise {
+  from {
+    opacity: 0;
+    transform: translateY(24px) rotate(-2deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(-2deg);
+  }
+}
+
+@keyframes welcomeProgress {
+  from {
+    width: 18%;
+  }
+
+  to {
+    width: 72%;
   }
 }
 
@@ -450,6 +498,62 @@ button {
 .sidebar-footnote {
   margin-top: 0.35rem;
   color: rgba(15, 23, 42, 0.6);
+}
+
+.sidebar-user-strip,
+.dashboard-user-actions {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.sidebar-user-strip {
+  border: 1px solid color-mix(in srgb, var(--primary) 13%, white);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.58);
+  margin-bottom: 0.85rem;
+  padding: 0.65rem;
+}
+
+.sidebar-user-strip strong {
+  display: block;
+  font-size: 0.9rem;
+}
+
+.user-avatar {
+  align-items: center;
+  aspect-ratio: 1;
+  border: 2px solid rgba(255, 255, 255, 0.78);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.9), transparent 34%),
+    linear-gradient(135deg, color-mix(in srgb, var(--primary) 72%, white), var(--primary));
+  box-shadow: 0 12px 28px color-mix(in srgb, var(--primary) 22%, transparent);
+  color: var(--primary-foreground);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.9rem;
+  font-weight: 800;
+  justify-content: center;
+  width: 2.6rem;
+}
+
+.user-avatar.has-image {
+  background-position: center;
+  background-size: cover;
+  color: transparent;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .main-content {
@@ -791,6 +895,262 @@ button {
 .auth-card {
   width: min(100%, 460px);
   padding: 2rem;
+}
+
+.welcome-shell {
+  min-height: 100vh;
+  overflow: hidden;
+  padding: clamp(1.25rem, 4vw, 4rem);
+  position: relative;
+}
+
+.language-toggle {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.64);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 999px;
+  box-shadow: 0 18px 42px rgba(169, 99, 78, 0.12);
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.35rem;
+  position: absolute;
+  right: clamp(1.25rem, 4vw, 4rem);
+  top: clamp(1.25rem, 4vw, 4rem);
+  z-index: 3;
+}
+
+.language-toggle button {
+  border-radius: 999px;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.48rem 0.72rem;
+}
+
+.language-toggle button.is-active {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--primary) 22%, transparent);
+}
+
+.welcome-shell::before {
+  content: "";
+  position: absolute;
+  inset: 8% 6% auto auto;
+  width: 34rem;
+  height: 34rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--primary) 22%, white), transparent 68%);
+  filter: blur(6px);
+  opacity: 0.82;
+  animation: welcomePulse 7s ease-in-out infinite;
+}
+
+.welcome-orb {
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.welcome-orb-one {
+  inset: 12% auto auto 7%;
+  width: 8rem;
+  height: 8rem;
+  background: color-mix(in srgb, var(--accent) 72%, white);
+  animation: welcomeFloat 6s ease-in-out infinite;
+}
+
+.welcome-orb-two {
+  right: 14%;
+  bottom: 12%;
+  width: 5.5rem;
+  height: 5.5rem;
+  background: color-mix(in srgb, var(--primary) 28%, white);
+  animation: welcomeFloat 7s ease-in-out infinite reverse;
+}
+
+.welcome-hero {
+  align-items: center;
+  display: grid;
+  gap: clamp(2rem, 6vw, 5rem);
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.82fr);
+  min-height: calc(100vh - 8rem);
+  position: relative;
+  z-index: 1;
+}
+
+.welcome-copy {
+  max-width: 46rem;
+}
+
+.welcome-copy h1 {
+  font-size: clamp(3.2rem, 7vw, 6.7rem);
+  letter-spacing: -0.07em;
+  line-height: 0.95;
+}
+
+.welcome-copy p:not(.section-label) {
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  margin-top: 1.25rem;
+  max-width: 38rem;
+}
+
+.welcome-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.welcome-primary-action,
+.welcome-secondary-action {
+  min-width: 9.5rem;
+}
+
+.welcome-showcase {
+  min-height: 34rem;
+  position: relative;
+}
+
+.welcome-path-card,
+.welcome-score-card,
+.welcome-spark-card,
+.welcome-about-card {
+  border: 1px solid rgba(255, 255, 255, 0.64);
+  box-shadow: 0 28px 70px rgba(169, 99, 78, 0.16);
+}
+
+.welcome-path-card {
+  border-radius: 2rem;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 247, 242, 0.72)),
+    radial-gradient(circle at top right, color-mix(in srgb, var(--primary) 18%, white), transparent 48%);
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+  margin: 5rem auto 0;
+  max-width: 25rem;
+  padding: 2rem;
+  transform: rotate(-2deg);
+  animation: welcomeRise 0.8s ease both;
+}
+
+.welcome-path-card h2 {
+  font-size: 2.4rem;
+}
+
+.welcome-progress-line {
+  border-radius: 999px;
+  height: 0.8rem;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--accent) 54%, white);
+}
+
+.welcome-progress-line::before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 72%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--chart-start), var(--chart-end));
+  animation: welcomeProgress 1.2s ease-out both;
+}
+
+.welcome-path-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.welcome-path-grid span {
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.72);
+  font-weight: 800;
+  padding: 0.85rem;
+  text-align: center;
+}
+
+.welcome-float-card {
+  border-radius: 1.35rem;
+  background: rgba(255, 255, 255, 0.76);
+  padding: 1rem 1.15rem;
+  position: absolute;
+  z-index: 2;
+}
+
+.welcome-float-card span {
+  color: var(--muted-foreground);
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.welcome-score-card {
+  left: 0;
+  top: 2rem;
+  animation: welcomeFloat 5.8s ease-in-out infinite;
+}
+
+.welcome-spark-card {
+  bottom: 4rem;
+  right: 0;
+  animation: welcomeFloat 6.4s ease-in-out infinite reverse;
+}
+
+.welcome-about-card {
+  margin: -3rem auto 3rem;
+  max-width: 48rem;
+  padding: 1.2rem 1.35rem;
+  position: relative;
+  z-index: 2;
+}
+
+.welcome-dialog-backdrop {
+  align-items: center;
+  background: rgba(78, 55, 48, 0.26);
+  backdrop-filter: blur(14px);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 1rem;
+  position: fixed;
+  z-index: 20;
+}
+
+.welcome-login-dialog {
+  max-height: min(90vh, 760px);
+  overflow: auto;
+  padding: 1.5rem;
+  position: relative;
+  width: min(100%, 28rem);
+}
+
+.compact-auth-copy {
+  margin-bottom: 1rem;
+}
+
+.compact-auth-copy h2 {
+  font-size: 2rem;
+}
+
+.welcome-dialog-close {
+  align-items: center;
+  border: none;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 78%, white);
+  color: var(--accent-foreground);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 1.3rem;
+  height: 2.2rem;
+  justify-content: center;
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  width: 2.2rem;
 }
 
 .auth-illustration-wrap,
@@ -3060,6 +3420,54 @@ button {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.profile-identity-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.profile-identity-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.profile-avatar-row {
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--primary) 12%, white);
+  border-radius: 1.1rem;
+  background: rgba(255, 255, 255, 0.56);
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.profile-avatar-preview {
+  width: 4.5rem;
+}
+
+.profile-avatar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.settings-status {
+  border-radius: 0.9rem;
+  font-weight: 700;
+  padding: 0.75rem 0.9rem;
+}
+
+.settings-status-error {
+  background: color-mix(in srgb, var(--danger) 12%, white);
+  color: color-mix(in srgb, var(--danger) 78%, #4b1f26);
+}
+
+.settings-status-success {
+  background: color-mix(in srgb, var(--success) 14%, white);
+  color: color-mix(in srgb, var(--success) 76%, #244b39);
+}
+
 .settings-shell {
   display: flex;
   flex-direction: column;
@@ -3396,6 +3804,19 @@ p {
     flex-direction: column;
   }
 
+  .dashboard-user-actions {
+    width: 100%;
+  }
+
+  .welcome-hero {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .welcome-showcase {
+    min-height: 28rem;
+  }
+
   .tracker-toolbar {
     align-items: stretch;
     flex-direction: column;
@@ -3474,6 +3895,7 @@ p {
 
   .editor-toolbar,
   .editor-footer,
+  .profile-avatar-row,
   .readiness-lab-action-row {
     align-items: stretch;
     flex-direction: column;
@@ -3495,5 +3917,27 @@ p {
 
   .history-score {
     text-align: left;
+  }
+
+  .welcome-copy h1 {
+    font-size: clamp(2.7rem, 15vw, 4.3rem);
+  }
+
+  .welcome-actions,
+  .welcome-actions > * {
+    width: 100%;
+  }
+
+  .welcome-showcase {
+    min-height: 24rem;
+  }
+
+  .welcome-float-card {
+    position: static;
+    margin-top: 1rem;
+  }
+
+  .welcome-path-card {
+    margin-top: 1.5rem;
   }
 }
