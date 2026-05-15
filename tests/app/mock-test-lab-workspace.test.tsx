@@ -3,10 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { MockTestLabWorkspace } from '@/app/(app)/mock-test/_components/mock-test-lab-workspace'
 import { writingMockTests } from '@/lib/ielts/mock-test-lab'
-
-function words(count: number) {
-  return Array.from({ length: count }, (_, index) => `word${index}`).join(' ')
-}
+import { buildReadyDraft } from '../support/mock-test-drafts'
 
 describe('MockTestLabWorkspace', () => {
   beforeEach(() => {
@@ -49,14 +46,25 @@ describe('MockTestLabWorkspace', () => {
 
   it('tracks draft word counts and completed checkpoints locally', async () => {
     const user = userEvent.setup()
+    const mockTest = writingMockTests[0]
 
     render(<MockTestLabWorkspace tests={writingMockTests} />)
 
     fireEvent.change(screen.getByLabelText('Task 1 draft'), {
-      target: { value: words(150) },
+      target: {
+        value: buildReadyDraft({
+          minimumWords: mockTest.taskOnePrompt.minimumWords,
+          taskType: 'Task 1',
+        }),
+      },
     })
     fireEvent.change(screen.getByLabelText('Task 2 draft'), {
-      target: { value: words(250) },
+      target: {
+        value: buildReadyDraft({
+          minimumWords: mockTest.taskTwoPrompt.minimumWords,
+          taskType: 'Task 2',
+        }),
+      },
     })
     await user.click(screen.getByLabelText('Mark Scan both tasks done'))
 
@@ -65,7 +73,11 @@ describe('MockTestLabWorkspace', () => {
     ).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getAllByText('Target met').length).toBe(2)
     expect(screen.getByText('Ready for feedback')).toBeInTheDocument()
-    expect(screen.getByText('400')).toBeInTheDocument()
+    expect(screen.getByLabelText('Mock debrief')).toBeInTheDocument()
+    expect(screen.getByText('Needs review')).toBeInTheDocument()
+    expect(
+      screen.getByText('Complete the remaining exam checkpoints.')
+    ).toBeInTheDocument()
 
     const storedState = JSON.parse(
       window.localStorage.getItem('lumina-mock-test-lab') ?? '{}'

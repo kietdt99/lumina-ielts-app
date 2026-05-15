@@ -1347,6 +1347,87 @@ button {
   line-height: 1.45;
 }
 
+.mock-test-debrief-card {
+  border: 1px solid color-mix(in srgb, var(--primary) 16%, white);
+  border-radius: 1rem;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.52)),
+    color-mix(in srgb, var(--primary) 10%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1rem;
+}
+
+.mock-test-debrief-card.is-ready-for-feedback {
+  border-color: color-mix(in srgb, var(--success) 44%, white);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.56)),
+    color-mix(in srgb, var(--success) 14%, transparent);
+}
+
+.mock-test-debrief-header,
+.mock-test-priority-card {
+  align-items: flex-start;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.mock-test-debrief-header h3 {
+  font-size: 1.05rem;
+  margin-bottom: 0.35rem;
+}
+
+.mock-test-debrief-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.mock-test-debrief-grid .summary-box {
+  padding: 0.85rem;
+}
+
+.mock-test-debrief-grid strong {
+  font-size: 1.45rem;
+}
+
+.mock-test-priority-card {
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, white);
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--accent) 15%, white);
+  color: var(--accent-foreground);
+  padding: 0.85rem;
+}
+
+.mock-test-priority-card strong {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.mock-test-next-actions {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.mock-test-action-list {
+  display: grid;
+  gap: 0.45rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mock-test-action-list li {
+  border-left: 3px solid color-mix(in srgb, var(--primary) 48%, white);
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.58);
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.45;
+  padding: 0.55rem 0.7rem;
+}
+
 .writing-meta-grid,
 .summary-grid {
   display: grid;
@@ -3006,6 +3087,7 @@ p {
   .model-fragments-controls,
   .model-fragment-two-column,
   .mock-test-controls,
+  .mock-test-debrief-grid,
   .mock-test-draft-grid,
   .mock-test-support-grid,
   .prompt-explorer-controls,
