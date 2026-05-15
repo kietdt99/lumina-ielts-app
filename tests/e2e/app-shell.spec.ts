@@ -68,6 +68,13 @@ test.describe('app shell', () => {
       })
     ).toBeVisible()
 
+    await gotoAndAssertOk('/speaking-practice')
+    await expect(
+      page.getByRole('heading', {
+        name: 'Train IELTS Speaking with cue-card drills',
+      })
+    ).toBeVisible()
+
     await gotoAndAssertOk('/prompt-explorer')
     await expect(
       page.getByRole('heading', {
@@ -201,6 +208,14 @@ test.describe('app shell', () => {
     await expect(
       page.getByRole('heading', {
         name: 'Train IELTS Listening with replayable simulations',
+      })
+    ).toBeVisible()
+
+    await page.getByRole('link', { name: 'Speaking Practice', exact: true }).click()
+    await expect(page).toHaveURL(/\/speaking-practice$/)
+    await expect(
+      page.getByRole('heading', {
+        name: 'Train IELTS Speaking with cue-card drills',
       })
     ).toBeVisible()
 
