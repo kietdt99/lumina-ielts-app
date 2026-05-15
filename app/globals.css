@@ -1728,6 +1728,97 @@ button {
   gap: 1.5rem;
 }
 
+.progress-insights-page {
+  gap: 1.5rem;
+}
+
+.progress-insights-layout {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.38fr);
+  align-items: start;
+}
+
+.progress-insights-main,
+.progress-insights-side {
+  gap: 1rem;
+}
+
+.progress-insight-rubric-grid,
+.progress-action-grid,
+.progress-priority-list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.progress-insight-rubric-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.progress-action-grid {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+.progress-insight-rubric-card,
+.progress-priority-card {
+  border: 1px solid color-mix(in srgb, var(--primary) 12%, white);
+  border-radius: 1rem;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.5)),
+    color-mix(in srgb, var(--accent) 12%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.95rem;
+}
+
+.progress-insight-rubric-header {
+  align-items: baseline;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.progress-insight-rubric-header strong {
+  color: var(--accent-foreground);
+}
+
+.progress-insight-rubric-header span {
+  color: var(--primary);
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.progress-insight-bar {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  height: 0.7rem;
+  overflow: hidden;
+}
+
+.progress-insight-bar span {
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--primary) 76%, white),
+      color-mix(in srgb, var(--accent) 74%, white)
+    );
+  border-radius: inherit;
+  display: block;
+  height: 100%;
+}
+
+.progress-priority-card p {
+  color: var(--accent-foreground);
+  font-weight: 700;
+}
+
+.progress-action-card {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.48)),
+    color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
 .study-plan-session-grid {
   display: grid;
   gap: 1rem;
@@ -2745,6 +2836,7 @@ p {
 
 @media (max-width: 1200px) {
   .writing-layout,
+  .progress-insights-layout,
   .readiness-lab-layout,
   .revision-studio-layout,
   .tracker-layout,
