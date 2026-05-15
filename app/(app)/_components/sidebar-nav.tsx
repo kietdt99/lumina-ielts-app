@@ -10,6 +10,7 @@ import {
   QuillIcon,
   RibbonIcon,
   SparklesIcon,
+  TimerIcon,
   TrackerIcon,
   WritingIcon,
 } from '@/app/_components/ui/app-icons'
@@ -29,6 +30,7 @@ type NavigationItem = {
     | 'profile'
     | 'accounts'
     | 'create'
+    | 'timer'
 }
 
 type SidebarNavProps = {
@@ -51,6 +53,7 @@ export function SidebarNav({ items }: SidebarNavProps) {
     profile: <ProfileIcon className="sidebar-icon" />,
     accounts: <ProfileIcon className="sidebar-icon" />,
     create: <SparklesIcon className="sidebar-icon" />,
+    timer: <TimerIcon className="sidebar-icon" />,
   }
 
   return (
