@@ -88,6 +88,11 @@ test.describe('app shell', () => {
       page.getByRole('heading', { name: 'See how your writing practice is evolving' })
     ).toBeVisible()
 
+    await gotoAndAssertOk('/progress-insights')
+    await expect(
+      page.getByRole('heading', { name: /Build your first progress signal|Close a \d+\.\d band gap with focused practice|Your writing band is close to target/ })
+    ).toBeVisible()
+
     await gotoAndAssertOk('/study-plan')
     await expect(
       page.getByRole('heading', { name: /sessions left this week|Weekly rhythm is on track/ })
@@ -204,7 +209,13 @@ test.describe('app shell', () => {
       page.getByRole('heading', { name: 'See how your writing practice is evolving' })
     ).toBeVisible()
 
-    await page.getByRole('link', { name: 'Study Plan' }).click()
+    await page.getByRole('link', { name: 'Progress Insights' }).click()
+    await expect(page).toHaveURL(/\/progress-insights$/)
+    await expect(
+      page.getByRole('heading', { name: /Build your first progress signal|Close a \d+\.\d band gap with focused practice|Your writing band is close to target/ })
+    ).toBeVisible()
+
+    await page.getByRole('link', { name: 'Study Plan', exact: true }).click()
     await expect(page).toHaveURL(/\/study-plan$/)
     await expect(
       page.getByRole('heading', { name: /sessions left this week|Weekly rhythm is on track/ })
