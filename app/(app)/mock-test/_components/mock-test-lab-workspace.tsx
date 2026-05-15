@@ -6,10 +6,13 @@ import {
   ChecklistIcon,
   CompassIcon,
   QuillIcon,
+  SparklesIcon,
+  TargetIcon,
   TimerIcon,
   WritingIcon,
 } from '@/app/_components/ui/app-icons'
 import { readSessionHintFromDocument } from '@/lib/auth/session-hint'
+import { createMockTestDebrief } from '@/lib/ielts/mock-test-debrief'
 import { getDraftMetrics } from '@/lib/ielts/writing-feedback'
 import {
   filterWritingMockTests,
@@ -141,6 +144,19 @@ export function MockTestLabWorkspace({ tests }: MockTestLabWorkspaceProps) {
     ? taskTwoMetrics.wordCount >= selectedTest.taskTwoPrompt.minimumWords
     : false
   const isMockReady = isTaskOneReady && isTaskTwoReady
+  const mockDebrief = selectedTest
+    ? createMockTestDebrief({
+        test: selectedTest,
+        taskOneDraft: selectedState.taskOneDraft,
+        taskTwoDraft: selectedState.taskTwoDraft,
+        remainingSeconds,
+        completedCheckpointIds: selectedState.completedCheckpoints,
+      })
+    : null
+  const priorityTask = mockDebrief?.priorityTask ?? null
+  const priorityTaskHref = priorityTask
+    ? writingHref(priorityTask.promptId)
+    : '/revision-studio'
 
   useEffect(() => {
     writeStoredState(mockState)
@@ -483,6 +499,67 @@ export function MockTestLabWorkspace({ tests }: MockTestLabWorkspaceProps) {
                       : 'Reach both word targets before treating this as a complete mock test.'}
                   </p>
                 </div>
+                {mockDebrief ? (
+                  <article
+                    className={`mock-test-debrief-card is-${mockDebrief.status}`}
+                    aria-label="Mock debrief"
+                  >
+                    <div className="mock-test-debrief-header">
+                      <SparklesIcon className="section-icon" />
+                      <div>
+                        <span className="surface-kicker">
+                          {mockDebrief.statusLabel}
+                        </span>
+                        <h3>{mockDebrief.headline}</h3>
+                        <p>{mockDebrief.summary}</p>
+                      </div>
+                    </div>
+
+                    <div className="mock-test-debrief-grid">
+                      <div className="summary-box">
+                        <span className="metric-label">Completion score</span>
+                        <strong>{mockDebrief.completionScore}%</strong>
+                      </div>
+                      <div className="summary-box">
+                        <span className="metric-label">Task 1 readiness</span>
+                        <strong>{mockDebrief.taskOne.readinessScore}%</strong>
+                      </div>
+                      <div className="summary-box">
+                        <span className="metric-label">Task 2 readiness</span>
+                        <strong>{mockDebrief.taskTwo.readinessScore}%</strong>
+                      </div>
+                    </div>
+
+                    <div className="mock-test-priority-card">
+                      <TargetIcon className="section-icon" />
+                      <div>
+                        <span className="metric-label">Priority task</span>
+                        <strong>
+                          {priorityTask
+                            ? `${priorityTask.taskType}: ${priorityTask.promptTitle}`
+                            : 'Balanced review'}
+                        </strong>
+                        <p>
+                          {priorityTask
+                            ? priorityTask.summary
+                            : 'Both tasks are balanced enough for the final review flow.'}
+                        </p>
+                        <Link href={priorityTaskHref} className="inline-link">
+                          {priorityTask ? 'Open priority task' : 'Open Revision Studio'}
+                        </Link>
+                      </div>
+                    </div>
+
+                    <div className="mock-test-next-actions">
+                      <span className="metric-label">Next actions</span>
+                      <ul className="mock-test-action-list">
+                        {mockDebrief.nextActions.map((action) => (
+                          <li key={action}>{action}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </article>
+                ) : null}
                 <div className="settings-actions">
                   <Link href="/revision-studio" className="primary-button">
                     Review saved feedback
