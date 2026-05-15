@@ -1570,6 +1570,47 @@ button {
   border-color: color-mix(in srgb, var(--primary) 34%, white);
 }
 
+.listening-practice-controls {
+  align-items: end;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(150px, 0.35fr) minmax(180px, 0.45fr) minmax(220px, 0.6fr) minmax(260px, 1fr) auto;
+}
+
+.listening-practice-search {
+  width: 100%;
+}
+
+.listening-transcript-card {
+  border: 1px solid color-mix(in srgb, var(--primary) 10%, white);
+  border-radius: 1rem;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.5)),
+    color-mix(in srgb, var(--accent) 11%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.listening-transcript-list {
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, white);
+  border-radius: 0.95rem;
+  background: rgba(255, 255, 255, 0.62);
+  display: grid;
+  gap: 0.6rem;
+  padding: 0.9rem;
+}
+
+.listening-transcript-list p {
+  color: color-mix(in srgb, var(--foreground) 84%, var(--primary));
+  line-height: 1.65;
+}
+
+.listening-note-textarea {
+  min-height: 140px;
+}
+
 .writing-meta-grid,
 .summary-grid {
   display: grid;
@@ -3237,6 +3278,7 @@ p {
   .mock-test-debrief-grid,
   .mock-test-draft-grid,
   .mock-test-support-grid,
+  .listening-practice-controls,
   .reading-practice-controls,
   .reading-score-grid,
   .prompt-explorer-controls,

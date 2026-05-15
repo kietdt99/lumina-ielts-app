@@ -11,6 +11,7 @@ const learnerNavigation: NavigationItem[] = [
   { href: '/practice-sprint', label: 'Practice Sprint', icon: 'plan' },
   { href: '/mock-test', label: 'Mock Test Lab', icon: 'timer' },
   { href: '/reading-practice', label: 'Reading Practice', icon: 'review' },
+  { href: '/listening-practice', label: 'Listening Practice', icon: 'timer' },
   { href: '/prompt-explorer', label: 'Prompt Explorer', icon: 'writing' },
   { href: '/rubric-guide', label: 'Rubric Guide', icon: 'review' },
   { href: '/idea-bank', label: 'Idea Bank', icon: 'ideas' },
