@@ -24,6 +24,7 @@ import {
   latestEntry,
   recentEntries,
 } from '@/lib/ielts/writing-history-insights'
+import { createSkillPracticePlan } from '@/lib/ielts/skill-practice-plan'
 import { createStudyRecommendation } from '@/lib/ielts/study-plan'
 
 function formatDate(value: string) {
@@ -62,6 +63,7 @@ export function DashboardOverview({
   const latestSession = latestEntry(entries)
   const recentSessions = recentEntries(entries, 3)
   const recommendation = createStudyRecommendation(learnerGoals, entries)
+  const skillPlan = createSkillPracticePlan(learnerGoals, entries)
 
   return (
     <div className="dashboard-stack">
@@ -82,8 +84,8 @@ export function DashboardOverview({
             <span className="surface-kicker">Today&apos;s direction</span>
             <p>
               {entries.length
-                ? `You have ${entries.length} saved writing session${entries.length === 1 ? '' : 's'} and your latest checkpoint is guiding the next revision loop.`
-                : `Set the tone with one reviewed draft today, then let Lumina turn it into your first dashboard checkpoint.`}
+                ? `You have ${entries.length} saved writing session${entries.length === 1 ? '' : 's'} and today's four-skill plan starts with ${skillPlan.focusModule.title}.`
+                : `Start with ${skillPlan.focusModule.title} today, then add one Writing checkpoint so Lumina can personalize the next loop.`}
             </p>
             <div className="dashboard-helper-metrics">
               <div className="dashboard-helper-chip">
@@ -92,7 +94,11 @@ export function DashboardOverview({
               </div>
               <div className="dashboard-helper-chip">
                 <span className="metric-label">Current focus</span>
-                <strong>{recommendation.recurringPriority ?? learnerGoals.focusSkill}</strong>
+                <strong>{skillPlan.focusModule.skill}</strong>
+              </div>
+              <div className="dashboard-helper-chip">
+                <span className="metric-label">Next module</span>
+                <strong>{skillPlan.focusModule.title}</strong>
               </div>
             </div>
           </div>
@@ -147,6 +153,63 @@ export function DashboardOverview({
           </p>
         </div>
       </div>
+
+      <section className="glass dashboard-card skill-practice-panel">
+        <div className="dashboard-section-header">
+          <div>
+            <span className="surface-kicker">Practice route</span>
+            <h2 className="card-title icon-heading">
+              <CompassIcon className="section-icon" />
+              <span>Four-Skill Practice Mix</span>
+            </h2>
+            <p>{skillPlan.summary}</p>
+          </div>
+          <Link href={skillPlan.focusModule.href} className="inline-link">
+            Open focus workspace
+          </Link>
+        </div>
+
+        <div className="skill-practice-grid">
+          {skillPlan.modules.map((module) => {
+            const isFocusModule = module.skill === skillPlan.focusModule.skill
+
+            return (
+              <Link
+                key={module.skill}
+                href={module.href}
+                className={`skill-practice-card${isFocusModule ? ' is-focus' : ''}`}
+                aria-label={`Open ${module.skill} practice module`}
+              >
+                <div className="skill-practice-card-header">
+                  <span className="skill-practice-mark" aria-hidden="true">
+                    {module.shortLabel}
+                  </span>
+                  <span className="surface-kicker">{module.skill}</span>
+                  {isFocusModule ? (
+                    <span className="skill-focus-badge">Current focus</span>
+                  ) : null}
+                </div>
+                <h3>{module.title}</h3>
+                <p>{module.description}</p>
+                <span className="metric-label">
+                  {module.recommendedMinutes} min | {module.evidence}
+                </span>
+              </Link>
+            )
+          })}
+        </div>
+
+        <div className="skill-practice-mix" aria-label="Weekly practice mix">
+          {skillPlan.weeklyMix.map((item) => (
+            <Link key={item.skill} href={item.href} className="skill-practice-chip">
+              <span>{item.skill}</span>
+              <strong>
+                {item.sessions} session{item.sessions === 1 ? '' : 's'}
+              </strong>
+            </Link>
+          ))}
+        </div>
+      </section>
 
       <div className="dashboard-grid dashboard-content">
         <section className="glass dashboard-card">
@@ -206,10 +269,10 @@ export function DashboardOverview({
               </p>
               <div className="empty-state-helper-strip">
                 <span className="surface-kicker">Suggested start</span>
-                <p>Open one writing prompt, finish a first draft, and let Lumina save your first checkpoint automatically.</p>
+                <p>Open the focus module first, then keep one Writing draft in the loop so your dashboard has measurable feedback.</p>
               </div>
-              <Link href="/writing" className="primary-button">
-                Start writing practice
+              <Link href={skillPlan.focusModule.href} className="primary-button">
+                {skillPlan.focusModule.actionLabel}
               </Link>
             </div>
           )}
@@ -222,14 +285,18 @@ export function DashboardOverview({
                 <CompassIcon className="section-icon" />
                 <span>Next Best Step</span>
               </h2>
-              <p>Use learner goals and recent writing data to focus the next revision cycle.</p>
+              <p>Use learner goals, focus skill, and recent writing data to choose the next study block.</p>
             </div>
-            <Link href="/writing" className="inline-link">
-              Open workspace
+            <Link href={skillPlan.focusModule.href} className="inline-link">
+              Open focus module
             </Link>
           </div>
 
           <div className="next-step-stack">
+            <div className="metric-pill">
+              <span className="metric-label">Focus module</span>
+              <strong>{skillPlan.focusModule.title}</strong>
+            </div>
             <div className="metric-pill">
               <span className="metric-label">Recommendation</span>
               <strong>{recommendation.headline}</strong>
@@ -298,7 +365,7 @@ export function DashboardOverview({
               </p>
               <div className="empty-state-helper-strip">
                 <span className="surface-kicker">First recommendation</span>
-                <p>Once you review a draft, this panel will turn your latest result into a concrete next-step plan.</p>
+                <p>Start with {skillPlan.focusModule.title}, then review one Writing draft so this panel can turn evidence into a concrete next-step plan.</p>
               </div>
               <div className="hero-badge-row">
                 <span className="hero-badge">First review</span>
@@ -309,6 +376,9 @@ export function DashboardOverview({
                   <li key={item}>{item}</li>
                 ))}
               </ul>
+              <Link href={skillPlan.focusModule.href} className="primary-button">
+                Open {skillPlan.focusModule.skill} focus module
+              </Link>
               <Link href="/settings/profile" className="inline-link">
                 Refine learner goals
               </Link>
