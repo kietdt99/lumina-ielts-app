@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useSyncExternalStore } from 'react'
 import { signout } from '@/app/auth/actions'
+import { PracticeAttemptHistoryPanel } from '@/app/(app)/_components/practice-attempt-history-panel'
 import {
   CompassIcon,
   SparklesIcon,
@@ -24,6 +25,11 @@ import {
   latestEntry,
   recentEntries,
 } from '@/lib/ielts/writing-history-insights'
+import {
+  getPracticeAttemptHistorySnapshot,
+  getServerPracticeAttemptHistorySnapshot,
+  subscribeToPracticeAttemptHistory,
+} from '@/lib/ielts/practice-attempt-history'
 import { createSkillPracticePlan } from '@/lib/ielts/skill-practice-plan'
 import { createStudyRecommendation } from '@/lib/ielts/study-plan'
 
@@ -58,6 +64,11 @@ export function DashboardOverview({
       initialEntries.length
         ? initialEntries
         : getServerWritingHistorySnapshot()
+  )
+  const recentPracticeAttempts = useSyncExternalStore(
+    subscribeToPracticeAttemptHistory,
+    getPracticeAttemptHistorySnapshot,
+    getServerPracticeAttemptHistorySnapshot
   )
 
   const latestSession = latestEntry(entries)
@@ -210,6 +221,13 @@ export function DashboardOverview({
           ))}
         </div>
       </section>
+
+      <PracticeAttemptHistoryPanel
+        attempts={recentPracticeAttempts}
+        title="Recent Skill Attempts"
+        description="Recent Reading, Listening, and Speaking scoring runs appear here after a learner completes a practice check."
+        showSkillLabel
+      />
 
       <div className="dashboard-grid dashboard-content">
         <section className="glass dashboard-card">

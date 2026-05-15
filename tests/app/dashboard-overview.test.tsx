@@ -24,6 +24,7 @@ vi.mock('@/lib/ielts/writing-history', () => ({
 
 describe('DashboardOverview', () => {
   beforeEach(() => {
+    window.localStorage.clear()
     state.entries = []
     hydrateWritingHistoryMock.mockClear()
   })
@@ -143,5 +144,40 @@ describe('DashboardOverview', () => {
     expect(
       screen.getByRole('heading', { level: 3, name: 'Server-backed entry' })
     ).toBeInTheDocument()
+  })
+
+  it('renders recent cross-skill practice attempts saved in local history', () => {
+    window.localStorage.setItem(
+      'lumina-practice-attempt-history',
+      JSON.stringify([
+        {
+          id: 'attempt-reading',
+          skill: 'Reading',
+          itemId: 'reading-urban-cooling-corridors',
+          itemTitle: 'Urban cooling corridors',
+          topic: 'Environment and climate',
+          difficulty: 'Balanced',
+          createdAt: '2026-03-31T13:00:00.000Z',
+          estimatedBand: 7,
+          statusLabel: 'Strong control',
+          summary: 'You answered 4 of 5 questions correctly.',
+          nextActions: ['Repeat the passage with a tighter time limit.'],
+          metricLabel: 'Accuracy',
+          metricValue: '80%',
+        },
+      ])
+    )
+
+    render(
+      <DashboardOverview
+        learnerGoals={createLearnerGoals()}
+        learnerName="Ava"
+      />
+    )
+
+    expect(screen.getByText('Recent Skill Attempts')).toBeInTheDocument()
+    expect(screen.getByText('Urban cooling corridors')).toBeInTheDocument()
+    expect(screen.getByText('Accuracy')).toBeInTheDocument()
+    expect(screen.getByText('80%')).toBeInTheDocument()
   })
 })
