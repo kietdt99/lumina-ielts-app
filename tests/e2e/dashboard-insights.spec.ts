@@ -17,7 +17,7 @@ test.describe('dashboard insights', () => {
     await seedLearnerGoals(page, {
       targetBand: 8,
       currentLevel: 'Band 6.0-6.5',
-      focusSkill: 'Writing',
+      focusSkill: 'Speaking',
       studyFrequency: 'Daily',
     })
 
@@ -44,6 +44,12 @@ test.describe('dashboard insights', () => {
 
     await gotoAndAssertOk('/')
 
+    await expect(page.getByText('Four-Skill Practice Mix')).toBeVisible()
+    await expect(page.getByText('Speaking Practice').first()).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Open focus module' })).toHaveAttribute(
+      'href',
+      '/speaking-practice'
+    )
     await expect(page.getByText('Close the gap to Band 8.0')).toBeVisible()
     await expect(page.getByText('Recent average')).toBeVisible()
     await expect(page.getByText('1.0', { exact: true })).toBeVisible()
