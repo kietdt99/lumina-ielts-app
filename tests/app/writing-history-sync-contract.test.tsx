@@ -51,15 +51,13 @@ describe('writing history sync contract', () => {
       />
     )
 
-    expect(syncContract.useSyncExternalStoreMock).toHaveBeenCalledTimes(1)
-    const [, , getServerSnapshot] =
-      syncContract.useSyncExternalStoreMock.mock.calls[0] ?? []
-    expect(syncContract.useSyncExternalStoreMock.mock.calls[0]?.[0]).toBe(
-      syncContract.subscribeToWritingHistory
+    const writingStoreCall = syncContract.useSyncExternalStoreMock.mock.calls.find(
+      ([subscribe]) => subscribe === syncContract.subscribeToWritingHistory
     )
-    expect(syncContract.useSyncExternalStoreMock.mock.calls[0]?.[1]).toBe(
-      syncContract.getWritingHistorySnapshot
-    )
+
+    expect(writingStoreCall).toBeDefined()
+    const [, getSnapshot, getServerSnapshot] = writingStoreCall ?? []
+    expect(getSnapshot).toBe(syncContract.getWritingHistorySnapshot)
     expect(typeof getServerSnapshot).toBe('function')
     expect(getServerSnapshot()).toEqual([])
   })

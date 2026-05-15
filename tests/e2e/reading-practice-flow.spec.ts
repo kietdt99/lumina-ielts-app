@@ -45,6 +45,10 @@ test.describe('reading practice flow', () => {
     await expect(page.getByText('Correct answer: sea breezes')).toBeVisible()
     await expect(page.getByText('Recent Reading attempts')).toBeVisible()
 
+    await gotoAndAssertOk('/')
+    await expect(page.getByText('Recent Skill Attempts')).toBeVisible()
+    await expect(page.getByText('Urban cooling corridors')).toBeVisible()
+
     const listResponse = await page.request.get(
       '/api/reading-practice?difficulty=Balanced&topic=Environment%20and%20climate&query=cooling'
     )

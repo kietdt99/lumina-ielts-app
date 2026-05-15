@@ -13,16 +13,24 @@ function formatAttemptDate(value: string) {
 
 type PracticeAttemptHistoryPanelProps = {
   attempts: PracticeAttemptHistoryEntry[]
-  skill: PracticeAttemptSkill
+  description?: string
+  showSkillLabel?: boolean
+  skill?: PracticeAttemptSkill
+  title?: string
 }
 
 export function PracticeAttemptHistoryPanel({
   attempts,
+  description = 'Lumina saves successful scoring runs locally so you can compare your latest practice results without repeating the full drill.',
+  showSkillLabel = false,
   skill,
+  title,
 }: PracticeAttemptHistoryPanelProps) {
   if (!attempts.length) {
     return null
   }
+
+  const heading = title ?? `Recent ${skill} attempts`
 
   return (
     <section className="glass writing-panel practice-attempt-history-panel">
@@ -31,12 +39,9 @@ export function PracticeAttemptHistoryPanel({
           <span className="surface-kicker">Saved practice</span>
           <h2 className="icon-heading">
             <SparklesIcon className="section-icon" />
-            <span>Recent {skill} attempts</span>
+            <span>{heading}</span>
           </h2>
-          <p>
-            Lumina saves successful scoring runs locally so you can compare your
-            latest practice results without repeating the full drill.
-          </p>
+          <p>{description}</p>
         </div>
       </div>
 
@@ -44,6 +49,11 @@ export function PracticeAttemptHistoryPanel({
         {attempts.slice(0, 3).map((attempt) => (
           <article key={attempt.id} className="practice-attempt-card">
             <div className="history-kicker-row">
+              {showSkillLabel ? (
+                <span className="surface-kicker tracker-history-pill tracker-history-pill-accent">
+                  {attempt.skill}
+                </span>
+              ) : null}
               <span className="surface-kicker">{attempt.topic}</span>
               <span className="surface-kicker tracker-history-pill">
                 {attempt.difficulty}
