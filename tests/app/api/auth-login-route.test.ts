@@ -29,6 +29,7 @@ describe('/api/auth/login', () => {
     authMocks.loginUser.mockResolvedValue({
       ok: true,
       session,
+      theme: 'mint',
     })
     authMocks.resolvePostLoginPath.mockReturnValue('/auth/change-password')
 
@@ -54,6 +55,7 @@ describe('/api/auth/login', () => {
     expect(payload).toEqual({
       ok: true,
       redirectTo: '/auth/change-password',
+      theme: 'mint',
     })
     expect(authMocks.loginUser).toHaveBeenCalledWith({
       email: 'learner@example.com',

@@ -3,6 +3,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { AdminIllustration } from '@/app/_components/ui/pastel-illustrations'
+import { CompassIcon, ProfileIcon, SparklesIcon } from '@/app/_components/ui/app-icons'
+import { StatusCallout } from '@/app/_components/ui/status-callout'
 
 type CreateAccountResponse =
   | {
@@ -77,17 +80,33 @@ export function AdminCreateLearnerForm() {
             Lumina generates a temporary password for each new learner account.
             Share it once, then let the learner change it on first login.
           </p>
+          <div className="hero-badge-row">
+            <span className="hero-badge">Temporary password included</span>
+            <span className="hero-badge">First login reset required</span>
+          </div>
+        </div>
+        <div className="writing-hero-visual">
+          <AdminIllustration className="hero-illustration" />
         </div>
         <div className="writing-hero-metrics">
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <ProfileIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Flow</span>
             <strong>Admin managed</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <SparklesIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Password</span>
             <strong>System generated</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <CompassIcon className="metric-icon" />
+            </div>
             <span className="metric-label">First login</span>
             <strong>Force password change</strong>
           </div>
@@ -97,21 +116,30 @@ export function AdminCreateLearnerForm() {
       <div className="settings-layout">
         <section className="glass writing-panel">
           <div className="panel-heading">
-            <h2>New learner</h2>
+            <h2 className="icon-heading">
+              <ProfileIcon className="section-icon" />
+              <span>New learner</span>
+            </h2>
             <p>Provide the learner identity and Lumina will generate the credential.</p>
           </div>
 
+          <div className="soft-note">
+            Create one learner at a time, then send the temporary password
+            through your preferred private channel.
+          </div>
+
           {errorMessage ? (
-            <div className="feedback-error" role="alert">
-              <strong>Unable to create learner account</strong>
+            <StatusCallout variant="error" title="Unable to create learner account.">
               <p>{errorMessage}</p>
-            </div>
+            </StatusCallout>
           ) : null}
 
           {temporaryPassword ? (
-            <div className="feedback-banner success-banner">
-              Temporary password: <strong>{temporaryPassword}</strong>
-            </div>
+            <StatusCallout variant="success" title="Learner account created.">
+              <p>
+                Temporary password: <strong>{temporaryPassword}</strong>
+              </p>
+            </StatusCallout>
           ) : null}
 
           <form className="auth-form" onSubmit={handleSubmit}>
@@ -140,6 +168,11 @@ export function AdminCreateLearnerForm() {
               />
             </div>
 
+            <div className="admin-helper-strip">
+              <span className="surface-kicker">Credential handoff</span>
+              <p>Double-check the learner email before creating the account so the first-login flow reaches the right person.</p>
+            </div>
+
             <div className="settings-actions">
               <button type="submit" className="primary-button" disabled={isSubmitting}>
                 {isSubmitting ? 'Creating account...' : 'Create learner account'}
@@ -153,14 +186,29 @@ export function AdminCreateLearnerForm() {
 
         <aside className="glass writing-panel">
           <div className="panel-heading">
-            <h2>What happens next</h2>
+            <h2 className="icon-heading">
+              <SparklesIcon className="section-icon" />
+              <span>What happens next</span>
+            </h2>
           </div>
 
-          <ul className="bullet-list">
-            <li>Learner signs in with the temporary password.</li>
-            <li>Learner is redirected to the password change screen.</li>
-            <li>Learner completes onboarding before entering the workspace.</li>
-          </ul>
+          <div className="admin-next-steps">
+            <div className="summary-box">
+              <span className="surface-kicker">Step 1</span>
+              <span className="metric-label">First sign-in</span>
+              <strong>Learner uses the temporary password</strong>
+            </div>
+            <div className="summary-box">
+              <span className="surface-kicker">Step 2</span>
+              <span className="metric-label">Password refresh</span>
+              <strong>Learner is redirected to change the password</strong>
+            </div>
+            <div className="summary-box">
+              <span className="surface-kicker">Step 3</span>
+              <span className="metric-label">Workspace access</span>
+              <strong>Learner completes onboarding before practice</strong>
+            </div>
+          </div>
         </aside>
       </div>
     </div>

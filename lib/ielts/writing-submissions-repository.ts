@@ -33,12 +33,16 @@ type SupabaseHistoryRow = {
         rubric: WritingHistoryEntry['rubric']
         strengths: string[]
         priorities: string[]
+        sample_rewrite: string | null
+        revision_plan: WritingHistoryEntry['revisionPlan'] | null
       }
     | Array<{
         estimated_band: number
         rubric: WritingHistoryEntry['rubric']
         strengths: string[]
         priorities: string[]
+        sample_rewrite: string | null
+        revision_plan: WritingHistoryEntry['revisionPlan'] | null
       }>
     | null
 }
@@ -97,7 +101,8 @@ export async function saveWritingSubmissionRecord(
       strengths: result.feedback.strengths,
       priorities: result.feedback.priorities,
       coaching_note: result.feedback.coachingNote,
-      sample_rewrite: null,
+      sample_rewrite: result.feedback.sampleRewrite,
+      revision_plan: result.feedback.revisionPlan,
       provider: 'heuristic',
     })
 
@@ -145,6 +150,8 @@ function toHistoryEntry(row: SupabaseHistoryRow): WritingHistoryEntry | null {
     rubric: feedback.rubric,
     strengths: feedback.strengths,
     priorities: feedback.priorities,
+    sampleRewrite: feedback.sample_rewrite,
+    revisionPlan: feedback.revision_plan ?? [],
   }
 }
 
@@ -169,7 +176,7 @@ export async function listWritingSubmissionHistory() {
         submitted_at,
         prompt_id,
         prompt:writing_prompts(title, task_type),
-        feedback:writing_feedback(estimated_band, rubric, strengths, priorities)
+        feedback:writing_feedback(estimated_band, rubric, strengths, priorities, sample_rewrite, revision_plan)
       `
     )
     .eq('user_id', user.id)

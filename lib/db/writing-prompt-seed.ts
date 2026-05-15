@@ -4,6 +4,8 @@ export type WritingPromptSeedRow = {
   id: string
   task_type: 'Task 1' | 'Task 2'
   title: string
+  topic: string
+  difficulty: 'Guided' | 'Balanced' | 'Stretch'
   duration_minutes: number
   minimum_words: number
   brief: string
@@ -18,6 +20,8 @@ export const writingPromptSeedRows: WritingPromptSeedRow[] = writingPrompts.map(
     id: prompt.id,
     task_type: prompt.taskType,
     title: prompt.title,
+    topic: prompt.topic,
+    difficulty: prompt.difficulty,
     duration_minutes: prompt.durationMinutes,
     minimum_words: prompt.minimumWords,
     brief: prompt.brief,
@@ -43,6 +47,8 @@ export function buildWritingPromptSeedSql() {
   '${escapeSqlString(row.id)}',
   '${escapeSqlString(row.task_type)}',
   '${escapeSqlString(row.title)}',
+  '${escapeSqlString(row.topic)}',
+  '${escapeSqlString(row.difficulty)}',
   ${row.duration_minutes},
   ${row.minimum_words},
   '${escapeSqlString(row.brief)}',
@@ -58,6 +64,8 @@ export function buildWritingPromptSeedSql() {
   id,
   task_type,
   title,
+  topic,
+  difficulty,
   duration_minutes,
   minimum_words,
   brief,
@@ -72,6 +80,8 @@ on conflict (id) do update
 set
   task_type = excluded.task_type,
   title = excluded.title,
+  topic = excluded.topic,
+  difficulty = excluded.difficulty,
   duration_minutes = excluded.duration_minutes,
   minimum_words = excluded.minimum_words,
   brief = excluded.brief,

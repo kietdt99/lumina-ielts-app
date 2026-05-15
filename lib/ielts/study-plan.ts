@@ -11,10 +11,37 @@ type StudyRecommendation = {
   recurringPriority: string | null
 }
 
+export type WeeklyStudyPlanSession = {
+  label: string
+  focus: string
+  durationMinutes: number
+  taskType: 'Task 1' | 'Task 2'
+  actions: string[]
+  checkpoint: string
+}
+
+export type WeeklyStudyPlan = {
+  headline: string
+  summary: string
+  weeklyTargetSessions: number
+  completedSessionsThisWeek: number
+  remainingSessions: number
+  recentAverage: number
+  targetGap: number
+  priorityFocus: string
+  sessions: WeeklyStudyPlanSession[]
+}
+
 const currentLevelEstimateMap: Record<LearnerGoals['currentLevel'], number> = {
   'Band 5.0-5.5': 5.25,
   'Band 6.0-6.5': 6.25,
   'Band 7.0+': 7,
+}
+
+const weeklySessionTargetMap: Record<LearnerGoals['studyFrequency'], number> = {
+  '2 sessions/week': 2,
+  '4 sessions/week': 4,
+  Daily: 7,
 }
 
 function roundBand(value: number) {
@@ -117,5 +144,69 @@ export function createStudyRecommendation(
     targetGap,
     sessionsThisWeek: sessionsCompletedThisWeek,
     recurringPriority: recurringFocus,
+  }
+}
+
+export function createWeeklyStudyPlan(
+  goals: LearnerGoals,
+  entries: WritingHistoryEntry[],
+  referenceDate = new Date()
+): WeeklyStudyPlan {
+  const recommendation = createStudyRecommendation(goals, entries, referenceDate)
+  const weeklyTargetSessions = weeklySessionTargetMap[goals.studyFrequency]
+  const completedSessionsThisWeek = recommendation.sessionsThisWeek
+  const remainingSessions = Math.max(0, weeklyTargetSessions - completedSessionsThisWeek)
+  const priorityFocus =
+    recommendation.recurringPriority ??
+    entries[0]?.priorities[0] ??
+    `${goals.focusSkill} fundamentals`
+  const sessionCount = Math.max(remainingSessions, Math.min(weeklyTargetSessions, 3))
+
+  const sessions = Array.from({ length: sessionCount }, (_, index) => {
+    const taskType = index % 2 === 0 ? 'Task 2' : 'Task 1'
+    const isReviewSession = index % 3 === 2
+    const focus = isReviewSession
+      ? 'Review and rewrite'
+      : taskType === 'Task 2'
+        ? 'Argument development'
+        : 'Overview and grouping'
+
+    return {
+      label: `Session ${index + 1}`,
+      focus,
+      durationMinutes: taskType === 'Task 2' ? 40 : 20,
+      taskType,
+      actions: uniqueActions([
+        isReviewSession
+          ? 'Rewrite one weak paragraph from the latest feedback.'
+          : `Complete one ${taskType} writing prompt under timed conditions.`,
+        priorityFocus,
+        'Save the result and review the first revision priority before ending.',
+      ]),
+      checkpoint:
+        index === 0
+          ? 'Start with the highest-impact practice block.'
+          : index === sessionCount - 1
+            ? 'Close the week by comparing the newest feedback with the previous result.'
+            : 'Keep the rhythm steady and capture one takeaway.',
+    } satisfies WeeklyStudyPlanSession
+  })
+
+  return {
+    headline:
+      remainingSessions > 0
+        ? `${remainingSessions} session${remainingSessions === 1 ? '' : 's'} left this week`
+        : 'Weekly rhythm is on track',
+    summary:
+      remainingSessions > 0
+        ? `Your ${goals.studyFrequency.toLowerCase()} target needs ${remainingSessions} more focused practice block${remainingSessions === 1 ? '' : 's'} this week.`
+        : `You have already matched the ${goals.studyFrequency.toLowerCase()} rhythm. Use the remaining time for targeted rewrites.`,
+    weeklyTargetSessions,
+    completedSessionsThisWeek,
+    remainingSessions,
+    recentAverage: recommendation.recentAverage,
+    targetGap: recommendation.targetGap,
+    priorityFocus,
+    sessions,
   }
 }

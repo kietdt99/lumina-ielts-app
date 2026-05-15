@@ -3,6 +3,13 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
+  CompassIcon,
+  ProfileIcon,
+  SparklesIcon,
+  TargetIcon,
+} from '@/app/_components/ui/app-icons'
+import { StatusCallout } from '@/app/_components/ui/status-callout'
+import {
   defaultLearnerGoals,
   learnerGoalCurrentLevelOptions,
   learnerGoalFocusSkillOptions,
@@ -116,17 +123,31 @@ export function LearnerGoalsSettings({
               ? 'Before you start practicing, tell Lumina what score you are chasing and which skill needs the most attention.'
               : 'These learner goals personalize the dashboard and keep Lumina aligned with the score you are aiming for next.'}
           </p>
+          <div className="hero-badge-row">
+            <span className="hero-badge">{goals.targetBand.toFixed(1)} target</span>
+            <span className="hero-badge">{goals.focusSkill}</span>
+            <span className="hero-badge">{goals.studyFrequency}</span>
+          </div>
         </div>
         <div className="writing-hero-metrics">
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <TargetIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Target band</span>
             <strong>{goals.targetBand.toFixed(1)}</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <SparklesIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Focus skill</span>
             <strong>{goals.focusSkill}</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <CompassIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Study rhythm</span>
             <strong>{goals.studyFrequency}</strong>
           </div>
@@ -136,7 +157,10 @@ export function LearnerGoalsSettings({
       <div className="settings-layout">
         <section className="glass writing-panel">
           <div className="panel-heading">
-            <h2>{isOnboarding ? 'Your first learner profile' : 'Learner goals'}</h2>
+            <h2 className="icon-heading">
+              <ProfileIcon className="section-icon" />
+              <span>{isOnboarding ? 'Your first learner profile' : 'Learner goals'}</span>
+            </h2>
             <p>
               {isOnboarding
                 ? 'Choose a realistic current level, the band you want next, and a study rhythm you can sustain.'
@@ -144,15 +168,21 @@ export function LearnerGoalsSettings({
             </p>
           </div>
 
+          <div className="soft-note">
+            Keep these choices realistic. Lumina uses them to shape the dashboard,
+            revision priorities, and pacing recommendations.
+          </div>
+
           {errorMessage ? (
-            <div className="feedback-error" role="alert">
-              <strong>Unable to save learner goals</strong>
+            <StatusCallout variant="error" title="Unable to save learner goals.">
               <p>{errorMessage}</p>
-            </div>
+            </StatusCallout>
           ) : null}
 
           {successMessage ? (
-            <div className="feedback-banner success-banner">{successMessage}</div>
+            <StatusCallout variant="success" title="Learner goals updated.">
+              <p>{successMessage}</p>
+            </StatusCallout>
           ) : null}
 
           <div className="settings-grid">
@@ -265,11 +295,19 @@ export function LearnerGoalsSettings({
               Restore recommended goals
             </button>
           </div>
+
+          <div className="settings-helper-strip">
+            <span className="surface-kicker">Before you save</span>
+            <p>Choose the goal set you can realistically follow for the next few weeks so Lumina can keep your guidance steady.</p>
+          </div>
         </section>
 
         <aside className="glass writing-panel">
           <div className="panel-heading">
-            <h2>Current plan snapshot</h2>
+            <h2 className="icon-heading">
+              <SparklesIcon className="section-icon" />
+              <span>Current plan snapshot</span>
+            </h2>
             <p>
               {isOnboarding
                 ? 'This snapshot becomes the baseline for your dashboard, tracker, and next-step recommendations.'
@@ -279,21 +317,33 @@ export function LearnerGoalsSettings({
 
           <div className="settings-summary">
             <div className="summary-box">
+              <span className="surface-kicker">Target</span>
               <span className="metric-label">Target band</span>
               <strong>{goals.targetBand.toFixed(1)}</strong>
             </div>
             <div className="summary-box">
+              <span className="surface-kicker">Level</span>
               <span className="metric-label">Current level</span>
               <strong>{goals.currentLevel}</strong>
             </div>
             <div className="summary-box">
+              <span className="surface-kicker">Focus</span>
               <span className="metric-label">Focus skill</span>
               <strong>{goals.focusSkill}</strong>
             </div>
             <div className="summary-box">
+              <span className="surface-kicker">Rhythm</span>
               <span className="metric-label">Study frequency</span>
               <strong>{goals.studyFrequency}</strong>
             </div>
+          </div>
+
+          <div className="settings-helper-strip">
+            <span className="surface-kicker">Why this matters</span>
+            <p>
+              Lumina uses this snapshot to shape dashboard insights, writing priorities,
+              and the pace of your next recommended practice cycle.
+            </p>
           </div>
         </aside>
       </div>

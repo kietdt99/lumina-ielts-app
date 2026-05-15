@@ -1,12 +1,33 @@
 import { signout } from '@/app/auth/actions'
 import { requireLearnerAppSession } from '@/lib/auth/service'
+import { pastelThemeLabels, readPastelThemeCookie } from '@/lib/theme/pastel-theme'
 import { SidebarNav } from './_components/sidebar-nav'
+import type { NavigationItem } from './_components/sidebar-nav'
 
-const learnerNavigation = [
-  { href: '/', label: 'Dashboard' },
-  { href: '/writing', label: 'Writing Assistant' },
-  { href: '/tracker', label: 'Score Tracker' },
-  { href: '/settings/profile', label: 'Profile Settings' },
+const learnerNavigation: NavigationItem[] = [
+  { href: '/', label: 'Dashboard', icon: 'dashboard' },
+  { href: '/writing', label: 'Writing Assistant', icon: 'writing' },
+  { href: '/readiness-lab', label: 'Readiness Lab', icon: 'review' },
+  { href: '/practice-sprint', label: 'Practice Sprint', icon: 'plan' },
+  { href: '/mock-test', label: 'Mock Test Lab', icon: 'timer' },
+  { href: '/reading-practice', label: 'Reading Practice', icon: 'review' },
+  { href: '/listening-practice', label: 'Listening Practice', icon: 'timer' },
+  { href: '/speaking-practice', label: 'Speaking Practice', icon: 'writing' },
+  { href: '/prompt-explorer', label: 'Prompt Explorer', icon: 'writing' },
+  { href: '/rubric-guide', label: 'Rubric Guide', icon: 'review' },
+  { href: '/idea-bank', label: 'Idea Bank', icon: 'ideas' },
+  { href: '/vocabulary-builder', label: 'Vocabulary Builder', icon: 'ideas' },
+  { href: '/model-fragments', label: 'Model Fragments', icon: 'outline' },
+  { href: '/outline-builder', label: 'Outline Builder', icon: 'outline' },
+  { href: '/tracker', label: 'Score Tracker', icon: 'tracker' },
+  { href: '/progress-insights', label: 'Progress Insights', icon: 'tracker' },
+  { href: '/study-plan', label: 'Study Plan', icon: 'plan' },
+  { href: '/review-queue', label: 'Review Queue', icon: 'review' },
+  { href: '/revision-studio', label: 'Revision Studio', icon: 'review' },
+  { href: '/revision-checklist', label: 'Revision Checklist', icon: 'review' },
+  { href: '/mistake-library', label: 'Mistake Library', icon: 'journal' },
+  { href: '/mistake-journal', label: 'Mistake Journal', icon: 'journal' },
+  { href: '/settings/profile', label: 'Profile Settings', icon: 'profile' },
 ]
 
 export default async function AppLayout({
@@ -15,6 +36,7 @@ export default async function AppLayout({
   children: React.ReactNode
 }) {
   const session = await requireLearnerAppSession()
+  const theme = await readPastelThemeCookie()
 
   return (
     <div className="layout-container">
@@ -23,6 +45,10 @@ export default async function AppLayout({
           <p className="sidebar-eyebrow">Personal prep workspace</p>
           <h2 className="sidebar-title">Lumina IELTS</h2>
           <p className="sidebar-subtitle">{session.fullName}</p>
+          <div className="theme-chip" aria-label={`Current pastel theme: ${pastelThemeLabels[theme]}`}>
+            <span className="theme-chip-dot" />
+            <span>{pastelThemeLabels[theme]}</span>
+          </div>
         </div>
         <SidebarNav items={learnerNavigation} />
         <div className="sidebar-footer">
@@ -32,6 +58,7 @@ export default async function AppLayout({
             </button>
           </form>
           <p>Version 1.0 MVP</p>
+          <p className="sidebar-footnote">Writing-first learner workspace</p>
         </div>
       </nav>
       <main className="main-content">{children}</main>

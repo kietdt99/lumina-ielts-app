@@ -3,6 +3,9 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { AdminIllustration } from '@/app/_components/ui/pastel-illustrations'
+import { ProfileIcon, SparklesIcon, TargetIcon } from '@/app/_components/ui/app-icons'
+import { StatusCallout } from '@/app/_components/ui/status-callout'
 import type { ManagedLearnerAccount } from '@/lib/auth/types'
 
 type ResetPasswordResponse =
@@ -80,17 +83,35 @@ export function AdminAccountsManager({
             Create learner credentials, monitor onboarding status, and reissue
             temporary passwords when needed.
           </p>
+          <div className="hero-badge-row">
+            <span className="hero-badge">{accounts.length} learner accounts</span>
+            <span className="hero-badge">
+              {accounts.filter((account) => !account.onboardingCompleted).length} onboarding pending
+            </span>
+          </div>
+        </div>
+        <div className="writing-hero-visual">
+          <AdminIllustration className="hero-illustration" />
         </div>
         <div className="writing-hero-metrics">
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <ProfileIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Learners</span>
             <strong>{accounts.length}</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <SparklesIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Pending onboarding</span>
             <strong>{accounts.filter((account) => !account.onboardingCompleted).length}</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <TargetIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Password resets due</span>
             <strong>{accounts.filter((account) => account.mustChangePassword).length}</strong>
           </div>
@@ -104,21 +125,50 @@ export function AdminAccountsManager({
       </div>
 
       {errorMessage ? (
-        <div className="feedback-error" role="alert">
-          <strong>Unable to manage learner accounts</strong>
+        <StatusCallout variant="error" title="Unable to manage learner accounts.">
           <p>{errorMessage}</p>
-        </div>
+        </StatusCallout>
       ) : null}
 
       {revealedCredential ? (
-        <div className="feedback-banner success-banner">
-          Temporary password for this learner: <strong>{revealedCredential.temporaryPassword}</strong>
-        </div>
+        <StatusCallout variant="success" title="Temporary password generated.">
+          <p>
+            Temporary password for this learner:{' '}
+            <strong>{revealedCredential.temporaryPassword}</strong>
+          </p>
+        </StatusCallout>
       ) : null}
 
-      <div className="history-list">
+      {accounts.length ? (
+        <div className="history-list">
         {accounts.map((account) => (
           <article key={account.id} className="glass history-card">
+            <div className="history-kicker-row">
+              <span className="surface-kicker">Learner account</span>
+              <span
+                className={`surface-kicker account-status-pill${
+                  account.onboardingCompleted
+                    ? ' account-status-pill-success'
+                    : ' account-status-pill-info'
+                }`}
+              >
+                {account.onboardingCompleted
+                  ? 'Onboarding complete'
+                  : 'Onboarding pending'}
+              </span>
+              <span
+                className={`surface-kicker account-status-pill${
+                  account.mustChangePassword
+                    ? ' account-status-pill-warning'
+                    : ' account-status-pill-success'
+                }`}
+              >
+                {account.mustChangePassword
+                  ? 'Password update required'
+                  : 'Password current'}
+              </span>
+            </div>
+
             <div className="history-header">
               <div>
                 <h2>{account.fullName}</h2>
@@ -126,7 +176,11 @@ export function AdminAccountsManager({
               </div>
               <div className="history-score">
                 <strong>{account.onboardingCompleted ? 'Ready' : 'Onboarding'}</strong>
-                <p>{account.mustChangePassword ? 'Password update required' : 'Password current'}</p>
+                <p>
+                  {account.mustChangePassword
+                    ? 'Learner should change the temporary password next.'
+                    : 'Credential is already refreshed for ongoing practice.'}
+                </p>
               </div>
             </div>
 
@@ -154,7 +208,26 @@ export function AdminAccountsManager({
             </div>
           </article>
         ))}
-      </div>
+        </div>
+      ) : (
+        <section className="glass writing-panel empty-state-panel">
+          <div className="empty-state-illustration-wrap">
+            <AdminIllustration className="empty-state-illustration" />
+          </div>
+          <div className="panel-heading">
+            <h2>No learner accounts yet</h2>
+            <p>
+              Create the first learner profile to start handing out credentials
+              and guiding people into the IELTS workspace.
+            </p>
+          </div>
+          <div className="settings-actions">
+            <Link href="/admin/accounts/new" className="primary-button">
+              Create first learner
+            </Link>
+          </div>
+        </section>
+      )}
     </div>
   )
 }

@@ -1,7 +1,18 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { useEffect, useState, useSyncExternalStore } from 'react'
+import {
+  ChecklistIcon,
+  CompassIcon,
+  RibbonIcon,
+  SparklesIcon,
+  TargetIcon,
+  TimerIcon,
+  TrackerIcon,
+} from '@/app/_components/ui/app-icons'
+import { EmptyStateIllustration } from '@/app/_components/ui/pastel-illustrations'
+import { StatusCallout } from '@/app/_components/ui/status-callout'
 import type { LearnerGoals } from '@/lib/learner/learner-goals'
 import {
   clearWritingHistory,
@@ -78,17 +89,31 @@ export function ProgressTracker({
             Every feedback run in the writing workspace is stored for this
             learner account and appears here as a new practice checkpoint.
           </p>
+          <div className="hero-badge-row">
+            <span className="hero-badge">{entries.length} checkpoints</span>
+            <span className="hero-badge">{selectedTask} view</span>
+            <span className="hero-badge">Band {learnerGoals.targetBand.toFixed(1)} target</span>
+          </div>
         </div>
         <div className="writing-hero-metrics">
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <TrackerIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Saved sessions</span>
             <strong>{entries.length}</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <SparklesIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Average band</span>
             <strong>{averageBand(filteredEntries).toFixed(1)}</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <RibbonIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Best band</span>
             <strong>{bestBand(filteredEntries).toFixed(1)}</strong>
           </div>
@@ -96,17 +121,34 @@ export function ProgressTracker({
       </section>
 
       <section className="tracker-toolbar">
-        <div className="task-switcher" role="tablist" aria-label="Filter writing sessions">
-          {(['All', 'Task 1', 'Task 2'] as const).map((task) => (
-            <button
-              key={task}
-              type="button"
-              className={`task-chip${selectedTask === task ? ' is-active' : ''}`}
-              onClick={() => setSelectedTask(task)}
-            >
-              {task}
-            </button>
-          ))}
+        <div className="tracker-toolbar-copy">
+          <div className="task-switcher" role="tablist" aria-label="Filter writing sessions">
+            {(['All', 'Task 1', 'Task 2'] as const).map((task) => (
+              <button
+                key={task}
+                type="button"
+                className={`task-chip${selectedTask === task ? ' is-active' : ''}`}
+                onClick={() => setSelectedTask(task)}
+              >
+                <span className="task-chip-dot" aria-hidden="true" />
+                {task}
+              </button>
+            ))}
+          </div>
+          <div className="tracker-toolbar-summary">
+            <span className="surface-kicker">Current view</span>
+            <p>
+              {filteredEntries.length
+                ? `${selectedTask} is showing ${filteredEntries.length} checkpoint${filteredEntries.length === 1 ? '' : 's'} with an average band of ${averageBand(filteredEntries).toFixed(1)}.`
+                : `No ${selectedTask === 'All' ? '' : `${selectedTask} `}checkpoints match this filter yet.`}
+            </p>
+            <div className="hero-badge-row">
+              <span className="hero-badge">Best {bestBand(filteredEntries).toFixed(1)}</span>
+              <span className="hero-badge">
+                {selectedEntry ? `${selectedEntry.taskType} selected` : 'Choose a checkpoint'}
+              </span>
+            </div>
+          </div>
         </div>
 
         {entries.length ? (
@@ -119,7 +161,10 @@ export function ProgressTracker({
       {entries.length ? (
         <section className="dashboard-grid tracker-insights-grid">
           <article className="glass dashboard-card">
-            <h2 className="card-title">Target Gap</h2>
+            <h2 className="card-title icon-heading">
+              <TargetIcon className="section-icon" />
+              <span>Target Gap</span>
+            </h2>
             <p className="dashboard-stat">{recommendation.targetGap.toFixed(1)}</p>
             <p>
               Based on the filtered sessions, you are working toward Band{' '}
@@ -128,13 +173,19 @@ export function ProgressTracker({
           </article>
 
           <article className="glass dashboard-card">
-            <h2 className="card-title">Sessions This Week</h2>
+            <h2 className="card-title icon-heading">
+              <TimerIcon className="section-icon" />
+              <span>Sessions This Week</span>
+            </h2>
             <p className="dashboard-stat">{recommendation.sessionsThisWeek}</p>
             <p>Use this to check whether your current rhythm matches the study plan.</p>
           </article>
 
           <article className="glass dashboard-card">
-            <h2 className="card-title">Recurring Focus</h2>
+            <h2 className="card-title icon-heading">
+              <CompassIcon className="section-icon" />
+              <span>Recurring Focus</span>
+            </h2>
             <p className="tracker-focus-copy">
               {recommendation.recurringPriority ??
                 'Complete more writing sessions to identify a repeated focus area.'}
@@ -150,7 +201,10 @@ export function ProgressTracker({
         <div className="tracker-layout">
           <section className="glass writing-panel tracker-overview">
             <div className="panel-heading">
-              <h2>Band trend</h2>
+              <h2 className="icon-heading">
+                <TrackerIcon className="section-icon" />
+                <span>Band trend</span>
+              </h2>
               <p>The most recent practice checkpoints saved from your writing workspace.</p>
             </div>
 
@@ -167,7 +221,10 @@ export function ProgressTracker({
 
           <section className="glass writing-panel tracker-history">
             <div className="panel-heading">
-              <h2>Practice history</h2>
+              <h2 className="icon-heading">
+                <SparklesIcon className="section-icon" />
+                <span>Practice history</span>
+              </h2>
               <p>Open your latest drafts and revision priorities in one place.</p>
             </div>
 
@@ -181,6 +238,18 @@ export function ProgressTracker({
                   }`}
                   onClick={() => setSelectedEntryId(entry.id)}
                 >
+                  <div className="history-kicker-row">
+                    <span className="surface-kicker">Practice checkpoint</span>
+                    <span className="surface-kicker tracker-history-pill">
+                      {entry.taskType}
+                    </span>
+                    <span className="surface-kicker tracker-history-pill tracker-history-pill-accent">
+                      {entry.wordCount} words
+                    </span>
+                    {selectedEntry?.id === entry.id ? (
+                      <span className="surface-kicker">Selected</span>
+                    ) : null}
+                  </div>
                   <div className="history-header">
                     <div>
                       <span className="prompt-type">{entry.taskType}</span>
@@ -232,18 +301,26 @@ export function ProgressTracker({
 
           <aside className="glass writing-panel tracker-detail">
             <div className="panel-heading">
-              <h2>Session detail</h2>
+              <h2 className="icon-heading">
+                <RibbonIcon className="section-icon" />
+                <span>Session detail</span>
+              </h2>
               <p>Inspect the selected submission more closely before your next revision pass.</p>
             </div>
 
-            <div className="feedback-error tracker-recommendation-card" role="status">
-              <strong>{recommendation.headline}</strong>
-              <p>{recommendation.summary}</p>
+            <div className="tracker-recommendation-card">
+              <StatusCallout variant="info" title={recommendation.headline}>
+                <p>{recommendation.summary}</p>
+              </StatusCallout>
             </div>
 
             {selectedEntry ? (
               <div className="feedback-stack">
                 <div className="score-card">
+                  <div className="hero-badge-row">
+                    <span className="hero-badge">{selectedEntry.taskType}</span>
+                    <span className="hero-badge">{selectedEntry.wordCount} words</span>
+                  </div>
                   <span className="metric-label">Selected session</span>
                   <strong>{selectedEntry.estimatedBand.toFixed(1)}</strong>
                   <p>
@@ -254,14 +331,17 @@ export function ProgressTracker({
 
                 <div className="summary-grid">
                   <div className="summary-box">
+                    <span className="surface-kicker">Draft</span>
                     <span className="metric-label">Words</span>
                     <strong>{selectedEntry.wordCount}</strong>
                   </div>
                   <div className="summary-box">
+                    <span className="surface-kicker">Rubric</span>
                     <span className="metric-label">Rubric rows</span>
                     <strong>{selectedEntry.rubric.length}</strong>
                   </div>
                   <div className="summary-box">
+                    <span className="surface-kicker">Focus</span>
                     <span className="metric-label">Focus count</span>
                     <strong>{selectedEntry.priorities.length}</strong>
                   </div>
@@ -280,12 +360,18 @@ export function ProgressTracker({
                 </div>
 
                 <div className="feedback-section">
-                  <h3>Draft excerpt</h3>
+                  <h3 className="icon-heading">
+                    <SparklesIcon className="section-icon" />
+                    <span>Draft excerpt</span>
+                  </h3>
                   <p>{selectedEntry.draftExcerpt}...</p>
                 </div>
 
                 <div className="feedback-section">
-                  <h3>Strengths</h3>
+                  <h3 className="icon-heading">
+                    <SparklesIcon className="section-icon" />
+                    <span>Strengths</span>
+                  </h3>
                   <ul className="bullet-list compact-list">
                     {selectedEntry.strengths.map((item) => (
                       <li key={item}>{item}</li>
@@ -294,13 +380,44 @@ export function ProgressTracker({
                 </div>
 
                 <div className="feedback-section">
-                  <h3>Revision priorities</h3>
+                  <h3 className="icon-heading">
+                    <ChecklistIcon className="section-icon" />
+                    <span>Revision priorities</span>
+                  </h3>
                   <ul className="bullet-list compact-list">
                     {selectedEntry.priorities.map((item) => (
                       <li key={item}>{item}</li>
                     ))}
                   </ul>
                 </div>
+
+                {selectedEntry.revisionPlan.length ? (
+                  <div className="feedback-section">
+                    <h3 className="icon-heading">
+                      <ChecklistIcon className="section-icon" />
+                      <span>Revision plan</span>
+                    </h3>
+                    <div className="revision-plan-list">
+                      {selectedEntry.revisionPlan.map((step) => (
+                        <article key={step.label} className="revision-step-card">
+                          <span className="surface-kicker">{step.label}</span>
+                          <p>{step.action}</p>
+                          <strong>{step.successCriteria}</strong>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                {selectedEntry.sampleRewrite ? (
+                  <div className="feedback-section">
+                    <h3 className="icon-heading">
+                      <SparklesIcon className="section-icon" />
+                      <span>Sample rewrite</span>
+                    </h3>
+                    <p>{selectedEntry.sampleRewrite}</p>
+                  </div>
+                ) : null}
 
                 <Link
                   href={`/tracker/${selectedEntry.id}`}
@@ -323,18 +440,32 @@ export function ProgressTracker({
         </div>
       ) : (
         <section className="glass writing-panel empty-state-panel">
+          <div className="empty-state-illustration-wrap">
+            <EmptyStateIllustration className="empty-state-illustration" />
+          </div>
           <div className="panel-heading">
+            <p className="section-label">Tracker</p>
             <h2>No tracked writing sessions yet</h2>
             <p>
               Generate feedback in the writing workspace and your first practice
               history cards will appear here automatically.
             </p>
           </div>
-          <Link href="/writing" className="primary-button">
-            Open writing workspace
-          </Link>
+          <div className="empty-state-helper-strip">
+            <span className="surface-kicker">Quick win</span>
+            <p>Complete a single reviewed draft and this tracker will immediately unlock trend cards, history, and detail views.</p>
+          </div>
+          <div className="settings-actions">
+            <Link href="/writing" className="primary-button">
+              Open writing workspace
+            </Link>
+            <Link href="/settings/profile" className="secondary-button">
+              Review learner goals
+            </Link>
+          </div>
         </section>
       )}
     </div>
   )
 }
+

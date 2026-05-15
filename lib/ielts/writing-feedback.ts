@@ -6,6 +6,12 @@ export type WritingRubricRow = {
   summary: string
 }
 
+export type WritingRevisionStep = {
+  label: string
+  action: string
+  successCriteria: string
+}
+
 export type WritingEvaluation = {
   estimatedBand: number
   wordCount: number
@@ -15,9 +21,11 @@ export type WritingEvaluation = {
   strengths: string[]
   priorities: string[]
   coachingNote: string
+  sampleRewrite: string | null
+  revisionPlan: WritingRevisionStep[]
 }
 
-type DraftMetrics = {
+export type DraftMetrics = {
   wordCount: number
   paragraphCount: number
   sentenceCount: number
@@ -151,6 +159,76 @@ function rubricSummary(label: string, score: number) {
   return `${label} needs more control and clearer execution.`
 }
 
+function buildSampleRewrite(
+  prompt: WritingPrompt,
+  metrics: DraftMetrics,
+  priorities: string[]
+) {
+  const focus = priorities[0] ?? 'Make the paragraph more specific and easier to follow.'
+
+  if (prompt.taskType === 'Task 2') {
+    return [
+      'Sample rewrite:',
+      `One reason this position is convincing is that it turns the main idea into a clear cause-and-effect paragraph. Instead of making a broad claim, explain exactly how the point works and add one concrete example. For instance, a stronger body paragraph could say that this approach saves time, improves concentration, and gives people more control over the way they complete demanding tasks. ${focus}`,
+    ].join(' ')
+  }
+
+  const paragraphCue =
+    metrics.paragraphCount >= 3 ? 'group the details into one logical stage' : 'separate the key stages more clearly'
+
+  return [
+    'Sample rewrite:',
+    `A stronger Task 1 paragraph should first highlight the main pattern, then support it with only the most useful details. For example, you could describe the visuals by stating the overall change, comparing the most important figures, and using precise linking language to ${paragraphCue}. ${focus}`,
+  ].join(' ')
+}
+
+function buildRevisionPlan(
+  prompt: WritingPrompt,
+  metrics: DraftMetrics,
+  priorities: string[]
+): WritingRevisionStep[] {
+  const firstPriority =
+    priorities[0] ?? 'Make one paragraph more specific and easier to follow.'
+  const secondPriority =
+    priorities[1] ??
+    (prompt.taskType === 'Task 2'
+      ? 'Check that every body paragraph supports the main position.'
+      : 'Check that the overview and detail paragraphs are clearly separated.')
+  const languagePriority =
+    priorities.find((priority) =>
+      /transition|paraphrasing|sentences|grammar|vocabulary/i.test(priority)
+    ) ?? 'Replace repeated wording with more precise IELTS-ready language.'
+
+  return [
+    {
+      label: 'Structure pass',
+      action:
+        metrics.paragraphCount < (prompt.taskType === 'Task 2' ? 4 : 3)
+          ? firstPriority
+          : secondPriority,
+      successCriteria:
+        prompt.taskType === 'Task 2'
+          ? 'The draft has an introduction, two focused body paragraphs, and a short conclusion.'
+          : 'The response has a clear overview and grouped supporting details.',
+    },
+    {
+      label: 'Development pass',
+      action:
+        metrics.wordCount < prompt.minimumWords
+          ? `Expand the weakest paragraph until the response reaches at least ${prompt.minimumWords} words.`
+          : firstPriority,
+      successCriteria:
+        'Each main point includes a clear explanation and at least one concrete supporting detail.',
+    },
+    {
+      label: 'Language pass',
+      action: languagePriority,
+      successCriteria:
+        'The final draft uses clearer linking, fewer repeated words, and controlled sentence variety.',
+    },
+  ]
+}
+
 export function evaluateWriting(prompt: WritingPrompt, draft: string): WritingEvaluation {
   const metrics = getDraftMetrics(draft)
   const taskResponse = buildTaskResponseScore(prompt, metrics)
@@ -236,6 +314,8 @@ export function evaluateWriting(prompt: WritingPrompt, draft: string): WritingEv
     prompt.taskType === 'Task 2'
       ? 'For Task 2, the fastest score gains usually come from clearer position statements and better developed body paragraphs.'
       : 'For Task 1, the fastest score gains usually come from a sharper overview and more controlled process or trend language.'
+  const sampleRewrite = buildSampleRewrite(prompt, metrics, priorities)
+  const revisionPlan = buildRevisionPlan(prompt, metrics, priorities)
 
   return {
     estimatedBand,
@@ -246,5 +326,7 @@ export function evaluateWriting(prompt: WritingPrompt, draft: string): WritingEv
     strengths,
     priorities,
     coachingNote,
+    sampleRewrite,
+    revisionPlan,
   }
 }

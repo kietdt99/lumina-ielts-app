@@ -22,6 +22,8 @@ export type WritingPromptRow = {
   id: string
   task_type: 'Task 1' | 'Task 2'
   title: string
+  topic: string
+  difficulty: 'Guided' | 'Balanced' | 'Stretch'
   duration_minutes: number
   minimum_words: number
   brief: string
@@ -69,6 +71,11 @@ export type WritingFeedbackRow = {
   priorities: string[]
   coaching_note: string
   sample_rewrite: string | null
+  revision_plan: Array<{
+    label: string
+    action: string
+    successCriteria: string
+  }>
   provider: 'heuristic' | 'openai'
   created_at: string
 }

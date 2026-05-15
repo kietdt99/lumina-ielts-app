@@ -33,6 +33,13 @@ describe('writing feedback heuristics', () => {
     expect(result.priorities).toContain(
       'Finish with a short conclusion that confirms your opinion.'
     )
+    expect(result.sampleRewrite).toContain('Sample rewrite:')
+    expect(result.revisionPlan).toHaveLength(3)
+    expect(result.revisionPlan[0]).toEqual(
+      expect.objectContaining({
+        label: 'Structure pass',
+      })
+    )
   })
 
   it('rewards a developed draft with stronger signals', () => {
@@ -58,5 +65,11 @@ describe('writing feedback heuristics', () => {
     expect(result.priorities).not.toContain(
       'Rebuild the response around clearer paragraph boundaries.'
     )
+    expect(result.sampleRewrite).toContain('Sample rewrite:')
+    expect(result.revisionPlan.map((step) => step.label)).toEqual([
+      'Structure pass',
+      'Development pass',
+      'Language pass',
+    ])
   })
 })

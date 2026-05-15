@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { ProfileIcon } from '@/app/_components/ui/app-icons'
+import { StatusCallout } from '@/app/_components/ui/status-callout'
 
 type PasswordSettingsCardProps = {
   mustChangePassword: boolean
@@ -81,29 +83,40 @@ export function PasswordSettingsCard({
   return (
     <section className="glass writing-panel">
       <div className="panel-heading">
-        <h2>Password</h2>
+        <h2 className="icon-heading">
+          <ProfileIcon className="section-icon" />
+          <span>Password</span>
+        </h2>
         <p>
           Keep your learner account secure. You can change your password here at
           any time.
         </p>
       </div>
 
+      <div className="soft-note">
+        Use a long passphrase you will remember. A stronger password means fewer
+        interruptions while you focus on practice.
+      </div>
+
       {mustChangePassword ? (
-        <div className="feedback-banner info-banner">
-          Your account is still marked for a password update. Change it now to
-          clear the reminder banner.
-        </div>
+        <StatusCallout variant="info" title="Password update still required.">
+          <p>
+            Your account is still marked for a password update. Change it now to
+            clear the reminder banner.
+          </p>
+        </StatusCallout>
       ) : null}
 
       {errorMessage ? (
-        <div className="feedback-error" role="alert">
-          <strong>Unable to update password</strong>
+        <StatusCallout variant="error" title="Unable to update your password.">
           <p>{errorMessage}</p>
-        </div>
+        </StatusCallout>
       ) : null}
 
       {successMessage ? (
-        <div className="feedback-banner success-banner">{successMessage}</div>
+        <StatusCallout variant="success" title="Password updated successfully.">
+          <p>{successMessage}</p>
+        </StatusCallout>
       ) : null}
 
       <form className="auth-form" onSubmit={handleSubmit}>

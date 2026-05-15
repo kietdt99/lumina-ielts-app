@@ -106,6 +106,11 @@ describe('writing submissions repository', () => {
       'writing_feedback',
       'activity_logs',
     ])
+    expect(repositoryState.insertCalls[2].payload).toEqual(
+      expect.objectContaining({
+        revision_plan: submission.feedback.revisionPlan,
+      })
+    )
   })
 
   it('returns browser mode with an empty history list for anonymous users', async () => {
@@ -138,6 +143,15 @@ describe('writing submissions repository', () => {
           rubric: createSubmissionSuccess().historyEntry.rubric,
           strengths: ['Strong position'],
           priorities: ['Add a more specific example'],
+          sample_rewrite:
+            'Sample rewrite: A stronger paragraph would explain the main point and support it with a concrete example.',
+          revision_plan: [
+            {
+              label: 'Development pass',
+              action: 'Add a more specific example.',
+              successCriteria: 'The example directly supports the main point.',
+            },
+          ],
         },
       },
     ]
@@ -154,6 +168,15 @@ describe('writing submissions repository', () => {
         taskType: 'Task 2',
         wordCount: 278,
         estimatedBand: 7.5,
+        sampleRewrite:
+          'Sample rewrite: A stronger paragraph would explain the main point and support it with a concrete example.',
+        revisionPlan: [
+          {
+            label: 'Development pass',
+            action: 'Add a more specific example.',
+            successCriteria: 'The example directly supports the main point.',
+          },
+        ],
       })
     )
   })

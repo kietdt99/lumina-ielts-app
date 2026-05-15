@@ -14,6 +14,14 @@ test.describe('writing flow', () => {
     await loginAsDemoLearner()
 
     await gotoAndAssertOk('/writing')
+    const selectedPromptTitle = (
+      await page.locator('.editor-panel .panel-heading h2').textContent()
+    )?.trim()
+    const readinessPanel = page.getByLabel('Writing readiness checks')
+
+    expect(selectedPromptTitle).toBeTruthy()
+    await expect(readinessPanel.getByText('Pre-submit readiness check')).toBeVisible()
+    await expect(readinessPanel.locator('.readiness-score-card')).toContainText('0%')
 
     await page.getByLabel('Draft editor').fill(
       [
@@ -24,12 +32,18 @@ test.describe('writing flow', () => {
       ].join('\n\n')
     )
 
+    await expect(readinessPanel.getByText('Position signal')).toBeVisible()
+    await expect(readinessPanel.getByText(/of 250\+ recommended words/)).toBeVisible()
+    await expect(readinessPanel.getByText('Ready').first()).toBeVisible()
+
     await page.getByRole('button', { name: 'Generate practice feedback' }).click()
 
     await expect(
       page.getByRole('heading', { name: 'Feedback Snapshot' })
     ).toBeVisible()
     await expect(page.getByText('Estimated band')).toBeVisible()
+    await expect(page.getByText('Revision plan')).toBeVisible()
+    await expect(page.getByText('Structure pass')).toBeVisible()
     await expect(page.getByText(/Practice result saved at/)).toBeVisible()
 
     await page.getByRole('link', { name: 'Score Tracker' }).click()
@@ -39,10 +53,36 @@ test.describe('writing flow', () => {
     ).toBeVisible()
     await expect(
       page.getByRole('heading', {
-        name: 'Remote work and employee productivity',
+        name: selectedPromptTitle!,
         exact: true,
       })
     ).toBeVisible()
+  })
+
+  test('filters the prompt library by search and topic', async ({
+    page,
+    gotoAndAssertOk,
+    loginAsDemoLearner,
+  }) => {
+    await loginAsDemoLearner()
+    await gotoAndAssertOk('/writing')
+
+    await page.locator('#prompt-search').fill('education')
+    await expect(
+      page.getByRole('button', { name: /AI tools in school education/i })
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /Remote work and employee productivity/i })
+    ).toHaveCount(0)
+
+    await page.locator('#prompt-search').fill('')
+    await page.locator('#prompt-topic-filter').selectOption('Work and society')
+    await expect(
+      page.getByRole('button', { name: /Remote work and employee productivity/i })
+    ).toBeVisible()
+    await expect(
+      page.getByRole('button', { name: /AI tools in school education/i })
+    ).toHaveCount(0)
   })
 
   test('shows a visible error state when the submissions API fails', async ({
@@ -68,7 +108,7 @@ test.describe('writing flow', () => {
     await page.getByLabel('Draft editor').fill('A complete draft that should trigger the mocked API failure.')
     await page.getByRole('button', { name: 'Generate practice feedback' }).click()
 
-    const feedbackAlert = page.locator('.feedback-error[role="alert"]')
+    const feedbackAlert = page.locator('.status-callout[role="alert"]')
 
     await expect(feedbackAlert).toContainText('Practice review failed')
     await expect(feedbackAlert).toContainText(
@@ -149,6 +189,7 @@ test.describe('writing flow', () => {
     ).toBeVisible()
     await expect(page.getByText('Rubric breakdown')).toBeVisible()
     await expect(page.getByText('Clarify the thesis in the introduction.')).toBeVisible()
+    await expect(page.getByText('Revision plan')).toBeVisible()
   })
 
   test('restores account-backed writing history after the learner signs in again', async ({
@@ -158,6 +199,11 @@ test.describe('writing flow', () => {
   }) => {
     await loginAsDemoLearner()
     await gotoAndAssertOk('/writing')
+    const selectedPromptTitle = (
+      await page.locator('.editor-panel .panel-heading h2').textContent()
+    )?.trim()
+
+    expect(selectedPromptTitle).toBeTruthy()
 
     await page.getByLabel('Draft editor').fill(
       [
@@ -180,7 +226,7 @@ test.describe('writing flow', () => {
     await gotoAndAssertOk('/tracker')
     await expect(
       page.getByRole('heading', {
-        name: 'Remote work and employee productivity',
+        name: selectedPromptTitle!,
         exact: true,
       })
     ).toBeVisible()

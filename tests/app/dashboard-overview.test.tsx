@@ -24,6 +24,7 @@ vi.mock('@/lib/ielts/writing-history', () => ({
 
 describe('DashboardOverview', () => {
   beforeEach(() => {
+    window.localStorage.clear()
     state.entries = []
     hydrateWritingHistoryMock.mockClear()
   })
@@ -31,7 +32,9 @@ describe('DashboardOverview', () => {
   it('renders an empty state when no writing history exists', () => {
     render(
       <DashboardOverview
-        learnerGoals={createLearnerGoals()}
+        learnerGoals={createLearnerGoals({
+          focusSkill: 'Reading',
+        })}
         learnerName="Demo Learner"
       />
     )
@@ -39,14 +42,16 @@ describe('DashboardOverview', () => {
     expect(screen.getByText('Welcome back, Demo Learner')).toBeInTheDocument()
     expect(screen.getByText('No activity saved yet.')).toBeInTheDocument()
     expect(screen.getByText('Target Band')).toBeInTheDocument()
+    expect(screen.getByText('Four-Skill Practice Mix')).toBeInTheDocument()
+    expect(screen.getAllByText('Reading Practice')).not.toHaveLength(0)
     expect(screen.getByText('Update goals')).toHaveAttribute(
       'href',
       '/settings/profile'
     )
-    expect(screen.getByText('Start your writing study loop')).toBeInTheDocument()
+    expect(screen.getByText('Start your reading study loop')).toBeInTheDocument()
     expect(
-      screen.getByRole('link', { name: 'Start writing practice' })
-    ).toHaveAttribute('href', '/writing')
+      screen.getByRole('link', { name: 'Start Reading Practice' })
+    ).toHaveAttribute('href', '/reading-practice')
   })
 
   it('renders metrics, recent activity, and auth actions when history exists', () => {
@@ -93,6 +98,13 @@ describe('DashboardOverview', () => {
     expect(screen.getByText('Best Result')).toBeInTheDocument()
     expect(screen.getByText('8.0')).toBeInTheDocument()
     expect(screen.getByText(/Focus skill: Speaking/)).toBeInTheDocument()
+    expect(screen.getByText('Four-Skill Practice Mix')).toBeInTheDocument()
+    expect(screen.getAllByText('Speaking Practice')).not.toHaveLength(0)
+    expect(screen.getByText('Focus module')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Open focus module' })).toHaveAttribute(
+      'href',
+      '/speaking-practice'
+    )
     expect(screen.getByText('Close the gap to Band 8.0')).toBeInTheDocument()
     expect(screen.getByText('Recent average')).toBeInTheDocument()
     expect(screen.getByText('Recurring focus')).toBeInTheDocument()
@@ -132,5 +144,40 @@ describe('DashboardOverview', () => {
     expect(
       screen.getByRole('heading', { level: 3, name: 'Server-backed entry' })
     ).toBeInTheDocument()
+  })
+
+  it('renders recent cross-skill practice attempts saved in local history', () => {
+    window.localStorage.setItem(
+      'lumina-practice-attempt-history',
+      JSON.stringify([
+        {
+          id: 'attempt-reading',
+          skill: 'Reading',
+          itemId: 'reading-urban-cooling-corridors',
+          itemTitle: 'Urban cooling corridors',
+          topic: 'Environment and climate',
+          difficulty: 'Balanced',
+          createdAt: '2026-03-31T13:00:00.000Z',
+          estimatedBand: 7,
+          statusLabel: 'Strong control',
+          summary: 'You answered 4 of 5 questions correctly.',
+          nextActions: ['Repeat the passage with a tighter time limit.'],
+          metricLabel: 'Accuracy',
+          metricValue: '80%',
+        },
+      ])
+    )
+
+    render(
+      <DashboardOverview
+        learnerGoals={createLearnerGoals()}
+        learnerName="Ava"
+      />
+    )
+
+    expect(screen.getByText('Recent Skill Attempts')).toBeInTheDocument()
+    expect(screen.getByText('Urban cooling corridors')).toBeInTheDocument()
+    expect(screen.getByText('Accuracy')).toBeInTheDocument()
+    expect(screen.getByText('80%')).toBeInTheDocument()
   })
 })

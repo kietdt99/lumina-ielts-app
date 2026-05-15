@@ -1,10 +1,11 @@
 import { signout } from '@/app/auth/actions'
 import { requireAdminSession } from '@/lib/auth/service'
 import { SidebarNav } from '@/app/(app)/_components/sidebar-nav'
+import type { NavigationItem } from '@/app/(app)/_components/sidebar-nav'
 
-const adminNavigation = [
-  { href: '/admin/accounts', label: 'Learner Accounts' },
-  { href: '/admin/accounts/new', label: 'Create Account' },
+const adminNavigation: NavigationItem[] = [
+  { href: '/admin/accounts', label: 'Learner Accounts', icon: 'accounts' },
+  { href: '/admin/accounts/new', label: 'Create Account', icon: 'create' },
 ]
 
 export default async function AdminLayout({
@@ -21,6 +22,10 @@ export default async function AdminLayout({
           <p className="sidebar-eyebrow">Admin workspace</p>
           <h2 className="sidebar-title">Lumina IELTS</h2>
           <p className="sidebar-subtitle">{session.fullName}</p>
+          <div className="theme-chip">
+            <span className="theme-chip-dot" />
+            <span>Account Operations</span>
+          </div>
         </div>
         <SidebarNav items={adminNavigation} />
         <div className="sidebar-footer">
@@ -30,6 +35,7 @@ export default async function AdminLayout({
             </button>
           </form>
           <p>Admin account management</p>
+          <p className="sidebar-footnote">Provision learners and reset credentials</p>
         </div>
       </nav>
       <main className="main-content">{children}</main>

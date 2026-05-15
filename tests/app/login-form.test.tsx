@@ -58,6 +58,7 @@ describe('LoginForm', () => {
       Response.json({
         ok: true,
         redirectTo: '/auth/change-password',
+        theme: 'sky',
       })
     )
 
@@ -95,5 +96,6 @@ describe('LoginForm', () => {
 
     expect(routerState.push).toHaveBeenCalledWith('/auth/change-password')
     expect(routerState.refresh).toHaveBeenCalledTimes(1)
+    expect(document.documentElement.dataset.theme).toBe('sky')
   })
 })

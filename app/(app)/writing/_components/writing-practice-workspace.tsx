@@ -1,17 +1,38 @@
 'use client'
 
-import { useDeferredValue, useEffect, useState } from 'react'
+import Link from 'next/link'
+import { useDeferredValue, useEffect, useMemo, useState } from 'react'
+import {
+  ChecklistIcon,
+  QuillIcon,
+  RibbonIcon,
+  SparklesIcon,
+  TimerIcon,
+} from '@/app/_components/ui/app-icons'
+import { StatusCallout } from '@/app/_components/ui/status-callout'
 import {
   getDraftMetrics,
   type WritingEvaluation,
 } from '@/lib/ielts/writing-feedback'
+import {
+  createWritingReadinessCheck,
+  type WritingReadinessCheck,
+  type WritingReadinessStatus,
+} from '@/lib/ielts/writing-readiness'
 import { readSessionHintFromDocument } from '@/lib/auth/session-hint'
+import { ideaBankEntries } from '@/lib/ielts/idea-bank'
+import {
+  createWritingOutline,
+  type WritingOutline,
+} from '@/lib/ielts/outline-builder'
 import { saveWritingHistoryEntry } from '@/lib/ielts/writing-history'
 import type { WritingSubmissionResponse } from '@/lib/ielts/writing-submissions'
 import type { WritingPrompt } from '@/lib/ielts/writing-prompts'
 
 type WritingPracticeWorkspaceProps = {
   prompts: WritingPrompt[]
+  initialPromptId?: string
+  showOutline?: boolean
 }
 
 type DraftState = {
@@ -19,6 +40,9 @@ type DraftState = {
   remainingSeconds: number
   statusMessage: string
 }
+
+const defaultTaskType: WritingPrompt['taskType'] = 'Task 2'
+const defaultPromptId = 'task2-remote-work'
 
 function formatTime(totalSeconds: number) {
   const minutes = Math.floor(totalSeconds / 60)
@@ -71,19 +95,82 @@ function loadDraftState(prompt: WritingPrompt): DraftState {
   }
 }
 
+function normalizeSearchValue(value: string) {
+  return value.trim().toLowerCase()
+}
+
+function promptForId(prompts: WritingPrompt[], promptId?: string) {
+  return prompts.find((prompt) => prompt.id === promptId) ?? null
+}
+
 export function WritingPracticeWorkspace({
+  initialPromptId,
   prompts,
+  showOutline = false,
 }: WritingPracticeWorkspaceProps) {
-  const [selectedTask, setSelectedTask] = useState<'Task 1' | 'Task 2'>('Task 2')
+  const handoffPrompt = promptForId(prompts, initialPromptId)
+  const initialTask =
+    handoffPrompt?.taskType ??
+    prompts.find((prompt) => prompt.taskType === defaultTaskType)?.taskType ??
+    prompts[0]?.taskType ??
+    defaultTaskType
+  const [selectedTask, setSelectedTask] = useState<'Task 1' | 'Task 2'>(initialTask)
+  const [searchValue, setSearchValue] = useState('')
+  const [selectedTopic, setSelectedTopic] = useState('All topics')
   const filteredPrompts = prompts.filter((prompt) => prompt.taskType === selectedTask)
-  const [selectedPromptId, setSelectedPromptId] = useState(filteredPrompts[0]?.id ?? prompts[0].id)
+  const taskTopics = useMemo(
+    () => [
+      'All topics',
+      ...new Set(filteredPrompts.map((prompt) => prompt.topic)),
+    ],
+    [filteredPrompts]
+  )
+  const discoveryPrompts = useMemo(() => {
+    const normalizedSearchValue = normalizeSearchValue(searchValue)
+
+    return filteredPrompts.filter((prompt) => {
+      const matchesTopic =
+        selectedTopic === 'All topics' || prompt.topic === selectedTopic
+      const matchesSearch =
+        !normalizedSearchValue ||
+        normalizeSearchValue(
+          `${prompt.title} ${prompt.brief} ${prompt.topic} ${prompt.difficulty}`
+        ).includes(normalizedSearchValue)
+
+      return matchesTopic && matchesSearch
+    })
+  }, [filteredPrompts, searchValue, selectedTopic])
+  const [selectedPromptId, setSelectedPromptId] = useState(
+    handoffPrompt?.id ??
+      filteredPrompts.find((prompt) => prompt.id === defaultPromptId)?.id ??
+      filteredPrompts[0]?.id ??
+      prompts[0]?.id ??
+      ''
+  )
   const selectedPrompt =
-    filteredPrompts.find((prompt) => prompt.id === selectedPromptId) ?? filteredPrompts[0]
+    discoveryPrompts.find((prompt) => prompt.id === selectedPromptId) ??
+    filteredPrompts.find((prompt) => prompt.id === selectedPromptId) ??
+    discoveryPrompts[0] ??
+    filteredPrompts[0] ??
+    (prompts[0] as WritingPrompt)
+  const activeOutline = showOutline
+    ? createWritingOutline(selectedPrompt, ideaBankEntries)
+    : null
 
   function handleTaskChange(task: 'Task 1' | 'Task 2') {
     const nextPrompts = prompts.filter((prompt) => prompt.taskType === task)
     setSelectedTask(task)
-    setSelectedPromptId(nextPrompts[0].id)
+    setSearchValue('')
+    setSelectedTopic('All topics')
+    setSelectedPromptId(nextPrompts[0]?.id ?? prompts[0]?.id ?? '')
+  }
+
+  function handleTopicChange(topic: string) {
+    setSelectedTopic(topic)
+  }
+
+  function handlePromptSearchChange(value: string) {
+    setSearchValue(value)
   }
 
   return (
@@ -96,19 +183,36 @@ export function WritingPracticeWorkspace({
             Pick a prompt, manage your timer, build your draft, and receive a
             structured practice estimate before we wire in full AI review.
           </p>
+          <div className="hero-badge-row">
+            <span className="hero-badge">{selectedPrompt.taskType}</span>
+            <span className="hero-badge">{selectedPrompt.topic}</span>
+            <span className="hero-badge">{selectedPrompt.difficulty}</span>
+            <span className="hero-badge">{selectedPrompt.durationMinutes} minute focus</span>
+            <span className="hero-badge">{selectedPrompt.minimumWords}+ words</span>
+            {activeOutline ? <span className="hero-badge">Outline loaded</span> : null}
+          </div>
         </div>
         <div className="writing-hero-metrics">
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <QuillIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Task</span>
             <strong>{selectedPrompt.taskType}</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <ChecklistIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Word target</span>
             <strong>{selectedPrompt.minimumWords}+</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <SparklesIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Focus</span>
-            <strong>{selectedPrompt.title}</strong>
+            <strong>{selectedPrompt.topic}</strong>
           </div>
         </div>
       </section>
@@ -128,34 +232,210 @@ export function WritingPracticeWorkspace({
                 className={`task-chip${selectedTask === task ? ' is-active' : ''}`}
                 onClick={() => handleTaskChange(task)}
               >
+                <span className="task-chip-dot" aria-hidden="true" />
                 {task}
               </button>
             ))}
           </div>
 
+          <div className="prompt-discovery-tools">
+            <div className="field-group">
+              <label htmlFor="prompt-search">Find a prompt</label>
+              <input
+                id="prompt-search"
+                className="text-input"
+                type="search"
+                value={searchValue}
+                onChange={(event) => handlePromptSearchChange(event.target.value)}
+                placeholder="Search by topic, title, or difficulty"
+              />
+            </div>
+            <div className="field-group">
+              <label htmlFor="prompt-topic-filter">Topic focus</label>
+              <select
+                id="prompt-topic-filter"
+                className="text-input"
+                value={selectedTopic}
+                onChange={(event) => handleTopicChange(event.target.value)}
+              >
+                {taskTopics.map((topic) => (
+                  <option key={topic} value={topic}>
+                    {topic}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="writing-helper-strip">
+              <span className="surface-kicker">Prompt discovery</span>
+              <p>
+                {discoveryPrompts.length
+                  ? `${discoveryPrompts.length} prompt${discoveryPrompts.length === 1 ? '' : 's'} match the current filters.`
+                  : 'No prompts match this filter yet. Try a broader topic or clear the search.'}
+              </p>
+            </div>
+          </div>
+
           <div className="prompt-list">
-            {filteredPrompts.map((prompt) => (
+            {discoveryPrompts.map((prompt) => (
               <button
                 key={prompt.id}
                 type="button"
                 className={`prompt-card${selectedPrompt.id === prompt.id ? ' is-active' : ''}`}
                 onClick={() => setSelectedPromptId(prompt.id)}
               >
+                <span className="surface-kicker">Prompt</span>
                 <span className="prompt-type">{prompt.taskType}</span>
                 <strong>{prompt.title}</strong>
+                <div className="history-kicker-row">
+                  <span className="surface-kicker">{prompt.topic}</span>
+                  <span className="surface-kicker tracker-history-pill">
+                    {prompt.difficulty}
+                  </span>
+                </div>
                 <p>{prompt.brief}</p>
               </button>
             ))}
           </div>
         </aside>
 
-        <PromptWorkspacePanel key={selectedPrompt.id} prompt={selectedPrompt} />
+        <PromptWorkspacePanel
+          key={selectedPrompt.id}
+          outline={activeOutline}
+          prompt={selectedPrompt}
+        />
       </div>
     </div>
   )
 }
 
-function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
+function LoadedOutlinePanel({ outline }: { outline: WritingOutline }) {
+  return (
+    <section className="writing-outline-panel" aria-label="Loaded writing outline">
+      <div className="dashboard-section-header writing-outline-header">
+        <div className="panel-heading">
+          <span className="surface-kicker">Outline loaded</span>
+          <h3 className="icon-heading">
+            <ChecklistIcon className="section-icon" />
+            <span>{outline.headline}</span>
+          </h3>
+          <p>{outline.summary}</p>
+        </div>
+        <Link href="/outline-builder" className="inline-link">
+          Edit outline
+        </Link>
+      </div>
+
+      <div className="writing-outline-blocks">
+        {outline.blocks.map((block) => (
+          <article key={block.id} className="writing-outline-mini-card">
+            <span className="surface-kicker">Outline block</span>
+            <h4>{block.label}</h4>
+            <strong>{block.purpose}</strong>
+            <p>{block.sentenceFrame}</p>
+          </article>
+        ))}
+      </div>
+
+      <div className="writing-outline-support">
+        <div>
+          <span className="metric-label">Vocabulary cues</span>
+          <div className="idea-chip-list">
+            {outline.vocabulary.map((item) => (
+              <span key={item} className="idea-chip">
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div>
+          <span className="metric-label">Collocation cues</span>
+          <div className="idea-chip-list">
+            {outline.collocations.map((item) => (
+              <span key={item} className="idea-chip">
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function readinessStatusLabel(status: WritingReadinessStatus) {
+  if (status === 'ready') {
+    return 'Ready'
+  }
+
+  return status === 'needs-work' ? 'Needs work' : 'Missing'
+}
+
+function ReadinessCheckPanel({
+  readiness,
+}: {
+  readiness: WritingReadinessCheck
+}) {
+  return (
+    <section className="writing-readiness-panel" aria-label="Writing readiness checks">
+      <div className="dashboard-section-header writing-readiness-header">
+        <div className="panel-heading">
+          <span className="surface-kicker">Pre-submit readiness check</span>
+          <h3 className="icon-heading">
+            <ChecklistIcon className="section-icon" />
+            <span>{readiness.headline}</span>
+          </h3>
+          <p>{readiness.summary}</p>
+        </div>
+        <div className="readiness-score-card">
+          <span className="metric-label">Readiness</span>
+          <strong>{readiness.readinessScore}%</strong>
+        </div>
+      </div>
+
+      <div className="readiness-metric-row">
+        <span className="hero-badge">{readiness.metrics.wordCount} words</span>
+        <span className="hero-badge">{readiness.metrics.paragraphCount} paragraphs</span>
+        <span className="hero-badge">{readiness.metrics.sentenceCount} sentences</span>
+        <span className="hero-badge">{readiness.metrics.transitionCount} transitions</span>
+      </div>
+
+      <div className="readiness-check-grid">
+        {readiness.items.map((item) => (
+          <article
+            key={item.id}
+            className={`readiness-check-card is-${item.status}`}
+          >
+            <div className="history-kicker-row">
+              <span className="surface-kicker">{item.criterion}</span>
+              <span className="surface-kicker tracker-history-pill">
+                {readinessStatusLabel(item.status)}
+              </span>
+            </div>
+            <h4>{item.label}</h4>
+            <p>{item.detail}</p>
+            <strong>{item.action}</strong>
+          </article>
+        ))}
+      </div>
+
+      <div className="writing-helper-strip">
+        <span className="surface-kicker">How to use this</span>
+        <p>
+          Fix the missing checks first, then use the feedback generator for a
+          stronger revision loop.
+        </p>
+      </div>
+    </section>
+  )
+}
+
+function PromptWorkspacePanel({
+  outline,
+  prompt,
+}: {
+  outline?: WritingOutline | null
+  prompt: WritingPrompt
+}) {
   const initialDraftState = loadDraftState(prompt)
   const [draft, setDraft] = useState(initialDraftState.draft)
   const [remainingSeconds, setRemainingSeconds] = useState(
@@ -168,6 +448,7 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const deferredDraft = useDeferredValue(draft)
   const draftMetrics = getDraftMetrics(deferredDraft)
+  const readinessCheck = createWritingReadinessCheck(prompt, deferredDraft)
 
   useEffect(() => {
     const storageKey = getStorageKey(prompt.id)
@@ -289,18 +570,34 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
         <div className="panel-heading">
           <h2>{prompt.title}</h2>
           <p>{prompt.brief}</p>
+          <div className="hero-badge-row">
+            <span className="hero-badge">{prompt.taskType}</span>
+            <span className="hero-badge">{prompt.topic}</span>
+            <span className="hero-badge">{prompt.difficulty}</span>
+            <span className="hero-badge">{prompt.minimumWords}+ words</span>
+            <span className="hero-badge">{prompt.durationMinutes} minutes</span>
+          </div>
         </div>
 
         <div className="writing-meta-grid">
           <div className="meta-card">
+            <div className="metric-pill-header">
+              <TimerIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Recommended time</span>
             <strong>{prompt.durationMinutes} minutes</strong>
           </div>
           <div className="meta-card">
+            <div className="metric-pill-header">
+              <QuillIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Word count</span>
             <strong>{draftMetrics.wordCount} words</strong>
           </div>
           <div className="meta-card">
+            <div className="metric-pill-header">
+              <SparklesIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Autosave</span>
             <strong>{statusMessage}</strong>
           </div>
@@ -308,6 +605,9 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
 
         <div className="editor-toolbar">
           <div className="timer-box">
+            <span className={`surface-kicker${isTimerRunning ? ' is-live' : ''}`}>
+              {isTimerRunning ? 'Live session' : 'Ready'}
+            </span>
             <span className="metric-label">Session timer</span>
             <strong>{formatTime(remainingSeconds)}</strong>
           </div>
@@ -335,7 +635,10 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
 
         <div className="writing-guidance">
           <div>
-            <h3>Instructions</h3>
+            <h3 className="icon-heading">
+              <QuillIcon className="section-icon" />
+              <span>Instructions</span>
+            </h3>
             <ul className="bullet-list">
               {prompt.instructions.map((instruction) => (
                 <li key={instruction}>{instruction}</li>
@@ -343,7 +646,10 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
             </ul>
           </div>
           <div>
-            <h3>Planning checklist</h3>
+            <h3 className="icon-heading">
+              <ChecklistIcon className="section-icon" />
+              <span>Planning checklist</span>
+            </h3>
             <ul className="bullet-list">
               {prompt.planningChecklist.map((item) => (
                 <li key={item}>{item}</li>
@@ -352,9 +658,15 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
           </div>
         </div>
 
+        {outline ? <LoadedOutlinePanel outline={outline} /> : null}
+
         <label className="editor-label" htmlFor="writing-draft">
           Draft editor
         </label>
+        <div className="writing-helper-strip">
+          <span className="surface-kicker">Draft mode</span>
+          <p>Keep the first paragraph clear, then build two support paragraphs before you polish the ending.</p>
+        </div>
         <textarea
           id="writing-draft"
           className="writing-textarea"
@@ -362,6 +674,8 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
           onChange={(event) => handleDraftChange(event.target.value)}
           placeholder="Write your IELTS response here. Your draft is autosaved locally for the selected prompt."
         />
+
+        <ReadinessCheckPanel readiness={readinessCheck} />
 
         <div className="editor-footer">
           <p>
@@ -381,23 +695,33 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
 
       <aside className="glass writing-panel feedback-panel">
         <div className="panel-heading">
-          <h2>Feedback Snapshot</h2>
+          <span className="surface-kicker">Review panel</span>
+          <h2 className="icon-heading">
+            <RibbonIcon className="section-icon" />
+            <span>Feedback Snapshot</span>
+          </h2>
           <p>
             This practice estimate runs locally and is designed to guide your
             next revision pass.
           </p>
+          <Link href="/rubric-guide" className="inline-link">
+            Open rubric guide
+          </Link>
         </div>
 
         {submissionError ? (
-          <div className="feedback-error" role="alert">
-            <strong>Practice review failed</strong>
+          <StatusCallout variant="error" title="Practice review failed.">
             <p>{submissionError}</p>
-          </div>
+          </StatusCallout>
         ) : null}
 
         {feedback ? (
           <div className="feedback-stack">
             <div className="score-card">
+              <div className="hero-badge-row">
+                <span className="hero-badge">Practice estimate</span>
+                <span className="hero-badge">{feedback.wordCount} words</span>
+              </div>
               <span className="metric-label">Estimated band</span>
               <strong>{feedback.estimatedBand.toFixed(1)}</strong>
               <p>{feedback.coachingNote}</p>
@@ -405,14 +729,17 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
 
             <div className="summary-grid">
               <div className="summary-box">
+                <span className="surface-kicker">Draft</span>
                 <span className="metric-label">Words</span>
                 <strong>{feedback.wordCount}</strong>
               </div>
               <div className="summary-box">
+                <span className="surface-kicker">Structure</span>
                 <span className="metric-label">Paragraphs</span>
                 <strong>{feedback.paragraphCount}</strong>
               </div>
               <div className="summary-box">
+                <span className="surface-kicker">Flow</span>
                 <span className="metric-label">Sentences</span>
                 <strong>{feedback.sentenceCount}</strong>
               </div>
@@ -431,7 +758,10 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
             </div>
 
             <div className="feedback-section">
-              <h3>Strengths</h3>
+              <h3 className="icon-heading">
+                <SparklesIcon className="section-icon" />
+                <span>Strengths</span>
+              </h3>
               <ul className="bullet-list">
                 {feedback.strengths.map((item) => (
                   <li key={item}>{item}</li>
@@ -440,13 +770,42 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
             </div>
 
             <div className="feedback-section">
-              <h3>Revision priorities</h3>
+              <h3 className="icon-heading">
+                <ChecklistIcon className="section-icon" />
+                <span>Revision priorities</span>
+              </h3>
               <ul className="bullet-list">
                 {feedback.priorities.map((item) => (
                   <li key={item}>{item}</li>
                 ))}
               </ul>
             </div>
+
+            <div className="feedback-section">
+              <h3 className="icon-heading">
+                <ChecklistIcon className="section-icon" />
+                <span>Revision plan</span>
+              </h3>
+              <div className="revision-plan-list">
+                {feedback.revisionPlan.map((step) => (
+                  <article key={step.label} className="revision-step-card">
+                    <span className="surface-kicker">{step.label}</span>
+                    <p>{step.action}</p>
+                    <strong>{step.successCriteria}</strong>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            {feedback.sampleRewrite ? (
+              <div className="feedback-section">
+                <h3 className="icon-heading">
+                  <QuillIcon className="section-icon" />
+                  <span>Sample rewrite</span>
+                </h3>
+                <p>{feedback.sampleRewrite}</p>
+              </div>
+            ) : null}
           </div>
         ) : (
           <div className="empty-feedback">
@@ -456,6 +815,15 @@ function PromptWorkspacePanel({ prompt }: { prompt: WritingPrompt }) {
               Use the editor to write a full draft, then generate a practice
               estimate to see rubric signals and revision advice.
             </p>
+            <div className="writing-helper-strip">
+              <span className="surface-kicker">Before review</span>
+              <p>Try to complete your core argument first, then check the word count before you ask for feedback.</p>
+            </div>
+            <div className="hero-badge-row">
+              <span className="hero-badge">Band estimate</span>
+              <span className="hero-badge">Rubric snapshot</span>
+              <span className="hero-badge">Revision priorities</span>
+            </div>
           </div>
         )}
       </aside>

@@ -43,6 +43,8 @@ describe('WritingSessionDetailPage', () => {
         promptTitle: 'Remote work and employee productivity',
         estimatedBand: 7.5,
         priorities: ['Clarify the thesis in the introduction.'],
+        sampleRewrite:
+          'Sample rewrite: One stronger body paragraph would state the point clearly and support it with a specific example.',
       }),
     ]
 
@@ -53,6 +55,9 @@ describe('WritingSessionDetailPage', () => {
     ).toBeInTheDocument()
     expect(screen.getByText('Rubric breakdown')).toBeInTheDocument()
     expect(screen.getByText('Clarify the thesis in the introduction.')).toBeInTheDocument()
+    expect(screen.getByText('Sample rewrite')).toBeInTheDocument()
+    expect(screen.getByText('Revision plan')).toBeInTheDocument()
+    expect(screen.getByText('Structure pass')).toBeInTheDocument()
     expect(
       screen.getByRole('link', { name: 'Open writing workspace' })
     ).toHaveAttribute('href', '/writing')

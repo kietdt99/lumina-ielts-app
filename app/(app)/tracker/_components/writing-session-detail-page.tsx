@@ -1,7 +1,14 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { useEffect, useSyncExternalStore } from 'react'
+import {
+  ChecklistIcon,
+  RibbonIcon,
+  SparklesIcon,
+  TrackerIcon,
+} from '@/app/_components/ui/app-icons'
+import { EmptyStateIllustration } from '@/app/_components/ui/pastel-illustrations'
 import {
   hydrateWritingHistory,
   getServerWritingHistorySnapshot,
@@ -45,6 +52,9 @@ export function WritingSessionDetailPage({
     return (
       <div className="tracker-page">
         <section className="glass writing-panel empty-state-panel">
+          <div className="empty-state-illustration-wrap">
+            <EmptyStateIllustration className="empty-state-illustration" />
+          </div>
           <div className="panel-heading">
             <p className="section-label">Submission Detail</p>
             <h1>That writing session is no longer available</h1>
@@ -76,17 +86,32 @@ export function WritingSessionDetailPage({
             Review the full rubric snapshot, strengths, and revision priorities
             for this saved writing session.
           </p>
+          <div className="hero-badge-row">
+            <span className="hero-badge">{entry.taskType}</span>
+            <span className="hero-badge">{entry.wordCount} words</span>
+            <span className="hero-badge">{entry.priorities.length} priorities</span>
+            <span className="hero-badge">Band {entry.estimatedBand.toFixed(1)}</span>
+          </div>
         </div>
         <div className="writing-hero-metrics">
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <RibbonIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Estimated band</span>
             <strong>{entry.estimatedBand.toFixed(1)}</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <TrackerIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Task type</span>
             <strong>{entry.taskType}</strong>
           </div>
           <div className="metric-pill">
+            <div className="metric-pill-header">
+              <SparklesIcon className="metric-icon" />
+            </div>
             <span className="metric-label">Saved at</span>
             <strong>{formatDate(entry.createdAt)}</strong>
           </div>
@@ -96,23 +121,38 @@ export function WritingSessionDetailPage({
       <div className="tracker-layout tracker-detail-layout">
         <section className="glass writing-panel">
           <div className="panel-heading">
-            <h2>Rubric breakdown</h2>
+            <h2 className="icon-heading">
+              <TrackerIcon className="section-icon" />
+              <span>Rubric breakdown</span>
+            </h2>
             <p>See how this submission performed across the four IELTS writing criteria.</p>
           </div>
 
           <div className="summary-grid">
             <div className="summary-box">
+              <span className="surface-kicker">Draft</span>
               <span className="metric-label">Words</span>
               <strong>{entry.wordCount}</strong>
             </div>
             <div className="summary-box">
+              <span className="surface-kicker">Wins</span>
               <span className="metric-label">Strengths</span>
               <strong>{entry.strengths.length}</strong>
             </div>
             <div className="summary-box">
+              <span className="surface-kicker">Next</span>
               <span className="metric-label">Priorities</span>
               <strong>{entry.priorities.length}</strong>
             </div>
+          </div>
+
+          <div className="history-kicker-row">
+            <span className="surface-kicker tracker-history-pill">
+              Saved {formatDate(entry.createdAt)}
+            </span>
+            <span className="surface-kicker tracker-history-pill tracker-history-pill-accent">
+              {entry.taskType} response
+            </span>
           </div>
 
           <div className="rubric-list">
@@ -130,17 +170,26 @@ export function WritingSessionDetailPage({
 
         <aside className="glass writing-panel">
           <div className="panel-heading">
-            <h2>Revision notes</h2>
+            <h2 className="icon-heading">
+              <RibbonIcon className="section-icon" />
+              <span>Revision notes</span>
+            </h2>
             <p>Use the saved excerpt and priorities below to plan the next practice pass.</p>
           </div>
 
           <div className="feedback-section no-divider">
-            <h3>Draft excerpt</h3>
+            <h3 className="icon-heading">
+              <SparklesIcon className="section-icon" />
+              <span>Draft excerpt</span>
+            </h3>
             <p>{entry.draftExcerpt}...</p>
           </div>
 
           <div className="feedback-section">
-            <h3>Strengths</h3>
+            <h3 className="icon-heading">
+              <SparklesIcon className="section-icon" />
+              <span>Strengths</span>
+            </h3>
             <ul className="bullet-list compact-list">
               {entry.strengths.map((item) => (
                 <li key={item}>{item}</li>
@@ -149,13 +198,44 @@ export function WritingSessionDetailPage({
           </div>
 
           <div className="feedback-section">
-            <h3>Revision priorities</h3>
+            <h3 className="icon-heading">
+              <ChecklistIcon className="section-icon" />
+              <span>Revision priorities</span>
+            </h3>
             <ul className="bullet-list compact-list">
               {entry.priorities.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
           </div>
+
+          {entry.revisionPlan.length ? (
+            <div className="feedback-section">
+              <h3 className="icon-heading">
+                <ChecklistIcon className="section-icon" />
+                <span>Revision plan</span>
+              </h3>
+              <div className="revision-plan-list">
+                {entry.revisionPlan.map((step) => (
+                  <article key={step.label} className="revision-step-card">
+                    <span className="surface-kicker">{step.label}</span>
+                    <p>{step.action}</p>
+                    <strong>{step.successCriteria}</strong>
+                  </article>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {entry.sampleRewrite ? (
+            <div className="feedback-section">
+              <h3 className="icon-heading">
+                <SparklesIcon className="section-icon" />
+                <span>Sample rewrite</span>
+              </h3>
+              <p>{entry.sampleRewrite}</p>
+            </div>
+          ) : null}
 
           <div className="settings-actions">
             <Link href="/tracker" className="secondary-button">
@@ -170,3 +250,4 @@ export function WritingSessionDetailPage({
     </div>
   )
 }
+
