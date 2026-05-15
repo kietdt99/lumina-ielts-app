@@ -1,6 +1,7 @@
 'use client'
 
-import { useDeferredValue, useEffect, useState } from 'react'
+import { useDeferredValue, useEffect, useState, useSyncExternalStore } from 'react'
+import { PracticeAttemptHistoryPanel } from '@/app/(app)/_components/practice-attempt-history-panel'
 import {
   ChecklistIcon,
   CompassIcon,
@@ -19,6 +20,13 @@ import {
   type ListeningPracticeSectionFilter,
   type PublicListeningPracticeTrack,
 } from '@/lib/ielts/listening-practice'
+import {
+  createListeningPracticeAttemptHistoryEntry,
+  getPracticeAttemptHistorySnapshot,
+  getServerPracticeAttemptHistorySnapshot,
+  savePracticeAttemptHistoryEntry,
+  subscribeToPracticeAttemptHistory,
+} from '@/lib/ielts/practice-attempt-history'
 
 type ListeningPracticeWorkspaceProps = {
   tracks: PublicListeningPracticeTrack[]
@@ -147,6 +155,11 @@ export function ListeningPracticeWorkspace({
   const visibleTranscript = selectedTrack
     ? selectedTrack.transcript.slice(0, revealedTurns)
     : []
+  const recentListeningAttempts = useSyncExternalStore(
+    subscribeToPracticeAttemptHistory,
+    getPracticeAttemptHistorySnapshot,
+    getServerPracticeAttemptHistorySnapshot
+  ).filter((attempt) => attempt.skill === 'Listening')
 
   useEffect(() => {
     writeStoredState(practiceState)
@@ -228,6 +241,9 @@ export function ListeningPracticeWorkspace({
       }
 
       setScore(payload.score)
+      savePracticeAttemptHistoryEntry(
+        createListeningPracticeAttemptHistoryEntry(payload.score)
+      )
     } catch (error) {
       setScoreError(
         error instanceof Error
@@ -280,6 +296,11 @@ export function ListeningPracticeWorkspace({
           </div>
         </div>
       </section>
+
+      <PracticeAttemptHistoryPanel
+        attempts={recentListeningAttempts}
+        skill="Listening"
+      />
 
       <section className="glass writing-panel reading-practice-toolbar">
         <div className="dashboard-section-header">

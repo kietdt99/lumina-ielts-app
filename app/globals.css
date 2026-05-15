@@ -666,6 +666,32 @@ button {
   font-size: 0.85rem;
 }
 
+.practice-attempt-history-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.practice-attempt-history-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.practice-attempt-card {
+  border: 1px solid color-mix(in srgb, var(--primary) 14%, white);
+  border-radius: 1.1rem;
+  background: rgba(255, 255, 255, 0.64);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem;
+}
+
+.practice-attempt-summary {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .card-title {
   font-size: 1.25rem;
   margin-bottom: 0.65rem;
@@ -3439,6 +3465,8 @@ p {
   .writing-meta-grid,
   .skill-practice-grid,
   .skill-practice-mix,
+  .practice-attempt-history-grid,
+  .practice-attempt-summary,
   .summary-grid,
   .settings-grid {
     grid-template-columns: 1fr;

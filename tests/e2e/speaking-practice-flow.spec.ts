@@ -43,9 +43,16 @@ test.describe('speaking practice flow', () => {
     await page.getByLabel('Speaking transcript').fill(transcript)
     await page.getByRole('button', { name: 'Score speaking answer' }).click()
 
-    await expect(page.getByText('Speaking score report')).toBeVisible()
-    await expect(page.getByText('Strong control')).toBeVisible()
-    await expect(page.getByText('Estimated band')).toBeVisible()
+    const scoreReport = page.locator('.reading-score-card').filter({
+      hasText: 'Speaking score report',
+    })
+
+    await expect(scoreReport.getByText('Speaking score report')).toBeVisible()
+    await expect(
+      scoreReport.getByRole('heading', { name: 'Strong control' })
+    ).toBeVisible()
+    await expect(scoreReport.getByText('Estimated band')).toBeVisible()
+    await expect(page.getByText('Recent Speaking attempts')).toBeVisible()
 
     const listResponse = await page.request.get(
       '/api/speaking-practice?part=Part%202&difficulty=Balanced&topic=Technology%20and%20daily%20life&query=device'

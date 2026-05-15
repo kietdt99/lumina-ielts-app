@@ -86,17 +86,26 @@ describe('ReadingPracticeWorkspace', () => {
     await waitFor(() => {
       expect(screen.getByText('Reading score report')).toBeInTheDocument()
     })
-    expect(screen.getByText('Strong control')).toBeInTheDocument()
-    expect(screen.getByText('100%')).toBeInTheDocument()
+    expect(screen.getAllByText('Strong control')).not.toHaveLength(0)
+    expect(screen.getAllByText('100%')).not.toHaveLength(0)
     expect(screen.getByText('Correct answer: sea breezes')).toBeInTheDocument()
+    expect(screen.getByText('Recent Reading attempts')).toBeInTheDocument()
 
     const storedAnswers = JSON.parse(
       window.localStorage.getItem('lumina-reading-practice-answers') ?? '{}'
     ) as Record<string, Record<string, string>>
+    const storedAttempts = JSON.parse(
+      window.localStorage.getItem('lumina-practice-attempt-history') ?? '[]'
+    ) as Array<{ skill: string; itemTitle: string; metricValue: string }>
 
     expect(storedAnswers[passage.id][passage.questions[0].id]).toBe(
       passage.questions[0].correctAnswer
     )
+    expect(storedAttempts[0]).toMatchObject({
+      skill: 'Reading',
+      itemTitle: passage.title,
+      metricValue: '100%',
+    })
   })
 
   it('shows an empty state and can reset filters', async () => {

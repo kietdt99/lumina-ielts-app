@@ -89,17 +89,26 @@ describe('SpeakingPracticeWorkspace', () => {
     await waitFor(() => {
       expect(screen.getByText('Speaking score report')).toBeInTheDocument()
     })
-    expect(screen.getByText('Strong control')).toBeInTheDocument()
+    expect(screen.getAllByText('Strong control')).not.toHaveLength(0)
     expect(screen.getByText('Estimated band')).toBeInTheDocument()
+    expect(screen.getByText('Recent Speaking attempts')).toBeInTheDocument()
 
     const storedState = JSON.parse(
       window.localStorage.getItem('lumina-speaking-practice') ?? '{}'
     ) as Record<string, { transcript: string; completedCuePointIds: string[] }>
+    const storedAttempts = JSON.parse(
+      window.localStorage.getItem('lumina-practice-attempt-history') ?? '[]'
+    ) as Array<{ skill: string; itemTitle: string; metricLabel: string }>
 
     expect(storedState[prompt.id].completedCuePointIds).toEqual(
       prompt.cuePoints.map((cuePoint) => cuePoint.id)
     )
     expect(storedState[prompt.id].transcript).toContain('Overall')
+    expect(storedAttempts[0]).toMatchObject({
+      skill: 'Speaking',
+      itemTitle: prompt.title,
+      metricLabel: 'Readiness',
+    })
   })
 
   it('shows an empty state and can reset filters', async () => {
