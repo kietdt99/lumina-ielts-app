@@ -30,8 +30,8 @@ const welcomeCopy: Record<
     heading: 'Luyện IELTS nhẹ nhàng, có lộ trình và thấy rõ tiến bộ.',
     intro:
       'Không gian học tập cá nhân giúp bạn tập trung vào bước tiếp theo, giảm nhiễu trên màn hình và giữ nhịp luyện tập đều hơn.',
-    login: 'Log In',
-    about: 'About Us',
+    login: 'Đăng nhập',
+    about: 'Về Lumina',
     targetLabel: 'Mục tiêu band',
     todayLabel: 'Hôm nay',
     sprintTitle: 'Focus sprint',
@@ -41,9 +41,9 @@ const welcomeCopy: Record<
     aboutEyebrow: 'Về Lumina',
     aboutBody:
       'Lumina IELTS là workspace riêng cho learner: ít phân tán, loop luyện tập rõ ràng, và tín hiệu tiến bộ cho Writing, Reading, Listening, Speaking.',
-    authEyebrow: 'Authentication',
-    authTitle: 'Log in to Lumina IELTS',
-    closeLogin: 'Close login dialog',
+    authEyebrow: 'Xác thực',
+    authTitle: 'Đăng nhập Lumina IELTS',
+    closeLogin: 'Đóng cửa sổ đăng nhập',
   },
   en: {
     eyebrow: 'Lumina IELTS',
@@ -202,7 +202,10 @@ export function WelcomeExperience({
               <p className="section-label">{copy.authEyebrow}</p>
               <h2 id="welcome-login-title">{copy.authTitle}</h2>
             </div>
-            <LoginForm demoCredentials={demoCredentials} />
+            <LoginForm
+              demoCredentials={demoCredentials}
+              language={language}
+            />
           </section>
         </div>
       ) : null}

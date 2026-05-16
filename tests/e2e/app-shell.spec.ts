@@ -1,6 +1,37 @@
 import { test, expect } from './fixtures'
 
+const loginDialogName = /Log in to Lumina IELTS|Đăng nhập Lumina IELTS/
+const loginButtonName = /Log In|Đăng nhập/
+const demoAdminButtonName = /Use demo admin|Dùng demo admin/
+const demoLearnerButtonName = /Use demo learner|Dùng demo learner/
+
 test.describe('app shell', () => {
+  test('opens the login dialog on the welcome page without navigation', async ({
+    page,
+  }) => {
+    await page.goto('/', { waitUntil: 'domcontentloaded' })
+    await expect(page).toHaveURL(/\/$/)
+    await page.getByRole('button', { name: loginButtonName }).click()
+
+    const loginDialog = page.getByRole('dialog', {
+      name: loginDialogName,
+    })
+
+    await expect(page).toHaveURL(/\/$/)
+    await expect(loginDialog).toBeVisible()
+    await expect(
+      loginDialog.getByPlaceholder('Enter your email')
+    ).toBeVisible()
+    await expect(
+      loginDialog.getByText(
+        'Lumina uses admin-managed learner accounts.'
+      )
+    ).toHaveCount(0)
+    await expect(
+      loginDialog.getByText('Credential check')
+    ).toHaveCount(0)
+  })
+
   test('keeps the peach theme stable after login', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' })
     await expect(
@@ -8,12 +39,12 @@ test.describe('app shell', () => {
         name: 'Luyện IELTS nhẹ nhàng, có lộ trình và thấy rõ tiến bộ.',
       })
     ).toBeVisible()
-    await page.getByRole('button', { name: 'Log In' }).click()
+    await page.getByRole('button', { name: loginButtonName }).click()
     let loginDialog = page.getByRole('dialog', {
-      name: 'Log in to Lumina IELTS',
+      name: loginDialogName,
     })
-    await loginDialog.getByRole('button', { name: 'Use demo learner' }).click()
-    await loginDialog.getByRole('button', { name: 'Log In' }).click()
+    await loginDialog.getByRole('button', { name: demoLearnerButtonName }).click()
+    await loginDialog.getByRole('button', { name: loginButtonName }).click()
     await expect(page).toHaveURL(/\/dashboard$/)
 
     const firstTheme = await page.locator('html').getAttribute('data-theme')
@@ -22,12 +53,12 @@ test.describe('app shell', () => {
     await page.getByRole('button', { name: 'Sign Out' }).first().click()
     await expect(page).toHaveURL(/\/$/)
 
-    await page.getByRole('button', { name: 'Log In' }).click()
+    await page.getByRole('button', { name: loginButtonName }).click()
     loginDialog = page.getByRole('dialog', {
-      name: 'Log in to Lumina IELTS',
+      name: loginDialogName,
     })
-    await loginDialog.getByRole('button', { name: 'Use demo admin' }).click()
-    await loginDialog.getByRole('button', { name: 'Log In' }).click()
+    await loginDialog.getByRole('button', { name: demoAdminButtonName }).click()
+    await loginDialog.getByRole('button', { name: loginButtonName }).click()
     await expect(page).toHaveURL(/\/admin\/accounts$/)
 
     const secondTheme = await page.locator('html').getAttribute('data-theme')
