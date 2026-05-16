@@ -12,6 +12,10 @@ const writingHistoryStorageKeys = [
   `lumina-writing-history:${defaultDemoLearnerId}`,
   'lumina-writing-history',
 ]
+const loginDialogName = /Log in to Lumina IELTS|Đăng nhập Lumina IELTS/
+const loginButtonName = /Log In|Đăng nhập/
+const demoAdminButtonName = /Use demo admin|Dùng demo admin/
+const demoLearnerButtonName = /Use demo learner|Dùng demo learner/
 
 function formatError(source: string, message: string) {
   return `${source}: ${message}`
@@ -83,11 +87,11 @@ export const test = base.extend<E2EFixtures>({
     await runFixture(async () => {
       await page.goto('/auth/login', { waitUntil: 'domcontentloaded' })
       const loginDialog = page.getByRole('dialog', {
-        name: 'Log in to Lumina IELTS',
+        name: loginDialogName,
       })
 
-      await loginDialog.getByRole('button', { name: 'Use demo learner' }).click()
-      await loginDialog.getByRole('button', { name: 'Log In' }).click()
+      await loginDialog.getByRole('button', { name: demoLearnerButtonName }).click()
+      await loginDialog.getByRole('button', { name: loginButtonName }).click()
       await expect(page).toHaveURL(/\/dashboard$/)
       await expect(
         page.getByRole('heading', { name: 'Welcome back, Demo Learner' })
@@ -98,11 +102,11 @@ export const test = base.extend<E2EFixtures>({
     await runFixture(async () => {
       await page.goto('/auth/login', { waitUntil: 'domcontentloaded' })
       const loginDialog = page.getByRole('dialog', {
-        name: 'Log in to Lumina IELTS',
+        name: loginDialogName,
       })
 
-      await loginDialog.getByRole('button', { name: 'Use demo admin' }).click()
-      await loginDialog.getByRole('button', { name: 'Log In' }).click()
+      await loginDialog.getByRole('button', { name: demoAdminButtonName }).click()
+      await loginDialog.getByRole('button', { name: loginButtonName }).click()
       await expect(page).toHaveURL(/\/admin\/accounts$/)
     })
   },

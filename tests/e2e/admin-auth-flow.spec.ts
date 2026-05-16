@@ -1,5 +1,8 @@
 import { expect, test } from './fixtures'
 
+const loginDialogName = /Log in to Lumina IELTS|Đăng nhập Lumina IELTS/
+const loginButtonName = /Log In|Đăng nhập/
+
 test.describe('admin-managed auth flow', () => {
   test('lets the admin create a learner account and forces a first-login password change', async ({
     page,
@@ -26,13 +29,13 @@ test.describe('admin-managed auth flow', () => {
     await page.getByRole('button', { name: 'Sign Out' }).first().click()
     await expect(page).toHaveURL(/\/$/)
 
-    await page.getByRole('button', { name: 'Log In' }).click()
+    await page.getByRole('button', { name: loginButtonName }).click()
     const loginDialog = page.getByRole('dialog', {
-      name: 'Log in to Lumina IELTS',
+      name: loginDialogName,
     })
-    await loginDialog.getByLabel('Email address').fill(learnerEmail)
-    await loginDialog.getByLabel('Password').fill(temporaryPassword!)
-    await loginDialog.getByRole('button', { name: 'Log In' }).click()
+    await loginDialog.getByLabel(/Email address|Email/).fill(learnerEmail)
+    await loginDialog.getByLabel(/Password|Mật khẩu/).fill(temporaryPassword!)
+    await loginDialog.getByRole('button', { name: loginButtonName }).click()
 
     await expect(page).toHaveURL(/\/auth\/change-password$/)
     await page.getByLabel('New password', { exact: true }).fill('LearnerReset!2026')

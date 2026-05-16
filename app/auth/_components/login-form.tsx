@@ -3,6 +3,54 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { StatusCallout } from '@/app/_components/ui/status-callout'
+import type { AppLanguage } from '@/lib/i18n/app-language'
+
+const loginCopy: Record<
+  AppLanguage,
+  {
+    demoAdmin: string
+    demoBody: string
+    demoLearner: string
+    demoTitle: string
+    emailLabel: string
+    emailPlaceholder: string
+    errorTitle: string
+    passwordLabel: string
+    passwordPlaceholder: string
+    submit: string
+    submitting: string
+    unknownError: string
+  }
+> = {
+  vi: {
+    demoAdmin: 'Dùng demo admin',
+    demoBody: 'Dùng tài khoản demo bên dưới hoặc tạo learner mới từ khu vực admin.',
+    demoLearner: 'Dùng demo learner',
+    demoTitle: 'Demo mode đang bật.',
+    emailLabel: 'Email',
+    emailPlaceholder: 'Enter your email',
+    errorTitle: 'Chưa thể đăng nhập.',
+    passwordLabel: 'Mật khẩu',
+    passwordPlaceholder: 'Nhập mật khẩu',
+    submit: 'Đăng nhập',
+    submitting: 'Đang đăng nhập...',
+    unknownError: 'Chưa thể đăng nhập lúc này.',
+  },
+  en: {
+    demoAdmin: 'Use demo admin',
+    demoBody: 'Use the seeded accounts below or create a learner account from the admin area.',
+    demoLearner: 'Use demo learner',
+    demoTitle: 'Demo mode is active.',
+    emailLabel: 'Email address',
+    emailPlaceholder: 'Enter your email',
+    errorTitle: 'Unable to sign in right now.',
+    passwordLabel: 'Password',
+    passwordPlaceholder: 'Enter your password',
+    submit: 'Log In',
+    submitting: 'Signing in...',
+    unknownError: 'Unable to sign in right now.',
+  },
+}
 
 type LoginResponse =
   | {
@@ -26,10 +74,15 @@ type LoginFormProps = {
       password: string
     }
   }
+  language?: AppLanguage
 }
 
-export function LoginForm({ demoCredentials }: LoginFormProps) {
+export function LoginForm({
+  demoCredentials,
+  language = 'en',
+}: LoginFormProps) {
   const router = useRouter()
+  const copy = loginCopy[language]
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -56,7 +109,7 @@ export function LoginForm({ demoCredentials }: LoginFormProps) {
 
       if (!response.ok || !payload.ok) {
         throw new Error(
-          payload.ok ? 'Unable to sign in right now.' : payload.error
+          payload.ok ? copy.unknownError : payload.error
         )
       }
 
@@ -65,7 +118,7 @@ export function LoginForm({ demoCredentials }: LoginFormProps) {
       router.refresh()
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : 'Unable to sign in right now.'
+        error instanceof Error ? error.message : copy.unknownError
       )
     } finally {
       setIsSubmitting(false)
@@ -87,7 +140,7 @@ export function LoginForm({ demoCredentials }: LoginFormProps) {
       {demoCredentials ? (
         <StatusCallout
           variant="info"
-          title="Demo mode is active."
+          title={copy.demoTitle}
           actions={
             <div className="demo-credentials">
               <button
@@ -95,62 +148,57 @@ export function LoginForm({ demoCredentials }: LoginFormProps) {
                 className="secondary-button"
                 onClick={() => autofillDemoAccount('admin')}
               >
-                Use demo admin
+                {copy.demoAdmin}
               </button>
               <button
                 type="button"
                 className="secondary-button"
                 onClick={() => autofillDemoAccount('learner')}
               >
-                Use demo learner
+                {copy.demoLearner}
               </button>
             </div>
           }
         >
-          <p>Use the seeded accounts below or create a learner account from the admin area.</p>
+          <p>{copy.demoBody}</p>
         </StatusCallout>
       ) : null}
 
-        {errorMessage ? (
-          <StatusCallout variant="error" title="Unable to sign in right now.">
-            <p>{errorMessage}</p>
-          </StatusCallout>
-        ) : null}
+      {errorMessage ? (
+        <StatusCallout variant="error" title={copy.errorTitle}>
+          <p>{errorMessage}</p>
+        </StatusCallout>
+      ) : null}
 
       <form className="auth-form" onSubmit={handleSubmit}>
         <div className="field-group">
-          <label htmlFor="login-email">Email address</label>
+          <label htmlFor="login-email">{copy.emailLabel}</label>
           <input
             id="login-email"
             type="email"
             className="text-input"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            placeholder="Enter your email"
+            placeholder={copy.emailPlaceholder}
             required
           />
         </div>
 
         <div className="field-group">
-          <label htmlFor="login-password">Password</label>
+          <label htmlFor="login-password">{copy.passwordLabel}</label>
           <input
             id="login-password"
             type="password"
             className="text-input"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            placeholder="Enter your password"
+            placeholder={copy.passwordPlaceholder}
             required
           />
         </div>
 
-        <div className="auth-helper-strip">
-          <span className="surface-kicker">Credential check</span>
-          <p>Use the learner email exactly as it was shared by the admin.</p>
-        </div>
-
         <button type="submit" className="primary-button" disabled={isSubmitting}>
-          {isSubmitting ? 'Signing in...' : 'Log In'}
+          {isSubmitting ? copy.submitting : copy.submit}
         </button>
       </form>
     </>

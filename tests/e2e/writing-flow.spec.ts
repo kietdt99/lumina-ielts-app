@@ -5,6 +5,10 @@ import {
   test,
 } from './fixtures'
 
+const loginDialogName = /Log in to Lumina IELTS|Đăng nhập Lumina IELTS/
+const loginButtonName = /Log In|Đăng nhập/
+const demoLearnerButtonName = /Use demo learner|Dùng demo learner/
+
 test.describe('writing flow', () => {
   test('saves a reviewed draft and exposes it in the tracker', async ({
     page,
@@ -219,12 +223,12 @@ test.describe('writing flow', () => {
     await page.getByRole('button', { name: 'Sign Out' }).first().click()
     await expect(page).toHaveURL(/\/$/)
 
-    await page.getByRole('button', { name: 'Log In' }).click()
+    await page.getByRole('button', { name: loginButtonName }).click()
     const loginDialog = page.getByRole('dialog', {
-      name: 'Log in to Lumina IELTS',
+      name: loginDialogName,
     })
-    await loginDialog.getByRole('button', { name: 'Use demo learner' }).click()
-    await loginDialog.getByRole('button', { name: 'Log In' }).click()
+    await loginDialog.getByRole('button', { name: demoLearnerButtonName }).click()
+    await loginDialog.getByRole('button', { name: loginButtonName }).click()
     await expect(page).toHaveURL(/\/dashboard$/)
 
     await gotoAndAssertOk('/tracker')
