@@ -5,6 +5,9 @@ const loginButtonName = /Log In|Đăng nhập/
 const demoAdminButtonName = /Use demo admin|Dùng demo admin/
 const demoLearnerButtonName = /Use demo learner|Dùng demo learner/
 
+const dashboardHeadingName = /Choose one smart sprint, Demo Learner|Chọn một sprint nhỏ, Demo Learner/
+const signOutButtonName = /Sign Out|Đăng xuất/
+
 test.describe('app shell', () => {
   test('opens the login dialog on the welcome page without navigation', async ({
     page,
@@ -50,7 +53,7 @@ test.describe('app shell', () => {
     const firstTheme = await page.locator('html').getAttribute('data-theme')
     expect(firstTheme).toBe('peach')
 
-    await page.getByRole('button', { name: 'Sign Out' }).first().click()
+    await page.getByRole('button', { name: signOutButtonName }).first().click()
     await expect(page).toHaveURL(/\/$/)
 
     await page.getByRole('button', { name: loginButtonName }).click()
@@ -74,7 +77,7 @@ test.describe('app shell', () => {
 
     await gotoAndAssertOk('/dashboard')
     await expect(
-      page.getByRole('heading', { name: 'Welcome back, Demo Learner' })
+      page.getByRole('heading', { name: dashboardHeadingName })
     ).toBeVisible()
 
     await gotoAndAssertOk('/writing')
@@ -214,64 +217,42 @@ test.describe('app shell', () => {
 
     await gotoAndAssertOk('/dashboard')
 
-    await page.getByRole('link', { name: 'Writing Assistant' }).click()
+    const sidebar = page.locator('.app-sidebar')
+
+    await sidebar.getByRole('link', { name: /Writing Lab|Luyện Writing/ }).click()
     await expect(page).toHaveURL(/\/writing$/)
     await expect(
       page.getByRole('heading', { name: 'Train like a real IELTS session' })
     ).toBeVisible()
 
-    await page.getByRole('link', { name: 'Reading Practice', exact: true }).click()
-    await expect(page).toHaveURL(/\/reading-practice$/)
-    await expect(
-      page.getByRole('heading', {
-        name: 'Train IELTS Reading with instant explanations',
-      })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Listening Practice', exact: true }).click()
-    await expect(page).toHaveURL(/\/listening-practice$/)
-    await expect(
-      page.getByRole('heading', {
-        name: 'Train IELTS Listening with replayable simulations',
-      })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Speaking Practice', exact: true }).click()
-    await expect(page).toHaveURL(/\/speaking-practice$/)
-    await expect(
-      page.getByRole('heading', {
-        name: 'Train IELTS Speaking with cue-card drills',
-      })
-    ).toBeVisible()
-
-    await page.getByRole('link', { name: 'Mock Test Lab', exact: true }).click()
+    await sidebar.getByRole('link', { name: /Mock Test/ }).click()
     await expect(page).toHaveURL(/\/mock-test$/)
     await expect(
       page.getByRole('heading', { name: 'Complete a full IELTS Writing mock test' })
     ).toBeVisible()
 
-    await page.getByRole('link', { name: 'Study Plan', exact: true }).click()
+    await sidebar.getByRole('link', { name: /Study Plan|Lộ trình/ }).click()
     await expect(page).toHaveURL(/\/study-plan$/)
     await expect(
       page.getByRole('heading', { name: /sessions left this week|Weekly rhythm is on track/ })
     ).toBeVisible()
 
-    await page.getByRole('link', { name: 'Score Tracker' }).click()
+    await sidebar.getByRole('link', { name: /Progress|Điểm số/ }).click()
     await expect(page).toHaveURL(/\/tracker$/)
     await expect(
       page.getByRole('heading', { name: 'See how your writing practice is evolving' })
     ).toBeVisible()
 
-    await page.getByRole('link', { name: 'Profile Settings' }).click()
+    await sidebar.getByRole('link', { name: /Profile|Hồ sơ/ }).click()
     await expect(page).toHaveURL(/\/settings\/profile$/)
     await expect(
       page.getByRole('heading', { name: 'Set the goals that shape your study plan' })
     ).toBeVisible()
 
-    await page.getByRole('link', { name: 'Dashboard' }).click()
+    await sidebar.getByRole('link', { name: /Today|Hôm nay/ }).click()
     await expect(page).toHaveURL(/\/dashboard$/)
     await expect(
-      page.getByRole('heading', { name: 'Welcome back, Demo Learner' })
+      page.getByRole('heading', { name: dashboardHeadingName })
     ).toBeVisible()
   })
 })

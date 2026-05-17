@@ -44,19 +44,23 @@ test.describe('dashboard insights', () => {
 
     await gotoAndAssertOk('/dashboard')
 
-    await expect(page.getByText('Four-Skill Practice Mix')).toBeVisible()
-    await expect(page.getByText('Speaking Practice').first()).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Open focus module' })).toHaveAttribute(
+    await expect(page.getByText(/Four-Skill Practice Mix|Lộ trình bốn kỹ năng/)).toBeVisible()
+    await expect(page.getByText(/Speaking Practice|Luyện Speaking/).first()).toBeVisible()
+    await expect(
+      page.getByRole('link', { name: /Open focus module|Mở module trọng tâm/ }).first()
+    ).toHaveAttribute(
       'href',
       '/speaking-practice'
     )
-    await expect(page.getByText('Close the gap to Band 8.0')).toBeVisible()
-    await expect(page.getByText('Recent average')).toBeVisible()
+    await expect(
+      page.getByText(/Close the gap to Band 8\.0|Thu hẹp khoảng cách tới Band 8\.0/)
+    ).toBeVisible()
+    await expect(page.getByText(/Recent average|Trung bình gần đây/)).toBeVisible()
     await expect(page.getByText('1.0', { exact: true })).toBeVisible()
-    await expect(page.getByText('Recurring focus')).toBeVisible()
+    await expect(page.getByText(/Recurring focus|Lỗi lặp lại/)).toBeVisible()
     await expect(
       page.locator('.metric-pill').filter({
-        hasText: 'Recurring focus',
+        hasText: /Recurring focus|Lỗi lặp lại/,
       })
     ).toContainText('Clarify the thesis in the introduction.')
   })

@@ -1,5 +1,6 @@
 'use client'
 
+import { Fragment } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
@@ -18,6 +19,7 @@ import {
 type NavigationItem = {
   href: string
   label: string
+  group?: string
   icon?:
     | 'dashboard'
     | 'writing'
@@ -58,22 +60,27 @@ export function SidebarNav({ items }: SidebarNavProps) {
 
   return (
     <div className="sidebar-nav">
-      {items.map((item) => {
+      {items.map((item, index) => {
         const isActive =
           item.href === '/' ? pathname === item.href : pathname.startsWith(item.href)
+        const shouldShowGroup = item.group && item.group !== items[index - 1]?.group
 
         return (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`sidebar-link${isActive ? ' is-active' : ''}`}
-          >
-            <span className="sidebar-link-content">
-              {item.icon ? iconMap[item.icon] : <DashboardIcon className="sidebar-icon" />}
-              <span>{item.label}</span>
-            </span>
-            <span className="sidebar-link-accent" aria-hidden="true" />
-          </Link>
+          <Fragment key={item.href}>
+            {shouldShowGroup ? (
+              <p className="sidebar-nav-group-label">{item.group}</p>
+            ) : null}
+            <Link
+              href={item.href}
+              className={`sidebar-link${isActive ? ' is-active' : ''}`}
+            >
+              <span className="sidebar-link-content">
+                {item.icon ? iconMap[item.icon] : <DashboardIcon className="sidebar-icon" />}
+                <span>{item.label}</span>
+              </span>
+              <span className="sidebar-link-accent" aria-hidden="true" />
+            </Link>
+          </Fragment>
         )
       })}
     </div>

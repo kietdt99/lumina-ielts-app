@@ -39,12 +39,14 @@ describe('DashboardOverview', () => {
       />
     )
 
-    expect(screen.getByText('Welcome back, Demo Learner')).toBeInTheDocument()
+    expect(
+      screen.getByText('Choose one smart sprint, Demo Learner')
+    ).toBeInTheDocument()
     expect(screen.getByText('No activity saved yet.')).toBeInTheDocument()
     expect(screen.getByText('Target Band')).toBeInTheDocument()
     expect(screen.getByText('Four-Skill Practice Mix')).toBeInTheDocument()
     expect(screen.getAllByText('Reading Practice')).not.toHaveLength(0)
-    expect(screen.getByText('Update goals')).toHaveAttribute(
+    expect(screen.getAllByRole('link', { name: 'Update goals' })[0]).toHaveAttribute(
       'href',
       '/settings/profile'
     )
@@ -97,10 +99,10 @@ describe('DashboardOverview', () => {
     expect(screen.getByText('Average Band')).toBeInTheDocument()
     expect(screen.getByText('Best Result')).toBeInTheDocument()
     expect(screen.getByText('8.0')).toBeInTheDocument()
-    expect(screen.getByText(/Focus skill: Speaking/)).toBeInTheDocument()
+    expect(screen.getByText(/Speaking focus/)).toBeInTheDocument()
     expect(screen.getByText('Four-Skill Practice Mix')).toBeInTheDocument()
     expect(screen.getAllByText('Speaking Practice')).not.toHaveLength(0)
-    expect(screen.getByText('Focus module')).toBeInTheDocument()
+    expect(screen.getAllByText('Focus skill')).not.toHaveLength(0)
     expect(screen.getByRole('link', { name: 'Open focus module' })).toHaveAttribute(
       'href',
       '/speaking-practice'

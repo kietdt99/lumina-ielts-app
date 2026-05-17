@@ -17,6 +17,8 @@ const loginButtonName = /Log In|Đăng nhập/
 const demoAdminButtonName = /Use demo admin|Dùng demo admin/
 const demoLearnerButtonName = /Use demo learner|Dùng demo learner/
 
+const dashboardHeadingName = /Choose one smart sprint, Demo Learner|Chọn một sprint nhỏ, Demo Learner/
+
 function formatError(source: string, message: string) {
   return `${source}: ${message}`
 }
@@ -94,7 +96,7 @@ export const test = base.extend<E2EFixtures>({
       await loginDialog.getByRole('button', { name: loginButtonName }).click()
       await expect(page).toHaveURL(/\/dashboard$/)
       await expect(
-        page.getByRole('heading', { name: 'Welcome back, Demo Learner' })
+        page.getByRole('heading', { name: dashboardHeadingName })
       ).toBeVisible()
     })
   },
