@@ -24,11 +24,12 @@ test.describe('learner goals settings flow', () => {
       page.getByText('Learner goals saved for this account.')
     ).toBeVisible()
 
-    await page.getByRole('link', { name: 'Dashboard' }).click()
+    await page.getByRole('link', { name: /Today|Hôm nay/ }).click()
     await expect(page).toHaveURL(/\/dashboard$/)
-    await expect(page.getByRole('heading', { name: 'Target Band' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /Target Band|Band mục tiêu/ })).toBeVisible()
     await expect(page.getByText('8.0', { exact: true })).toBeVisible()
-    await expect(page.getByText(/Focus skill: Reading/)).toBeVisible()
-    await expect(page.getByText(/Study rhythm: Daily/)).toBeVisible()
+    await expect(
+      page.getByText(/Band 5\.0-5\.5 · (Reading focus|Ưu tiên Reading) · Daily/)
+    ).toBeVisible()
   })
 })

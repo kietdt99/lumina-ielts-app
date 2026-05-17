@@ -3,6 +3,8 @@ import { expect, test } from './fixtures'
 const loginDialogName = /Log in to Lumina IELTS|Đăng nhập Lumina IELTS/
 const loginButtonName = /Log In|Đăng nhập/
 
+const dashboardHeadingName = /Choose one smart sprint|Chọn một sprint nhỏ/
+
 test.describe('admin-managed auth flow', () => {
   test('lets the admin create a learner account and forces a first-login password change', async ({
     page,
@@ -46,6 +48,6 @@ test.describe('admin-managed auth flow', () => {
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page).toHaveURL(/\/dashboard$/)
-    await expect(page.getByRole('heading', { name: `Welcome back, ${learnerName}` })).toBeVisible()
+    await expect(page.getByRole('heading', { name: dashboardHeadingName })).toBeVisible()
   })
 })

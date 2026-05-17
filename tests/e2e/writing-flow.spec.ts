@@ -50,7 +50,7 @@ test.describe('writing flow', () => {
     await expect(page.getByText('Structure pass')).toBeVisible()
     await expect(page.getByText(/Practice result saved at/)).toBeVisible()
 
-    await page.getByRole('link', { name: 'Score Tracker' }).click()
+    await page.getByRole('link', { name: /Progress|Điểm số/ }).click()
     await expect(page).toHaveURL(/\/tracker$/)
     await expect(
       page.getByRole('heading', { name: 'Practice history' })
@@ -144,7 +144,9 @@ test.describe('writing flow', () => {
     ])
 
     await gotoAndAssertOk('/dashboard')
-    await expect(page.getByText('You have completed 2 tracked writing sessions.')).toBeVisible()
+    await expect(
+      page.getByText(/2 tracked writing sessions completed\.|2 phiên Writing đã được theo dõi\./)
+    ).toBeVisible()
     await expect(
       page.getByRole('heading', {
         name: 'Water recycling process',
@@ -220,7 +222,7 @@ test.describe('writing flow', () => {
     await page.getByRole('button', { name: 'Generate practice feedback' }).click()
     await expect(page.getByText(/Practice result saved at/)).toBeVisible()
 
-    await page.getByRole('button', { name: 'Sign Out' }).first().click()
+    await page.getByRole('button', { name: /Sign Out|Đăng xuất/ }).first().click()
     await expect(page).toHaveURL(/\/$/)
 
     await page.getByRole('button', { name: loginButtonName }).click()
