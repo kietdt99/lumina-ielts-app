@@ -19,7 +19,18 @@ const welcomeCopy: Record<
     nextStepLabel: string
     nextStep: string
     aboutEyebrow: string
+    aboutTitle: string
     aboutBody: string
+    aboutHighlights: Array<{
+      label: string
+      title: string
+      body: string
+    }>
+    aboutLoopTitle: string
+    aboutLoopSteps: string[]
+    aboutMetricLabel: string
+    aboutMetricValue: string
+    aboutMetricNote: string
     authEyebrow: string
     authTitle: string
     closeLogin: string
@@ -39,8 +50,31 @@ const welcomeCopy: Record<
     nextStepLabel: 'Bước tiếp theo',
     nextStep: 'Writing rewrite',
     aboutEyebrow: 'Về Lumina',
+    aboutTitle: 'Lumina giúp bạn học dễ bắt đầu hơn.',
     aboutBody:
-      'Lumina IELTS là workspace riêng cho learner: ít phân tán, loop luyện tập rõ ràng, và tín hiệu tiến bộ cho Writing, Reading, Listening, Speaking.',
+      'Thay vì mở quá nhiều công cụ cùng lúc, Lumina gom việc luyện IELTS thành một vòng học ngắn: biết mục tiêu, luyện có trọng tâm, nhận tín hiệu tiến bộ, rồi quay lại bước tiếp theo.',
+    aboutHighlights: [
+      {
+        label: '01',
+        title: 'Tập trung trước',
+        body: 'Mỗi lần vào app chỉ cần chọn một sprint nhỏ thay vì đọc một dashboard dài.',
+      },
+      {
+        label: '02',
+        title: 'Có feedback loop',
+        body: 'Writing, Reading, Listening và Speaking đều hướng về practice, feedback, revision.',
+      },
+      {
+        label: '03',
+        title: 'Thấy tiến bộ',
+        body: 'Band, checkpoint và next step được gom lại để bạn biết mình đang đi đúng hướng.',
+      },
+    ],
+    aboutLoopTitle: 'Vòng học Lumina',
+    aboutLoopSteps: ['Chọn trọng tâm', 'Luyện một sprint', 'Review feedback', 'Quay lại tốt hơn'],
+    aboutMetricLabel: 'Thiết kế cho',
+    aboutMetricValue: '1 learner',
+    aboutMetricNote: 'Không mạng xã hội, không leaderboard, không nhiễu.',
     authEyebrow: 'Xác thực',
     authTitle: 'Đăng nhập Lumina IELTS',
     closeLogin: 'Đóng cửa sổ đăng nhập',
@@ -59,8 +93,31 @@ const welcomeCopy: Record<
     nextStepLabel: 'Next step',
     nextStep: 'Writing rewrite',
     aboutEyebrow: 'About Lumina',
+    aboutTitle: 'Lumina makes practice easier to start.',
     aboutBody:
-      'Lumina IELTS is designed as a private learner workspace: fewer distractions, clearer practice loops, and progress signals across Writing, Reading, Listening, and Speaking.',
+      'Instead of opening too many tools at once, Lumina turns IELTS prep into a short loop: know the target, practice with focus, read the progress signal, then return to the next step.',
+    aboutHighlights: [
+      {
+        label: '01',
+        title: 'Focus first',
+        body: 'Each visit starts with one small sprint instead of a long dashboard to decode.',
+      },
+      {
+        label: '02',
+        title: 'Feedback loop',
+        body: 'Writing, Reading, Listening, and Speaking all lead back to practice, feedback, revision.',
+      },
+      {
+        label: '03',
+        title: 'Visible progress',
+        body: 'Bands, checkpoints, and next steps are grouped so learners can see momentum.',
+      },
+    ],
+    aboutLoopTitle: 'Lumina learning loop',
+    aboutLoopSteps: ['Pick focus', 'Practice one sprint', 'Review feedback', 'Return sharper'],
+    aboutMetricLabel: 'Designed for',
+    aboutMetricValue: '1 learner',
+    aboutMetricNote: 'No social feed, no leaderboard, no noise.',
     authEyebrow: 'Authentication',
     authTitle: 'Log in to Lumina IELTS',
     closeLogin: 'Close login dialog',
@@ -146,6 +203,8 @@ export function WelcomeExperience({
             <button
               type="button"
               className="secondary-button welcome-secondary-action"
+              aria-controls="welcome-about-panel"
+              aria-expanded={isAboutOpen}
               onClick={() => setIsAboutOpen((current) => !current)}
             >
               {copy.about}
@@ -176,9 +235,44 @@ export function WelcomeExperience({
       </section>
 
       {isAboutOpen ? (
-        <section className="welcome-about-card glass">
-          <span className="surface-kicker">{copy.aboutEyebrow}</span>
-          <p>{copy.aboutBody}</p>
+        <section
+          id="welcome-about-panel"
+          className="welcome-about-experience glass"
+        >
+          <div className="welcome-about-copy">
+            <span className="surface-kicker">{copy.aboutEyebrow}</span>
+            <h2>{copy.aboutTitle}</h2>
+            <p>{copy.aboutBody}</p>
+          </div>
+
+          <div className="welcome-about-grid">
+            {copy.aboutHighlights.map((item) => (
+              <article key={item.label} className="welcome-about-highlight">
+                <span>{item.label}</span>
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="welcome-about-loop">
+            <div>
+              <span className="surface-kicker">{copy.aboutLoopTitle}</span>
+              <div className="welcome-about-loop-steps">
+                {copy.aboutLoopSteps.map((step, index) => (
+                  <span key={step}>
+                    <strong>{index + 1}</strong>
+                    {step}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <aside className="welcome-about-metric">
+              <span>{copy.aboutMetricLabel}</span>
+              <strong>{copy.aboutMetricValue}</strong>
+              <p>{copy.aboutMetricNote}</p>
+            </aside>
+          </div>
         </section>
       ) : null}
 

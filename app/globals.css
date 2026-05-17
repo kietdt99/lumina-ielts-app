@@ -1212,7 +1212,8 @@ button {
 .welcome-path-card,
 .welcome-score-card,
 .welcome-spark-card,
-.welcome-about-card {
+.welcome-about-card,
+.welcome-about-experience {
   border: 1px solid rgba(255, 255, 255, 0.64);
   box-shadow: 0 28px 70px rgba(169, 99, 78, 0.16);
 }
@@ -1302,6 +1303,148 @@ button {
   padding: 1.2rem 1.35rem;
   position: relative;
   z-index: 2;
+}
+
+.welcome-about-experience {
+  display: grid;
+  gap: 1.25rem;
+  margin: -3rem auto 3rem;
+  max-width: min(100%, 76rem);
+  overflow: hidden;
+  padding: clamp(1.35rem, 3vw, 2rem);
+  position: relative;
+  z-index: 2;
+}
+
+.welcome-about-experience::before {
+  content: "";
+  position: absolute;
+  inset: -7rem -5rem auto auto;
+  width: 18rem;
+  height: 18rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--primary) 20%, white), transparent 68%);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.welcome-about-copy {
+  max-width: 46rem;
+  position: relative;
+  z-index: 1;
+}
+
+.welcome-about-copy h2 {
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.welcome-about-copy p {
+  font-size: 1.03rem;
+  margin-top: 0.8rem;
+  max-width: 42rem;
+}
+
+.welcome-about-grid {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  position: relative;
+  z-index: 1;
+}
+
+.welcome-about-highlight {
+  border: 1px solid color-mix(in srgb, var(--primary) 14%, white);
+  border-radius: 1.25rem;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.86), transparent 58%),
+    rgba(255, 255, 255, 0.58);
+  min-height: 100%;
+  padding: 1rem;
+}
+
+.welcome-about-highlight span {
+  align-items: center;
+  background: color-mix(in srgb, var(--primary) 16%, white);
+  border-radius: 999px;
+  color: var(--accent-foreground);
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 900;
+  height: 2.1rem;
+  justify-content: center;
+  margin-bottom: 0.9rem;
+  width: 2.1rem;
+}
+
+.welcome-about-highlight h3 {
+  font-size: 1.1rem;
+}
+
+.welcome-about-highlight p {
+  margin-top: 0.5rem;
+}
+
+.welcome-about-loop {
+  align-items: stretch;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.32fr);
+  position: relative;
+  z-index: 1;
+}
+
+.welcome-about-loop-steps {
+  display: grid;
+  gap: 0.7rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.welcome-about-loop-steps span,
+.welcome-about-metric {
+  border: 1px solid color-mix(in srgb, var(--primary) 14%, white);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.64);
+  padding: 0.9rem;
+}
+
+.welcome-about-loop-steps span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  font-weight: 800;
+}
+
+.welcome-about-loop-steps strong {
+  align-items: center;
+  background: var(--primary);
+  border-radius: 999px;
+  color: var(--primary-foreground);
+  display: inline-flex;
+  height: 1.8rem;
+  justify-content: center;
+  width: 1.8rem;
+}
+
+.welcome-about-metric {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.welcome-about-metric span {
+  color: var(--muted-foreground);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.welcome-about-metric strong {
+  color: var(--primary);
+  font-size: 2.35rem;
+  letter-spacing: -0.05em;
 }
 
 .welcome-dialog-backdrop {
@@ -4025,6 +4168,11 @@ p {
     min-height: 28rem;
   }
 
+  .welcome-about-grid,
+  .welcome-about-loop {
+    grid-template-columns: 1fr;
+  }
+
   .tracker-toolbar {
     align-items: stretch;
     flex-direction: column;
@@ -4149,5 +4297,13 @@ p {
 
   .welcome-path-card {
     margin-top: 1.5rem;
+  }
+
+  .welcome-about-experience {
+    margin-top: 1.5rem;
+  }
+
+  .welcome-about-loop-steps {
+    grid-template-columns: 1fr;
   }
 }

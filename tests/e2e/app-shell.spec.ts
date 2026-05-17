@@ -4,6 +4,7 @@ const loginDialogName = /Log in to Lumina IELTS|Đăng nhập Lumina IELTS/
 const loginButtonName = /Log In|Đăng nhập/
 const demoAdminButtonName = /Use demo admin|Dùng demo admin/
 const demoLearnerButtonName = /Use demo learner|Dùng demo learner/
+const aboutButtonName = /About Us|Về Lumina/
 
 const dashboardHeadingName = /Choose one smart sprint, Demo Learner|Chọn một sprint nhỏ, Demo Learner/
 const signOutButtonName = /Sign Out|Đăng xuất/
@@ -33,6 +34,28 @@ test.describe('app shell', () => {
     await expect(
       loginDialog.getByText('Credential check')
     ).toHaveCount(0)
+  })
+
+  test('opens a rich About panel on the welcome page without navigation', async ({
+    page,
+  }) => {
+    await page.goto('/', { waitUntil: 'domcontentloaded' })
+    await page.getByRole('button', { name: 'EN' }).click()
+
+    const aboutButton = page.getByRole('button', { name: aboutButtonName })
+    await expect(aboutButton).toHaveAttribute('aria-expanded', 'false')
+    await aboutButton.click()
+
+    await expect(page).toHaveURL(/\/$/)
+    await expect(aboutButton).toHaveAttribute('aria-expanded', 'true')
+    await expect(
+      page.getByRole('heading', {
+        name: 'Lumina makes practice easier to start.',
+      })
+    ).toBeVisible()
+    await expect(page.getByText('Focus first')).toBeVisible()
+    await expect(page.getByText('Lumina learning loop')).toBeVisible()
+    await expect(page.getByText('1 learner')).toBeVisible()
   })
 
   test('keeps the peach theme stable after login', async ({ page }) => {
