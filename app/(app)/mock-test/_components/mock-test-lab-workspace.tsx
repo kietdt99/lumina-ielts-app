@@ -34,6 +34,8 @@ type MockTestDraftState = {
 
 type MockTestState = Record<string, MockTestDraftState>
 
+type MockTestStage = 'choose' | 'write' | 'review'
+
 const difficultyOptions: MockTestDifficultyFilter[] = [
   'All',
   'Guided',
@@ -85,6 +87,56 @@ function emptyDraftState(): MockTestDraftState {
   }
 }
 
+function MockTestStageSteps({
+  activeStage,
+  onStageChange,
+}: {
+  activeStage: MockTestStage
+  onStageChange: (stage: MockTestStage) => void
+}) {
+  const stages: Array<{
+    description: string
+    id: MockTestStage
+    label: string
+  }> = [
+    {
+      id: 'choose',
+      label: 'Choose pair',
+      description: 'Select one Task 1 and Task 2 simulation.',
+    },
+    {
+      id: 'write',
+      label: 'Write mock',
+      description: 'Draft both responses with checkpoints.',
+    },
+    {
+      id: 'review',
+      label: 'Review readiness',
+      description: 'See completion signals and next actions.',
+    },
+  ]
+
+  return (
+    <nav className="practice-flow-steps" aria-label="Mock test flow">
+      {stages.map((stage, index) => (
+        <button
+          key={stage.id}
+          type="button"
+          className={`practice-flow-step${activeStage === stage.id ? ' is-active' : ''}`}
+          aria-current={activeStage === stage.id ? 'step' : undefined}
+          onClick={() => onStageChange(stage.id)}
+        >
+          <span className="practice-flow-step-index">{index + 1}</span>
+          <span>
+            <strong>{stage.label}</strong>
+            <small>{stage.description}</small>
+          </span>
+        </button>
+      ))}
+    </nav>
+  )
+}
+
 function MockTestPickerCard({
   isActive,
   onSelect,
@@ -113,6 +165,7 @@ export function MockTestLabWorkspace({ tests }: MockTestLabWorkspaceProps) {
   const [topic, setTopic] = useState('All topics')
   const [searchValue, setSearchValue] = useState('')
   const [selectedTestId, setSelectedTestId] = useState(tests[0]?.id ?? '')
+  const [activeStage, setActiveStage] = useState<MockTestStage>('choose')
   const [mockState, setMockState] = useState<MockTestState>(() => readStoredState())
   const [remainingSeconds, setRemainingSeconds] = useState(60 * 60)
   const [isTimerRunning, setIsTimerRunning] = useState(false)
@@ -209,6 +262,12 @@ export function MockTestLabWorkspace({ tests }: MockTestLabWorkspaceProps) {
     setDifficulty('All')
     setTopic('All topics')
     setSearchValue('')
+    setActiveStage('choose')
+  }
+
+  function handleSelectTest(testId: string) {
+    setSelectedTestId(testId)
+    setActiveStage('choose')
   }
 
   function resetSelectedTest() {
@@ -333,124 +392,192 @@ export function MockTestLabWorkspace({ tests }: MockTestLabWorkspaceProps) {
       </section>
 
       {filteredTests.length && selectedTest ? (
-        <div className="mock-test-layout">
-          <aside className="glass writing-panel mock-test-picker">
-            <div className="panel-heading">
-              <span className="surface-kicker">Mock test bank</span>
-              <h2>{filteredTests.length} matching pairs</h2>
-            </div>
-            <div className="mock-test-picker-list">
-              {filteredTests.map((test) => (
-                <MockTestPickerCard
-                  key={test.id}
-                  test={test}
-                  isActive={test.id === selectedTest.id}
-                  onSelect={() => setSelectedTestId(test.id)}
-                />
-              ))}
-            </div>
-          </aside>
+        <>
+          <MockTestStageSteps
+            activeStage={activeStage}
+            onStageChange={setActiveStage}
+          />
 
-          <section className="glass writing-panel mock-test-workspace">
-            <div className="dashboard-section-header">
-              <div className="panel-heading">
-                <p className="section-label">60-minute simulation</p>
-                <h2 className="icon-heading">
-                  <WritingIcon className="section-icon" />
-                  <span>{selectedTest.title}</span>
-                </h2>
-                <p>{selectedTest.topicPair}</p>
+          {activeStage === 'choose' ? (
+            <div className="mock-test-layout">
+              <aside className="glass writing-panel mock-test-picker">
+                <div className="panel-heading">
+                  <span className="surface-kicker">Mock test bank</span>
+                  <h2>{filteredTests.length} matching pairs</h2>
+                </div>
+                <div className="mock-test-picker-list">
+                  {filteredTests.map((test) => (
+                    <MockTestPickerCard
+                      key={test.id}
+                      test={test}
+                      isActive={test.id === selectedTest.id}
+                      onSelect={() => handleSelectTest(test.id)}
+                    />
+                  ))}
+                </div>
+              </aside>
+
+              <section className="glass writing-panel mock-test-workspace mock-test-stage-panel">
+                <div className="dashboard-section-header">
+                  <div className="panel-heading">
+                    <p className="section-label">60-minute simulation</p>
+                    <h2 className="icon-heading">
+                      <WritingIcon className="section-icon" />
+                      <span>{selectedTest.title}</span>
+                    </h2>
+                    <p>{selectedTest.topicPair}</p>
+                  </div>
+                </div>
+
+                <div className="practice-overview-grid">
+                  <div className="summary-box">
+                    <span className="metric-label">Task 1</span>
+                    <strong>{selectedTest.taskOnePrompt.minimumWords}+ words</strong>
+                    <p>{selectedTest.taskOnePrompt.title}</p>
+                  </div>
+                  <div className="summary-box">
+                    <span className="metric-label">Task 2</span>
+                    <strong>{selectedTest.taskTwoPrompt.minimumWords}+ words</strong>
+                    <p>{selectedTest.taskTwoPrompt.title}</p>
+                  </div>
+                  <div className="summary-box">
+                    <span className="metric-label">Checkpoints</span>
+                    <strong>{selectedTest.checkpoints.length} exam cues</strong>
+                    <p>Use them during the writing stage, not while choosing.</p>
+                  </div>
+                </div>
+
+                <div className="practice-next-card">
+                  <TimerIcon className="section-icon" />
+                  <div>
+                    <span className="metric-label">Next step</span>
+                    <h3>Start one focused 60-minute writing room</h3>
+                    <p>
+                      The draft boxes and checkpoint controls stay hidden until
+                      the learner is ready to write.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="settings-actions">
+                  <button
+                    type="button"
+                    className="primary-button"
+                    onClick={() => setActiveStage('write')}
+                  >
+                    Start 60-minute mock
+                  </button>
+                  <Link
+                    href={writingHref(selectedTest.taskOnePrompt.id)}
+                    className="secondary-button"
+                  >
+                    Open Task 1 in Writing
+                  </Link>
+                </div>
+              </section>
+            </div>
+          ) : null}
+
+          {activeStage === 'write' ? (
+            <section className="glass writing-panel mock-test-workspace mock-test-stage-panel">
+              <div className="dashboard-section-header">
+                <div className="panel-heading">
+                  <p className="section-label">Focused writing room</p>
+                  <h2 className="icon-heading">
+                    <WritingIcon className="section-icon" />
+                    <span>{selectedTest.title}</span>
+                  </h2>
+                  <p>{selectedTest.topicPair}</p>
+                </div>
+                <div className="toolbar-actions">
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() => setIsTimerRunning((current) => !current)}
+                  >
+                    {isTimerRunning ? 'Pause mock timer' : 'Start mock timer'}
+                  </button>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() => {
+                      setRemainingSeconds(60 * 60)
+                      setIsTimerRunning(false)
+                    }}
+                  >
+                    Reset timer
+                  </button>
+                </div>
               </div>
-              <div className="toolbar-actions">
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={() => setIsTimerRunning((current) => !current)}
-                >
-                  {isTimerRunning ? 'Pause mock timer' : 'Start mock timer'}
-                </button>
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={() => {
-                    setRemainingSeconds(60 * 60)
-                    setIsTimerRunning(false)
-                  }}
-                >
-                  Reset timer
-                </button>
+
+              <div className="mock-test-draft-grid">
+                <article className="mock-test-draft-panel">
+                  <div className="history-kicker-row">
+                    <span className="surface-kicker">Task 1</span>
+                    <span className="surface-kicker tracker-history-pill">
+                      {selectedTest.taskOnePrompt.minimumWords}+ words
+                    </span>
+                  </div>
+                  <h3>{selectedTest.taskOnePrompt.title}</h3>
+                  <p>{selectedTest.taskOnePrompt.brief}</p>
+                  <textarea
+                    id="mock-task-1-draft"
+                    className="writing-textarea mock-test-textarea"
+                    value={selectedState.taskOneDraft}
+                    onChange={(event) =>
+                      updateSelectedState({ taskOneDraft: event.target.value })
+                    }
+                    aria-label="Task 1 draft"
+                    placeholder="Write your Task 1 response here."
+                  />
+                  <div className="hero-badge-row">
+                    <span className="hero-badge">{taskOneMetrics.wordCount} words</span>
+                    <span className="hero-badge">
+                      {isTaskOneReady ? 'Target met' : 'Target not met'}
+                    </span>
+                  </div>
+                  <Link
+                    href={writingHref(selectedTest.taskOnePrompt.id)}
+                    className="inline-link"
+                  >
+                    Open Task 1 in Writing
+                  </Link>
+                </article>
+
+                <article className="mock-test-draft-panel">
+                  <div className="history-kicker-row">
+                    <span className="surface-kicker">Task 2</span>
+                    <span className="surface-kicker tracker-history-pill">
+                      {selectedTest.taskTwoPrompt.minimumWords}+ words
+                    </span>
+                  </div>
+                  <h3>{selectedTest.taskTwoPrompt.title}</h3>
+                  <p>{selectedTest.taskTwoPrompt.brief}</p>
+                  <textarea
+                    id="mock-task-2-draft"
+                    className="writing-textarea mock-test-textarea"
+                    value={selectedState.taskTwoDraft}
+                    onChange={(event) =>
+                      updateSelectedState({ taskTwoDraft: event.target.value })
+                    }
+                    aria-label="Task 2 draft"
+                    placeholder="Write your Task 2 essay here."
+                  />
+                  <div className="hero-badge-row">
+                    <span className="hero-badge">{taskTwoMetrics.wordCount} words</span>
+                    <span className="hero-badge">
+                      {isTaskTwoReady ? 'Target met' : 'Target not met'}
+                    </span>
+                  </div>
+                  <Link
+                    href={writingHref(selectedTest.taskTwoPrompt.id)}
+                    className="inline-link"
+                  >
+                    Open Task 2 in Writing
+                  </Link>
+                </article>
               </div>
-            </div>
 
-            <div className="mock-test-draft-grid">
-              <article className="mock-test-draft-panel">
-                <div className="history-kicker-row">
-                  <span className="surface-kicker">Task 1</span>
-                  <span className="surface-kicker tracker-history-pill">
-                    {selectedTest.taskOnePrompt.minimumWords}+ words
-                  </span>
-                </div>
-                <h3>{selectedTest.taskOnePrompt.title}</h3>
-                <p>{selectedTest.taskOnePrompt.brief}</p>
-                <textarea
-                  id="mock-task-1-draft"
-                  className="writing-textarea mock-test-textarea"
-                  value={selectedState.taskOneDraft}
-                  onChange={(event) =>
-                    updateSelectedState({ taskOneDraft: event.target.value })
-                  }
-                  aria-label="Task 1 draft"
-                  placeholder="Write your Task 1 response here."
-                />
-                <div className="hero-badge-row">
-                  <span className="hero-badge">{taskOneMetrics.wordCount} words</span>
-                  <span className="hero-badge">
-                    {isTaskOneReady ? 'Target met' : 'Target not met'}
-                  </span>
-                </div>
-                <Link
-                  href={writingHref(selectedTest.taskOnePrompt.id)}
-                  className="inline-link"
-                >
-                  Open Task 1 in Writing
-                </Link>
-              </article>
-
-              <article className="mock-test-draft-panel">
-                <div className="history-kicker-row">
-                  <span className="surface-kicker">Task 2</span>
-                  <span className="surface-kicker tracker-history-pill">
-                    {selectedTest.taskTwoPrompt.minimumWords}+ words
-                  </span>
-                </div>
-                <h3>{selectedTest.taskTwoPrompt.title}</h3>
-                <p>{selectedTest.taskTwoPrompt.brief}</p>
-                <textarea
-                  id="mock-task-2-draft"
-                  className="writing-textarea mock-test-textarea"
-                  value={selectedState.taskTwoDraft}
-                  onChange={(event) =>
-                    updateSelectedState({ taskTwoDraft: event.target.value })
-                  }
-                  aria-label="Task 2 draft"
-                  placeholder="Write your Task 2 essay here."
-                />
-                <div className="hero-badge-row">
-                  <span className="hero-badge">{taskTwoMetrics.wordCount} words</span>
-                  <span className="hero-badge">
-                    {isTaskTwoReady ? 'Target met' : 'Target not met'}
-                  </span>
-                </div>
-                <Link
-                  href={writingHref(selectedTest.taskTwoPrompt.id)}
-                  className="inline-link"
-                >
-                  Open Task 2 in Writing
-                </Link>
-              </article>
-            </div>
-
-            <div className="mock-test-support-grid">
               <section className="mock-test-section">
                 <span className="metric-label">Exam checkpoints</span>
                 <div className="mock-test-checkpoint-list">
@@ -479,103 +606,176 @@ export function MockTestLabWorkspace({ tests }: MockTestLabWorkspaceProps) {
                 </div>
               </section>
 
-              <section className="mock-test-section">
-                <span className="metric-label">Mock readiness</span>
-                <div className="mock-test-readiness-list">
-                  {selectedTest.readinessChecklist.map((item) => (
-                    <article key={item} className="mock-test-readiness-card">
-                      <ChecklistIcon className="section-icon" />
-                      <span>{item}</span>
+              <div className="settings-actions">
+                <button
+                  type="button"
+                  className="primary-button"
+                  onClick={() => setActiveStage('review')}
+                >
+                  Review mock readiness
+                </button>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => setActiveStage('choose')}
+                >
+                  Choose another pair
+                </button>
+              </div>
+            </section>
+          ) : null}
+
+          {activeStage === 'review' ? (
+            <section className="glass writing-panel mock-test-workspace mock-test-stage-panel">
+              <div className="dashboard-section-header">
+                <div className="panel-heading">
+                  <p className="section-label">Mock readiness</p>
+                  <h2 className="icon-heading">
+                    <SparklesIcon className="section-icon" />
+                    <span>Review this mock before feedback</span>
+                  </h2>
+                  <p>{selectedTest.title}</p>
+                </div>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => setActiveStage('write')}
+                >
+                  Back to drafts
+                </button>
+              </div>
+
+              <div className="practice-overview-grid">
+                <div className="summary-box">
+                  <span className="metric-label">Total words</span>
+                  <strong>{totalWordCount}</strong>
+                </div>
+                <div className="summary-box">
+                  <span className="metric-label">Task 1 readiness</span>
+                  <strong>{isTaskOneReady ? 'Target met' : 'Keep writing'}</strong>
+                </div>
+                <div className="summary-box">
+                  <span className="metric-label">Task 2 readiness</span>
+                  <strong>{isTaskTwoReady ? 'Target met' : 'Keep writing'}</strong>
+                </div>
+              </div>
+
+              <div className="mock-test-support-grid">
+                <section className="mock-test-section">
+                  <span className="metric-label">Mock readiness</span>
+                  <div className="mock-test-readiness-list">
+                    {selectedTest.readinessChecklist.map((item) => (
+                      <article key={item} className="mock-test-readiness-card">
+                        <ChecklistIcon className="section-icon" />
+                        <span>{item}</span>
+                      </article>
+                    ))}
+                  </div>
+                  <div className="writing-helper-strip">
+                    <span className="surface-kicker">
+                      {isMockReady ? 'Ready for feedback' : 'Keep writing'}
+                    </span>
+                    <p>
+                      {isMockReady
+                        ? 'Both tasks have reached their word targets. Review accuracy, then submit each task in Writing for feedback.'
+                        : 'Reach both word targets before treating this as a complete mock test.'}
+                    </p>
+                  </div>
+                  <div className="settings-actions">
+                    <Link
+                      href={writingHref(selectedTest.taskOnePrompt.id)}
+                      className="secondary-button"
+                    >
+                      Open Task 1 in Writing
+                    </Link>
+                    <Link
+                      href={writingHref(selectedTest.taskTwoPrompt.id)}
+                      className="secondary-button"
+                    >
+                      Open Task 2 in Writing
+                    </Link>
+                  </div>
+                </section>
+
+                <section className="mock-test-section">
+                  {mockDebrief ? (
+                    <article
+                      className={`mock-test-debrief-card is-${mockDebrief.status}`}
+                      aria-label="Mock debrief"
+                    >
+                      <div className="mock-test-debrief-header">
+                        <SparklesIcon className="section-icon" />
+                        <div>
+                          <span className="surface-kicker">
+                            {mockDebrief.statusLabel}
+                          </span>
+                          <h3>{mockDebrief.headline}</h3>
+                          <p>{mockDebrief.summary}</p>
+                        </div>
+                      </div>
+
+                      <div className="mock-test-debrief-grid">
+                        <div className="summary-box">
+                          <span className="metric-label">Completion score</span>
+                          <strong>{mockDebrief.completionScore}%</strong>
+                        </div>
+                        <div className="summary-box">
+                          <span className="metric-label">Task 1 readiness</span>
+                          <strong>{mockDebrief.taskOne.readinessScore}%</strong>
+                        </div>
+                        <div className="summary-box">
+                          <span className="metric-label">Task 2 readiness</span>
+                          <strong>{mockDebrief.taskTwo.readinessScore}%</strong>
+                        </div>
+                      </div>
+
+                      <div className="mock-test-priority-card">
+                        <TargetIcon className="section-icon" />
+                        <div>
+                          <span className="metric-label">Priority task</span>
+                          <strong>
+                            {priorityTask
+                              ? `${priorityTask.taskType}: ${priorityTask.promptTitle}`
+                              : 'Balanced review'}
+                          </strong>
+                          <p>
+                            {priorityTask
+                              ? priorityTask.summary
+                              : 'Both tasks are balanced enough for the final review flow.'}
+                          </p>
+                          <Link href={priorityTaskHref} className="inline-link">
+                            {priorityTask ? 'Open priority task' : 'Open Revision Studio'}
+                          </Link>
+                        </div>
+                      </div>
+
+                      <div className="mock-test-next-actions">
+                        <span className="metric-label">Next actions</span>
+                        <ul className="mock-test-action-list">
+                          {mockDebrief.nextActions.map((action) => (
+                            <li key={action}>{action}</li>
+                          ))}
+                        </ul>
+                      </div>
                     </article>
-                  ))}
-                </div>
-                <div className="writing-helper-strip">
-                  <span className="surface-kicker">
-                    {isMockReady ? 'Ready for feedback' : 'Keep writing'}
-                  </span>
-                  <p>
-                    {isMockReady
-                      ? 'Both tasks have reached their word targets. Review accuracy, then submit each task in Writing for feedback.'
-                      : 'Reach both word targets before treating this as a complete mock test.'}
-                  </p>
-                </div>
-                {mockDebrief ? (
-                  <article
-                    className={`mock-test-debrief-card is-${mockDebrief.status}`}
-                    aria-label="Mock debrief"
-                  >
-                    <div className="mock-test-debrief-header">
-                      <SparklesIcon className="section-icon" />
-                      <div>
-                        <span className="surface-kicker">
-                          {mockDebrief.statusLabel}
-                        </span>
-                        <h3>{mockDebrief.headline}</h3>
-                        <p>{mockDebrief.summary}</p>
-                      </div>
-                    </div>
-
-                    <div className="mock-test-debrief-grid">
-                      <div className="summary-box">
-                        <span className="metric-label">Completion score</span>
-                        <strong>{mockDebrief.completionScore}%</strong>
-                      </div>
-                      <div className="summary-box">
-                        <span className="metric-label">Task 1 readiness</span>
-                        <strong>{mockDebrief.taskOne.readinessScore}%</strong>
-                      </div>
-                      <div className="summary-box">
-                        <span className="metric-label">Task 2 readiness</span>
-                        <strong>{mockDebrief.taskTwo.readinessScore}%</strong>
-                      </div>
-                    </div>
-
-                    <div className="mock-test-priority-card">
-                      <TargetIcon className="section-icon" />
-                      <div>
-                        <span className="metric-label">Priority task</span>
-                        <strong>
-                          {priorityTask
-                            ? `${priorityTask.taskType}: ${priorityTask.promptTitle}`
-                            : 'Balanced review'}
-                        </strong>
-                        <p>
-                          {priorityTask
-                            ? priorityTask.summary
-                            : 'Both tasks are balanced enough for the final review flow.'}
-                        </p>
-                        <Link href={priorityTaskHref} className="inline-link">
-                          {priorityTask ? 'Open priority task' : 'Open Revision Studio'}
-                        </Link>
-                      </div>
-                    </div>
-
-                    <div className="mock-test-next-actions">
-                      <span className="metric-label">Next actions</span>
-                      <ul className="mock-test-action-list">
-                        {mockDebrief.nextActions.map((action) => (
-                          <li key={action}>{action}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </article>
-                ) : null}
-                <div className="settings-actions">
-                  <Link href="/revision-studio" className="primary-button">
-                    Review saved feedback
-                  </Link>
-                  <button
-                    type="button"
-                    className="secondary-button"
-                    onClick={resetSelectedTest}
-                  >
-                    Reset this mock
-                  </button>
-                </div>
-              </section>
-            </div>
-          </section>
-        </div>
+                  ) : null}
+                  <div className="settings-actions">
+                    <Link href="/revision-studio" className="primary-button">
+                      Review saved feedback
+                    </Link>
+                    <button
+                      type="button"
+                      className="secondary-button"
+                      onClick={resetSelectedTest}
+                    >
+                      Reset this mock
+                    </button>
+                  </div>
+                </section>
+              </div>
+            </section>
+          ) : null}
+        </>
       ) : (
         <section className="glass writing-panel empty-state-panel">
           <div className="panel-heading">

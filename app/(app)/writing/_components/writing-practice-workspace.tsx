@@ -35,6 +35,8 @@ type WritingPracticeWorkspaceProps = {
   showOutline?: boolean
 }
 
+type WritingWorkspaceStep = 'choose' | 'draft' | 'review'
+
 type DraftState = {
   draft: string
   remainingSeconds: number
@@ -103,6 +105,56 @@ function promptForId(prompts: WritingPrompt[], promptId?: string) {
   return prompts.find((prompt) => prompt.id === promptId) ?? null
 }
 
+function WritingFlowSteps({
+  activeStep,
+  onStepChange,
+}: {
+  activeStep: WritingWorkspaceStep
+  onStepChange: (step: WritingWorkspaceStep) => void
+}) {
+  const steps: Array<{
+    description: string
+    id: WritingWorkspaceStep
+    label: string
+  }> = [
+    {
+      id: 'choose',
+      label: 'Choose prompt',
+      description: 'Pick one task and understand the goal.',
+    },
+    {
+      id: 'draft',
+      label: 'Write draft',
+      description: 'Focus on the response without side panels.',
+    },
+    {
+      id: 'review',
+      label: 'Review feedback',
+      description: 'Turn the result into a revision plan.',
+    },
+  ]
+
+  return (
+    <nav className="practice-flow-steps" aria-label="Writing practice flow">
+      {steps.map((step, index) => (
+        <button
+          key={step.id}
+          type="button"
+          className={`practice-flow-step${activeStep === step.id ? ' is-active' : ''}`}
+          aria-current={activeStep === step.id ? 'step' : undefined}
+          onClick={() => onStepChange(step.id)}
+        >
+          <span className="practice-flow-step-index">{index + 1}</span>
+          <span>
+            <strong>{step.label}</strong>
+            <small>{step.description}</small>
+          </span>
+        </button>
+      ))}
+    </nav>
+  )
+}
+
 export function WritingPracticeWorkspace({
   initialPromptId,
   prompts,
@@ -117,6 +169,9 @@ export function WritingPracticeWorkspace({
   const [selectedTask, setSelectedTask] = useState<'Task 1' | 'Task 2'>(initialTask)
   const [searchValue, setSearchValue] = useState('')
   const [selectedTopic, setSelectedTopic] = useState('All topics')
+  const [activeStep, setActiveStep] = useState<WritingWorkspaceStep>(
+    handoffPrompt || showOutline ? 'draft' : 'choose'
+  )
   const filteredPrompts = prompts.filter((prompt) => prompt.taskType === selectedTask)
   const taskTopics = useMemo(
     () => [
@@ -163,6 +218,7 @@ export function WritingPracticeWorkspace({
     setSearchValue('')
     setSelectedTopic('All topics')
     setSelectedPromptId(nextPrompts[0]?.id ?? prompts[0]?.id ?? '')
+    setActiveStep('choose')
   }
 
   function handleTopicChange(topic: string) {
@@ -171,6 +227,11 @@ export function WritingPracticeWorkspace({
 
   function handlePromptSearchChange(value: string) {
     setSearchValue(value)
+  }
+
+  function handlePromptSelect(promptId: string) {
+    setSelectedPromptId(promptId)
+    setActiveStep('choose')
   }
 
   return (
@@ -217,93 +278,159 @@ export function WritingPracticeWorkspace({
         </div>
       </section>
 
-      <div className="writing-layout">
-        <aside className="glass writing-panel prompt-library">
-          <div className="panel-heading">
-            <h2>Prompt Library</h2>
-            <p>Switch between Task 1 and Task 2 prompts without losing autosaved drafts.</p>
-          </div>
+      <WritingFlowSteps activeStep={activeStep} onStepChange={setActiveStep} />
 
-          <div className="task-switcher" role="tablist" aria-label="Writing task type">
-            {(['Task 1', 'Task 2'] as const).map((task) => (
-              <button
-                key={task}
-                type="button"
-                className={`task-chip${selectedTask === task ? ' is-active' : ''}`}
-                onClick={() => handleTaskChange(task)}
-              >
-                <span className="task-chip-dot" aria-hidden="true" />
-                {task}
-              </button>
-            ))}
-          </div>
+      {activeStep === 'choose' ? (
+        <div className="practice-focus-layout writing-focus-layout">
+          <aside className="glass writing-panel prompt-library">
+            <div className="panel-heading">
+              <h2>Prompt Library</h2>
+              <p>Choose one prompt first. Drafting opens in a focused workspace.</p>
+            </div>
 
-          <div className="prompt-discovery-tools">
-            <div className="field-group">
-              <label htmlFor="prompt-search">Find a prompt</label>
-              <input
-                id="prompt-search"
-                className="text-input"
-                type="search"
-                value={searchValue}
-                onChange={(event) => handlePromptSearchChange(event.target.value)}
-                placeholder="Search by topic, title, or difficulty"
-              />
+            <div className="task-switcher" role="tablist" aria-label="Writing task type">
+              {(['Task 1', 'Task 2'] as const).map((task) => (
+                <button
+                  key={task}
+                  type="button"
+                  className={`task-chip${selectedTask === task ? ' is-active' : ''}`}
+                  onClick={() => handleTaskChange(task)}
+                >
+                  <span className="task-chip-dot" aria-hidden="true" />
+                  {task}
+                </button>
+              ))}
             </div>
-            <div className="field-group">
-              <label htmlFor="prompt-topic-filter">Topic focus</label>
-              <select
-                id="prompt-topic-filter"
-                className="text-input"
-                value={selectedTopic}
-                onChange={(event) => handleTopicChange(event.target.value)}
-              >
-                {taskTopics.map((topic) => (
-                  <option key={topic} value={topic}>
-                    {topic}
-                  </option>
-                ))}
-              </select>
+
+            <div className="prompt-discovery-tools">
+              <div className="field-group">
+                <label htmlFor="prompt-search">Find a prompt</label>
+                <input
+                  id="prompt-search"
+                  className="text-input"
+                  type="search"
+                  value={searchValue}
+                  onChange={(event) => handlePromptSearchChange(event.target.value)}
+                  placeholder="Search by topic, title, or difficulty"
+                />
+              </div>
+              <div className="field-group">
+                <label htmlFor="prompt-topic-filter">Topic focus</label>
+                <select
+                  id="prompt-topic-filter"
+                  className="text-input"
+                  value={selectedTopic}
+                  onChange={(event) => handleTopicChange(event.target.value)}
+                >
+                  {taskTopics.map((topic) => (
+                    <option key={topic} value={topic}>
+                      {topic}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="writing-helper-strip">
+                <span className="surface-kicker">Prompt discovery</span>
+                <p>
+                  {discoveryPrompts.length
+                    ? `${discoveryPrompts.length} prompt${discoveryPrompts.length === 1 ? '' : 's'} match the current filters.`
+                    : 'No prompts match this filter yet. Try a broader topic or clear the search.'}
+                </p>
+              </div>
             </div>
+
+            <div className="prompt-list">
+              {discoveryPrompts.map((prompt) => (
+                <button
+                  key={prompt.id}
+                  type="button"
+                  className={`prompt-card${selectedPrompt.id === prompt.id ? ' is-active' : ''}`}
+                  onClick={() => handlePromptSelect(prompt.id)}
+                >
+                  <span className="surface-kicker">Prompt</span>
+                  <span className="prompt-type">{prompt.taskType}</span>
+                  <strong>{prompt.title}</strong>
+                  <div className="history-kicker-row">
+                    <span className="surface-kicker">{prompt.topic}</span>
+                    <span className="surface-kicker tracker-history-pill">
+                      {prompt.difficulty}
+                    </span>
+                  </div>
+                  <p>{prompt.brief}</p>
+                </button>
+              ))}
+            </div>
+          </aside>
+
+          <section className="glass writing-panel writing-selection-panel">
+            <div className="panel-heading">
+              <span className="surface-kicker">Selected writing mission</span>
+              <h2>{selectedPrompt.title}</h2>
+              <p>{selectedPrompt.brief}</p>
+            </div>
+
+            <div className="practice-overview-grid">
+              <div className="summary-box">
+                <span className="metric-label">Task type</span>
+                <strong>{selectedPrompt.taskType}</strong>
+              </div>
+              <div className="summary-box">
+                <span className="metric-label">Time box</span>
+                <strong>{selectedPrompt.durationMinutes} min</strong>
+              </div>
+              <div className="summary-box">
+                <span className="metric-label">Target</span>
+                <strong>{selectedPrompt.minimumWords}+ words</strong>
+              </div>
+            </div>
+
             <div className="writing-helper-strip">
-              <span className="surface-kicker">Prompt discovery</span>
+              <span className="surface-kicker">Focus rule</span>
               <p>
-                {discoveryPrompts.length
-                  ? `${discoveryPrompts.length} prompt${discoveryPrompts.length === 1 ? '' : 's'} match the current filters.`
-                  : 'No prompts match this filter yet. Try a broader topic or clear the search.'}
+                Read the task, start the timer, then write without scanning the
+                feedback panel until the first draft is complete.
               </p>
             </div>
-          </div>
 
-          <div className="prompt-list">
-            {discoveryPrompts.map((prompt) => (
+            <div className="practice-next-card">
+              <QuillIcon className="section-icon" />
+              <div>
+                <span className="metric-label">Next step</span>
+                <h3>Open the focused draft workspace</h3>
+                <p>
+                  The editor, checklist, and autosave tools will appear on the
+                  next screen so the learner can concentrate on one action.
+                </p>
+              </div>
+            </div>
+
+            <div className="settings-actions">
               <button
-                key={prompt.id}
                 type="button"
-                className={`prompt-card${selectedPrompt.id === prompt.id ? ' is-active' : ''}`}
-                onClick={() => setSelectedPromptId(prompt.id)}
+                className="primary-button"
+                onClick={() => setActiveStep('draft')}
               >
-                <span className="surface-kicker">Prompt</span>
-                <span className="prompt-type">{prompt.taskType}</span>
-                <strong>{prompt.title}</strong>
-                <div className="history-kicker-row">
-                  <span className="surface-kicker">{prompt.topic}</span>
-                  <span className="surface-kicker tracker-history-pill">
-                    {prompt.difficulty}
-                  </span>
-                </div>
-                <p>{prompt.brief}</p>
+                Start focused draft
               </button>
-            ))}
-          </div>
-        </aside>
-
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => setActiveStep('review')}
+              >
+                Open review panel
+              </button>
+            </div>
+          </section>
+        </div>
+      ) : (
         <PromptWorkspacePanel
           key={selectedPrompt.id}
+          activeStep={activeStep}
+          onStepChange={setActiveStep}
           outline={activeOutline}
           prompt={selectedPrompt}
         />
-      </div>
+      )}
     </div>
   )
 }
@@ -430,9 +557,13 @@ function ReadinessCheckPanel({
 }
 
 function PromptWorkspacePanel({
+  activeStep,
+  onStepChange,
   outline,
   prompt,
 }: {
+  activeStep: Exclude<WritingWorkspaceStep, 'choose'>
+  onStepChange: (step: WritingWorkspaceStep) => void
   outline?: WritingOutline | null
   prompt: WritingPrompt
 }) {
@@ -534,6 +665,7 @@ function PromptWorkspacePanel({
           minute: '2-digit',
         })}`
       )
+      onStepChange('review')
     } catch (error) {
       const message =
         error instanceof Error
@@ -542,6 +674,7 @@ function PromptWorkspacePanel({
 
       setSubmissionError(message)
       setStatusMessage('Practice review failed')
+      onStepChange('review')
     } finally {
       setIsSubmitting(false)
     }
@@ -565,8 +698,9 @@ function PromptWorkspacePanel({
   }
 
   return (
-    <>
-      <section className="glass writing-panel editor-panel">
+    <div className={`practice-focus-layout writing-workbench is-${activeStep}`}>
+      {activeStep === 'draft' ? (
+        <section className="glass writing-panel editor-panel">
         <div className="panel-heading">
           <h2>{prompt.title}</h2>
           <p>{prompt.brief}</p>
@@ -684,6 +818,13 @@ function PromptWorkspacePanel({
           </p>
           <button
             type="button"
+            className="secondary-button"
+            onClick={() => onStepChange('review')}
+          >
+            Open review panel
+          </button>
+          <button
+            type="button"
             className="primary-button"
             disabled={!draft.trim() || isSubmitting}
             onClick={handleSubmit}
@@ -691,9 +832,11 @@ function PromptWorkspacePanel({
             {isSubmitting ? 'Reviewing draft...' : 'Generate practice feedback'}
           </button>
         </div>
-      </section>
+        </section>
+      ) : null}
 
-      <aside className="glass writing-panel feedback-panel">
+      {activeStep === 'review' ? (
+        <aside className="glass writing-panel feedback-panel">
         <div className="panel-heading">
           <span className="surface-kicker">Review panel</span>
           <h2 className="icon-heading">
@@ -707,6 +850,27 @@ function PromptWorkspacePanel({
           <Link href="/rubric-guide" className="inline-link">
             Open rubric guide
           </Link>
+          <div className="hero-badge-row">
+            <span className="hero-badge">{statusMessage}</span>
+            <span className="hero-badge">{draftMetrics.wordCount} words drafted</span>
+          </div>
+        </div>
+
+        <div className="settings-actions">
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => onStepChange('draft')}
+          >
+            Revise draft
+          </button>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => onStepChange('choose')}
+          >
+            Choose another prompt
+          </button>
         </div>
 
         {submissionError ? (
@@ -826,7 +990,8 @@ function PromptWorkspacePanel({
             </div>
           </div>
         )}
-      </aside>
-    </>
+        </aside>
+      ) : null}
+    </div>
   )
 }
