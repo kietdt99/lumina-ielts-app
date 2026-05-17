@@ -18,6 +18,7 @@ test.describe('writing flow', () => {
     await loginAsDemoLearner()
 
     await gotoAndAssertOk('/writing')
+    await page.getByRole('button', { name: 'Start focused draft' }).click()
     const selectedPromptTitle = (
       await page.locator('.editor-panel .panel-heading h2').textContent()
     )?.trim()
@@ -46,7 +47,7 @@ test.describe('writing flow', () => {
       page.getByRole('heading', { name: 'Feedback Snapshot' })
     ).toBeVisible()
     await expect(page.getByText('Estimated band')).toBeVisible()
-    await expect(page.getByText('Revision plan')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Revision plan' })).toBeVisible()
     await expect(page.getByText('Structure pass')).toBeVisible()
     await expect(page.getByText(/Practice result saved at/)).toBeVisible()
 
@@ -108,6 +109,7 @@ test.describe('writing flow', () => {
     })
 
     await gotoAndAssertOk('/writing')
+    await page.getByRole('button', { name: 'Start focused draft' }).click()
 
     await page.getByLabel('Draft editor').fill('A complete draft that should trigger the mocked API failure.')
     await page.getByRole('button', { name: 'Generate practice feedback' }).click()
@@ -205,6 +207,7 @@ test.describe('writing flow', () => {
   }) => {
     await loginAsDemoLearner()
     await gotoAndAssertOk('/writing')
+    await page.getByRole('button', { name: 'Start focused draft' }).click()
     const selectedPromptTitle = (
       await page.locator('.editor-panel .panel-heading h2').textContent()
     )?.trim()

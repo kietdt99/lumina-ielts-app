@@ -19,6 +19,10 @@ describe('MockTestLabWorkspace', () => {
       })
     ).toBeInTheDocument()
     expect(screen.getByText('60-minute simulation')).toBeInTheDocument()
+    expect(screen.queryByLabelText('Task 1 draft')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start 60-minute mock' }))
+
     expect(screen.getByLabelText('Task 1 draft')).toBeInTheDocument()
     expect(screen.getByLabelText('Task 2 draft')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Open Task 1 in Writing' })).toHaveAttribute(
@@ -50,6 +54,8 @@ describe('MockTestLabWorkspace', () => {
 
     render(<MockTestLabWorkspace tests={writingMockTests} />)
 
+    fireEvent.click(screen.getByRole('button', { name: 'Start 60-minute mock' }))
+
     fireEvent.change(screen.getByLabelText('Task 1 draft'), {
       target: {
         value: buildReadyDraft({
@@ -72,6 +78,9 @@ describe('MockTestLabWorkspace', () => {
       screen.getByLabelText('Unmark Scan both tasks done')
     ).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getAllByText('Target met').length).toBe(2)
+
+    await user.click(screen.getByRole('button', { name: 'Review mock readiness' }))
+
     expect(screen.getByText('Ready for feedback')).toBeInTheDocument()
     expect(screen.getByLabelText('Mock debrief')).toBeInTheDocument()
     expect(screen.getByText('Needs review')).toBeInTheDocument()
@@ -98,6 +107,6 @@ describe('MockTestLabWorkspace', () => {
 
     await user.click(screen.getAllByRole('button', { name: 'Reset filters' })[0])
 
-    expect(screen.getByLabelText('Task 1 draft')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Start 60-minute mock' })).toBeInTheDocument()
   })
 })

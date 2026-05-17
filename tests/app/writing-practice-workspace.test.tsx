@@ -28,6 +28,8 @@ describe('WritingPracticeWorkspace', () => {
 
     render(<WritingPracticeWorkspace prompts={writingPrompts} />)
 
+    await user.click(screen.getByRole('button', { name: /Start focused draft/i }))
+
     fireEvent.change(screen.getByLabelText('Draft editor'), {
       target: {
         value: 'Task 2 draft content',
@@ -38,7 +40,9 @@ describe('WritingPracticeWorkspace', () => {
       window.localStorage.getItem('lumina-writing-draft:task2-remote-work')
     ).toContain('Task 2 draft content')
 
+    await user.click(screen.getByRole('button', { name: /Choose prompt/i }))
     await user.click(screen.getByRole('button', { name: 'Task 1' }))
+    await user.click(screen.getByRole('button', { name: /Start focused draft/i }))
 
     fireEvent.change(screen.getByLabelText('Draft editor'), {
       target: {
@@ -50,7 +54,9 @@ describe('WritingPracticeWorkspace', () => {
       window.localStorage.getItem('lumina-writing-draft:task1-cycle-diagram')
     ).toContain('Task 1 draft content')
 
+    await user.click(screen.getByRole('button', { name: /Choose prompt/i }))
     await user.click(screen.getByRole('button', { name: 'Task 2' }))
+    await user.click(screen.getByRole('button', { name: /Start focused draft/i }))
 
     expect(screen.getByLabelText('Draft editor')).toHaveValue('Task 2 draft content')
   })
@@ -101,6 +107,8 @@ describe('WritingPracticeWorkspace', () => {
 
   it('updates the pre-submit readiness checklist as the learner drafts', async () => {
     render(<WritingPracticeWorkspace prompts={writingPrompts} />)
+
+    fireEvent.click(screen.getByRole('button', { name: /Start focused draft/i }))
 
     const readinessPanel = screen.getByLabelText('Writing readiness checks')
 
@@ -155,6 +163,8 @@ describe('WritingPracticeWorkspace', () => {
     )
 
     render(<WritingPracticeWorkspace prompts={writingPrompts} />)
+
+    fireEvent.click(screen.getByRole('button', { name: /Start focused draft/i }))
 
     fireEvent.change(screen.getByLabelText('Draft editor'), {
       target: {
@@ -211,6 +221,8 @@ describe('WritingPracticeWorkspace', () => {
 
     render(<WritingPracticeWorkspace prompts={writingPrompts} />)
 
+    await user.click(screen.getByRole('button', { name: /Start focused draft/i }))
+
     await user.type(screen.getByLabelText('Draft editor'), 'A short draft')
     await user.click(
       screen.getByRole('button', { name: 'Generate practice feedback' })
@@ -233,6 +245,8 @@ describe('WritingPracticeWorkspace', () => {
     vi.useFakeTimers()
 
     render(<WritingPracticeWorkspace prompts={writingPrompts} />)
+
+    fireEvent.click(screen.getByRole('button', { name: /Start focused draft/i }))
 
     expect(screen.getByText('40:00')).toBeInTheDocument()
 

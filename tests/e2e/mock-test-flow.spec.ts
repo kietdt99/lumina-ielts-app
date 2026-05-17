@@ -33,6 +33,8 @@ test.describe('mock test lab flow', () => {
     await expect(
       page.getByText('Household energy use trends + Environmental responsibility').first()
     ).toBeVisible()
+    await expect(page.getByLabel('Task 1 draft')).toHaveCount(0)
+    await page.getByRole('button', { name: 'Start 60-minute mock' }).click()
 
     const taskOneDraft = buildReadyDraft({
       minimumWords: selectedMockTest.taskOnePrompt.minimumWords,
@@ -54,6 +56,8 @@ test.describe('mock test lab flow', () => {
       'aria-pressed',
       'true'
     )
+
+    await page.getByRole('button', { name: 'Review mock readiness' }).click()
     await expect(page.getByText('Ready for feedback').first()).toBeVisible()
     await expect(page.getByLabel('Mock debrief')).toBeVisible()
     await expect(
