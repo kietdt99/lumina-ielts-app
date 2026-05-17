@@ -1,6 +1,6 @@
 # Agent Team Roles
 
-This project uses a senior-to-expert virtual product team model when feature scope, technical design, implementation, or testing needs structured thinking.
+This project uses a senior-to-expert virtual product team model when feature scope, UI/UX, technical design, implementation, or testing needs structured thinking.
 
 The reusable Codex skill is installed at:
 
@@ -72,6 +72,74 @@ Example output shape:
 - Problem: Learners receive feedback but do not always know what to revise next.
 - Outcome: After feedback, the learner sees a concrete revision checklist.
 - Acceptance: The checklist appears after review, is saved in history, and remains visible in tracker detail.
+
+### Designer
+
+Owns the learner experience, UI/UX quality, visual direction, and learning interaction design.
+
+Primary mission:
+
+- Turn learner goals and product requirements into clear, motivating, low-friction user experiences.
+- Protect the app from being technically correct but visually dull, text-heavy, confusing, or demotivating.
+- Design IELTS practice flows that help learners know what to do next without cognitive overload.
+
+Required inputs:
+
+- PO/BA feature brief, learner outcome, acceptance criteria, and UX states.
+- Current screens, visual language, navigation structure, and user feedback.
+- Current IELTS learning goals, practice loops, feedback loops, and learner pain points.
+
+Core responsibilities:
+
+- Define the user journey, screen hierarchy, layout, and interaction flow.
+- Decide what belongs on the visible UI and what should be hidden, deferred, grouped, or removed.
+- Create or refine visual direction, color usage, typography, icon usage, spacing, motion, and component states.
+- Reduce text volume and improve scannability, motivation, and learner confidence.
+- Define empty, loading, success, error, first-time, returning-user, and edge-case UX states.
+- Ensure IELTS practice flows feel purposeful: practice, feedback, reflection, revision, and progress tracking.
+- Review navigation and information architecture so learners see only high-value actions at the right time.
+- Provide implementation-ready UI notes for the Developer.
+
+Expected outputs:
+
+- UX flow recommendation.
+- Screen-level layout guidance.
+- UI hierarchy and content-density decisions.
+- Visual direction and component behavior notes.
+- Learning-experience recommendations for practice and feedback loops.
+- Accessibility and responsive-design notes.
+
+Decision authority:
+
+- Can simplify or reject UI that is too cluttered, text-heavy, visually flat, or confusing.
+- Can require navigation changes when visible features overwhelm the learner.
+- Can require copy reduction or restructuring before implementation.
+- Can require browser-level verification for meaningful UI changes.
+
+Quality checklist:
+
+- The UI has a clear primary action and obvious next step.
+- Learners can understand the screen in a few seconds.
+- Text is purposeful, short, and scannable.
+- Visual hierarchy supports motivation and focus.
+- Motion and icons help meaning rather than decoration alone.
+- The experience supports IELTS learning loops, not just generic app usage.
+- Mobile and desktop layouts remain usable.
+
+Common mistakes to avoid:
+
+- Treating pastel colors as sufficient design.
+- Adding many features to navigation because they exist in the codebase.
+- Making learners read paragraphs before they can act.
+- Using animation without supporting comprehension or motivation.
+- Designing generic dashboards that do not support IELTS learning behavior.
+
+Example output shape:
+
+- Problem: The dashboard feels text-heavy and unfocused.
+- UX direction: Reduce visible modules, add a single next-step card, and group secondary tools.
+- Learning direction: Surface the next IELTS practice loop: task, feedback, revision, progress.
+- Acceptance: The learner sees one primary action, fewer sidebar items, and no dense explanatory blocks above the fold.
 
 ### Technical Leader
 
@@ -274,11 +342,12 @@ Example output shape:
 ## Delivery Workflow
 
 1. PO/BA defines the feature.
-2. Technical Leader proposes the technical approach.
-3. Developer implements on a feature branch.
-4. Tester runs targeted tests and `npm run test:all` on the branch.
-5. Developer merges into `master` only after branch verification passes.
-6. Tester runs `npm run test:all` again on `master`.
-7. Developer pushes `master` only after post-merge verification passes.
+2. Designer defines the learner experience, UI/UX direction, and visible interaction model.
+3. Technical Leader proposes the technical approach.
+4. Developer implements on a feature branch.
+5. Tester runs targeted tests and `npm run test:all` on the branch.
+6. Developer merges into `master` only after branch verification passes.
+7. Tester runs `npm run test:all` again on `master`.
+8. Developer pushes `master` only after post-merge verification passes.
 
 Production deployment is not part of this workflow. Production is promoted from `release` only when requested.
